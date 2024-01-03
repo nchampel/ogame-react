@@ -77,13 +77,15 @@ function App() {
             },
             
         }
+        
         setBuildingsResources(buildingsResourcesTemp)
         const energyMetal = Math.round(10 * (dataBuildings.metal) * Math.pow(1.1, (dataBuildings.metal)))
         const energyCrystal = Math.round(10 * (dataBuildings.crystal) * Math.pow(1.1, (dataBuildings.crystal)))
         const energyDeuterium = Math.round(20 * (dataBuildings.deuterium) * Math.pow(1.1, (dataBuildings.deuterium)))
+        console.log(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium + 50 * dataResources.satellites)
         setUsedEnergy(energyMetal + energyCrystal + energyDeuterium)
-        setRemainingEnergy(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium)
-        setEnergy(buildingsResourcesTemp.energy.production)    
+        setRemainingEnergy(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium + 50 * dataResources.satellites)
+        setEnergy(buildingsResourcesTemp.energy.production + 50 * dataResources.satellites)    
     }
     } catch (err) {
         console.error(err);

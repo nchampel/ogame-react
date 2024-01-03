@@ -97,7 +97,7 @@ const Dashboard = (props) => {
         // console.log(energyCrystal)
         // console.log(energyDeuterium)
         setUsedEnergy(energyMetal + energyCrystal + energyDeuterium)
-        setRemainingEnergy(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)) - energyMetal - energyCrystal - energyDeuterium)
+        setRemainingEnergy(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)) - energyMetal - energyCrystal - energyDeuterium + resources.satellites * 50)
         // console.log(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)))
     }, [buildings]);
 
@@ -128,6 +128,29 @@ const Dashboard = (props) => {
         
         // saveResources(resourcesPlanetsTemp) à implémenter
         setPlanets(resourcesPlanetsTemp)
+    }
+
+    const buildSatellites = (number) => {
+        // on vérifie que les ressources nécessaires sont là
+        // console.log(buildingsResources[type]['energy'])
+        if (buildings.shield_level >= 4 &&
+            resources['crystal'] >= number * 2000 &&
+            resources['deuterium'] >= number * 500)
+        {
+            const resourcesTemp = {...resources}
+            resourcesTemp.deuterium = resources.deuterium - number * 500
+            resourcesTemp.crystal = resources.crystal - number * 2000
+            resourcesTemp.satellites = resources.satellites + number
+
+            // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
+            setResources(resourcesTemp)
+            
+            setRemainingEnergy(remainingEnergy + 50 * number)
+            setEnergy(energy + 50 * number)
+
+            saveResources(resourcesTemp)
+        }
+        
     }
 
     //   useEffect(() => {
@@ -163,6 +186,18 @@ const Dashboard = (props) => {
             <Button onClick={() => addResourcesHours(10)}>10 h</Button>
             <Button onClick={() => addResourcesHours(24)}>24 h</Button>
             <Button onClick={() => addResourcesHours(48)}>48 h</Button>
+        </Card>
+        <Card sx={{
+        marginBottom: '15px'
+        }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center'}}>
+                <Typography>Créer</Typography>
+                <Box>
+                    <Button onClick={() => buildSatellites(10)}>10 satellites</Button>
+                    <Button onClick={() => buildSatellites(100)}>100 satellites</Button>
+                    <Button onClick={() => buildSatellites(1000)}>1000 satellites</Button>
+                </Box>
+            </Box>
         </Card>
     </Box>
 )}
