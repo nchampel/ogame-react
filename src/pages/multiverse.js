@@ -1,15 +1,15 @@
-import { Box, Button, Card, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TextField, Typography } from "@mui/material";
 import numeral from 'numeral';
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import { planetsApi } from "../api/planets-api";
 import { planetApi } from "../api/planet-api";
 
 const Multiverse = (props) => {
     // const isMounted = useMounted();
-    const { resources, setResources, planetsMultiverse, setPlanetsMultiverse } = props
-    // const [resources, setResources] = useState({metal: 0, crystal: 0, deuterium: 0, energy: 0})
-    // console.log(buildingsResources.metal)
+    const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starshipLevels } = props
+    const [results, setResults] = useState([])
+    const [resultsToDisplay, setResultsToDisplay] = useState([])
 
     const saveResources = useCallback(async (resources) => {
         try {
@@ -27,9 +27,29 @@ const Multiverse = (props) => {
         }
     }, []);
 
+    const getResultsAttack = useCallback(async (planet) => {
+      try {
+          const dataResults = await planetsApi.getResultsAttack(planet, starshipLevels, resources)
+          setResults(dataResults)
+        } catch (err) {
+          console.error(err);
+      }
+  }, []);
+
     const [pagin, setPagin] = useState(0);
     const [paginTextField, setPaginTextField] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [open, setOpen] = useState(false)
+
+    const handleClose = () => {
+      setOpen(false);
+      setResultsToDisplay([]);
+      setCounter(1);
+  };
+
+  const handleViewResults = () => {
+    setOpen(true);
+};
 
     const handlePageChange = (event, newPage) => {
         setPagin(newPage);
@@ -45,34 +65,138 @@ const Multiverse = (props) => {
     const attack = (planet, idx) => {
         // console.log(idx)
         // console.log(planets.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage)[idx])
-        // console.log(planets[idx + pagin * rowsPerPage])
+        console.log(planetsMultiverse[idx + pagin * rowsPerPage])
+        console.log(planet)
         if (1000000 <= resources.deuterium) {
+          if (planet.type === 'ennemi'){
+            // getResultsAttack(planet)
+            handleViewResults()
+          } else {
+
+          }
+         
             // mettre is_discovered à true et le sauvegarder et mettre à jour dans la liste des planètes
             // faire le cas spécial du combat avec le boss
             // vérifier si vaisseau construit
-          const resourcesTemp = {...resources}
-          resourcesTemp.deuterium -= 1000000
-          resourcesTemp.deuterium += planet.deuterium
-          resourcesTemp.metal += planet.metal
-          resourcesTemp.crystal += planet.crystal
-          setResources(resourcesTemp)
-          saveResources(resourcesTemp)
-          const planetsTemp = [...planetsMultiverse]
-          const planetAttacked = planetsMultiverse[idx + pagin * rowsPerPage]
-          planetAttacked.metal = 0
-          planetAttacked.crystal = 0
-          planetAttacked.deuterium = 0
-          planetAttacked.cost = 0
-          planetsTemp[idx + pagin * rowsPerPage] = planetAttacked
-          setPlanetsMultiverse(planetsTemp)
-          saveResourcesPlanetsMultiverse(planetsTemp)
+          // const resourcesTemp = {...resources}
+          // resourcesTemp.deuterium -= 1000000
+          // resourcesTemp.deuterium += planet.deuterium
+          // resourcesTemp.metal += planet.metal
+          // resourcesTemp.crystal += planet.crystal
+          // setResources(resourcesTemp)
+          // saveResources(resourcesTemp)
+          // const planetsTemp = [...planetsMultiverse]
+          // const planetAttacked = planetsMultiverse[idx + pagin * rowsPerPage]
+          // planetAttacked.metal = 0
+          // planetAttacked.crystal = 0
+          // planetAttacked.deuterium = 0
+          // planetAttacked.cost = 0
+          // planetsTemp[idx + pagin * rowsPerPage] = planetAttacked
+          // setPlanetsMultiverse(planetsTemp)
+          // saveResourcesPlanetsMultiverse(planetsTemp)
         }
       };
+
+      const [counter, setCounter] = useState(1);
+
+      useEffect(() => {
+        // getData(energyInfos);
+            const timer = setInterval(() => {
+                if (counter <= results.length && open) {
+                    // setResultsToDisplay([]);
+                    const tempResults = [];
+                    // tempResults = [...resultsToDisplay];
+                    for (let i = 0; i < counter; i++) {
+                        tempResults.push(results[i]);
+                    }
+                    setResultsToDisplay(tempResults);
+                    // counter++;
+                    setCounter(counter + 1);
+                }
+            }, 5000);
+            return () => {
+                // Each time a new useEffect is executed, the previous useEffect will be cleaned up
+                // This function will be called to clear the previous setInterval timer
+                clearInterval(timer);
+            };
+        
+    }, [resultsToDisplay, results, counter]);
     
     return (
+    <>
+    <Dialog
+        open={open}
+        // TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+        fullWidth
+        maxWidth="xl"
+        PaperProps={{
+            style: {
+                backgroundColor: "#434A54",
+                color: "white",
+            },
+        }}
+        >
+        <DialogTitle>Résultats du combat</DialogTitle>
+        <DialogContent>
+        <Grid
+                        container
+                        justifyContent="center"
+                        sx={{
+                            color: "white",
+                            mt: 5,
+                        }}
+                    >
+                {resultsToDisplay.map((round) => (
+                    <>
+                    <Grid
+                        item
+                        xs={12}
+                        align="center"
+                        key={round.round}
+                        sx={{ mb: 1 }}
+                    >{`Tour n° ${round.round} Pdv du vaisseau ${round.life_points_starship} et feu de ${round.fire_starship}. Le bouclier bloque ${round.shield_starship} points de dégâts. Pdv de l'ennemi ${round.life_points_enemy} et feu de ${round.fire_enemy}. Le bouclier bloque ${round.shield_enemy} points de dégâts.`}</Grid>
+                    {round.winner === "Player" && (
+                        <Grid
+                            item
+                            key="win"
+                            style={{
+                                fontSize: 20,
+                                marginTop: 50,
+                                marginBottom: 50,
+                            }}
+                        >
+                            Combat gagné !
+                        </Grid>
+                    )}
+                    {round.winner === "Enemy" && (
+                        <Grid
+                            item
+                            key="lost"
+                            style={{
+                                fontSize: 20,
+                                marginTop: 50,
+                                marginBottom: 50,
+                            }}
+                        >
+                            Combat perdu !
+                        </Grid>
+                    )}
+                </>
+                ))}
+            </Grid>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleClose} style={{ color: "white" }}>
+                OK
+            </Button>
+        </DialogActions>
+        </Dialog>
     <Box sx={{ minHeight: '600px' }}>
-        <Typography>Multivers</Typography>   
-        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>   
+        <Typography sx={{ mb: 1}}>Multivers</Typography>   
+        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Vie : ${starshipLevels.life_level} Armes : ${starshipLevels.fire_level} Bouclier : ${starshipLevels.shield_level}`}</Typography>   
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>   
         <Button onClick={() => addBooster(1)}>Acheter booster</Button> */}
@@ -343,6 +467,7 @@ const Multiverse = (props) => {
               />
         </Card>
     </Box>
+    </>
 )}
 
 export default Multiverse;

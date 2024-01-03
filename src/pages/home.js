@@ -159,7 +159,7 @@ const Dashboard = (props) => {
     
     return (
     <Box sx={{ minHeight: '600px' }}>
-        <Typography>Bienvenue</Typography>
+        <Typography sx={{ mb: 1}}>Bienvenue</Typography>
         <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(remainingEnergy).format('0,000,000,000,000').replaceAll(',', ' ')} / ${numeral(energy).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
         <Buildings buildingsResources={buildingsResources} buildings={buildings} />
         <Card sx={{

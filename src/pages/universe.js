@@ -67,7 +67,7 @@ const Universe = (props) => {
   
     return (
     <Box sx={{ minHeight: '600px' }}>
-        <Typography>Planètes</Typography>
+        <Typography sx={{ mb: 1}}>Planètes</Typography>
          <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>   
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>   
