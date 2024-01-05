@@ -62,7 +62,7 @@ const Multiverse = (props) => {
 
     // faire un système où on voit que les découvertes ou que les non découvertes, maj le count dans la pagination
 
-    const attack = (planet, idx) => {
+    const fight = (planet, idx) => {
         // console.log(idx)
         // console.log(planets.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage)[idx])
         console.log(planetsMultiverse[idx + pagin * rowsPerPage])
@@ -444,7 +444,7 @@ const Multiverse = (props) => {
                             }}
                           >
                             <Box>
-                              <Button onClick={() => attack(planet, idx)}>
+                              <Button onClick={() => fight(planet, idx)}>
                                 <RocketLaunchIcon />
                               </Button>
                               

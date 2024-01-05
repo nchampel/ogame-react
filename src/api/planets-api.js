@@ -2,9 +2,7 @@ class PlanetsApi {
 
     async getPlanetsData() {
         const data = {};
-        // data.energy = energy;
-        // let formData = new FormData();
-        // formData.append("energy", energy);
+        
         const url = `${process.env.REACT_APP_BACK}/planets/get/`
         const response = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -28,9 +26,7 @@ class PlanetsApi {
     
     async saveResourcesPlanets(planets) {
         const data = { planets };
-        // data.energy = energy;
-        // let formData = new FormData();
-        // formData.append("energy", energy);
+        
         const url = `${process.env.REACT_APP_BACK}/planets/resources/save/`
         const response = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -54,9 +50,7 @@ class PlanetsApi {
 
     async getPlanetsMultiverseData() {
         const data = {};
-        // data.energy = energy;
-        // let formData = new FormData();
-        // formData.append("energy", energy);
+        
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/get/`
         const response = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -80,9 +74,7 @@ class PlanetsApi {
     
     async saveResourcesPlanetsMultiverse(planets) {
         const data = { planets };
-        // data.energy = energy;
-        // let formData = new FormData();
-        // formData.append("energy", energy);
+        
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/resources/save/`
         const response = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -105,9 +97,7 @@ class PlanetsApi {
     }
     async getResultsAttack(planet, starshipLevels, resources) {
         const data = { planet, starshipLevels, resources };
-        // data.energy = energy;
-        // let formData = new FormData();
-        // formData.append("energy", energy);
+        
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/attack/results/get/`
         const response = await fetch(url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.

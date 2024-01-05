@@ -1,6 +1,7 @@
 import Boosters from "../pages/boosters";
 import Dashboard from "../pages/home";
 import Multiverse from "../pages/multiverse";
+import Reinitialization from "../pages/reinitialization";
 import Search from "../pages/search";
 import Universe from "../pages/universe";
 
@@ -24,6 +25,10 @@ const routes = [
     {
       path: '/search',
       element: Search
+    },
+    {
+      path: '/reinitialization',
+      element: Reinitialization
     },
 ]
 

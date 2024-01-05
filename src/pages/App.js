@@ -19,6 +19,7 @@ function App() {
   const [planets, setPlanets] = useState([])
   const [planetsMultiverse, setPlanetsMultiverse] = useState([])
   const [starshipLevels, setStarshipLevels] = useState({life_level: 1, fire_level: 1, shield_level: 1})
+  const [resourcesSearch, setResourcesSearch] = useState({life: 100, fire: 50, shield: 20})
 
   // const tdeuterium = 40
 
@@ -36,6 +37,10 @@ function App() {
         if (isMounted()) {
         setResources(dataResources);
         setBuildings(dataBuildings)
+        setResourcesSearch({life: 100 * Math.pow(2, dataBuildings.life_level - 1),
+          fire: 50 * Math.pow(2, dataBuildings.fire_level - 1),
+          shield: 20 * Math.pow(2, dataBuildings.shield_level - 1),
+        })
         setStarshipLevels({life_level: dataBuildings.life_level, fire_level: dataBuildings.fire_level,
           shield_level: dataBuildings.shield_level})
         setBooster({coefficient: dataBuildings.booster, cost: boosterCost})
@@ -203,6 +208,8 @@ useEffect(() => {
                     setPlanetsMultiverse={setPlanetsMultiverse}
                     starshipLevels={starshipLevels}
                     setStarshipLevels={setStarshipLevels}
+                    resourcesSearch={resourcesSearch}
+                    setResourcesSearch={setResourcesSearch}
                   />
                 }
               />
