@@ -76,7 +76,7 @@ const Multiverse = (props) => {
           }
          
             // mettre is_discovered à true et le sauvegarder et mettre à jour dans la liste des planètes
-            // faire le cas spécial du combat avec le boss
+            // faire le cas spécial du combat avec le boss => si - 50% 20 % de chance qu'il explose etc.
             // vérifier si vaisseau construit
           // const resourcesTemp = {...resources}
           // resourcesTemp.deuterium -= 1000000

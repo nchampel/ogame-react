@@ -6,6 +6,7 @@ import { useMounted } from '../hooks/use-mounted';
 import { useCallback, useEffect, useState } from 'react';
 import { planetApi } from '../api/planet-api';
 import { planetsApi } from '../api/planets-api';
+import { starshipApi } from '../api/starship-api';
 
 function App() {
   const isMounted = useMounted();
@@ -18,8 +19,9 @@ function App() {
   const [booster, setBooster] = useState({coefficient: 1, cost: 10000})
   const [planets, setPlanets] = useState([])
   const [planetsMultiverse, setPlanetsMultiverse] = useState([])
-  const [starshipLevels, setStarshipLevels] = useState({life_level: 1, fire_level: 1, shield_level: 1})
+  const [starship, setStarship] = useState({life_level: 1, fire_level: 1, shield_level: 1, is_built: 0})
   const [resourcesSearch, setResourcesSearch] = useState({life: 100, fire: 50, shield: 20})
+  const [resourcesNeeded, setResourcesNeeded] = useState({metal: 0, crystal: 0, deuterium: 0})
 
   // const tdeuterium = 40
 
@@ -32,17 +34,18 @@ function App() {
         const boosterCost = await planetApi.getBoosterCost(dataBuildings.booster)
         const dataPlanets = await planetsApi.getPlanetsData()
         const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData()
+        const dataStarship = await starshipApi.getStarshipData()
         console.log(dataPlanetsMultiverse)
         // const dataBuildingsResources = await planetApi.getBuildingsResources()
         if (isMounted()) {
         setResources(dataResources);
         setBuildings(dataBuildings)
-        setResourcesSearch({life: 100 * Math.pow(2, dataBuildings.life_level - 1),
-          fire: 50 * Math.pow(2, dataBuildings.fire_level - 1),
-          shield: 20 * Math.pow(2, dataBuildings.shield_level - 1),
+        setResourcesSearch({life: 100 * Math.pow(2, dataStarship.life_level - 1),
+          fire: 50 * Math.pow(2, dataStarship.fire_level - 1),
+          shield: 20 * Math.pow(2, dataStarship.shield_level - 1),
         })
-        setStarshipLevels({life_level: dataBuildings.life_level, fire_level: dataBuildings.fire_level,
-          shield_level: dataBuildings.shield_level})
+        setStarship({life_level: dataStarship.life_level, fire_level: dataStarship.fire_level,
+          shield_level: dataStarship.shield_level, is_built: dataStarship.is_built})
         setBooster({coefficient: dataBuildings.booster, cost: boosterCost})
         dataPlanets.forEach((planet, idx) => {
           const metal = dataPlanets[idx]['metal']
@@ -89,7 +92,9 @@ function App() {
         const energyDeuterium = Math.round(20 * (dataBuildings.deuterium) * Math.pow(1.1, (dataBuildings.deuterium)))
         setUsedEnergy(energyMetal + energyCrystal + energyDeuterium)
         setRemainingEnergy(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium + 50 * dataResources.satellites)
-        setEnergy(buildingsResourcesTemp.energy.production + 50 * dataResources.satellites)    
+        setEnergy(buildingsResourcesTemp.energy.production + 50 * dataResources.satellites)   
+        setResourcesNeeded({'metal': 1000000 * dataStarship.life_level, 'crystal': 1000000 * dataStarship.fire_level,
+                                'deuterium': 1000000 * dataStarship.shield_level})
     }
     } catch (err) {
         console.error(err);
@@ -206,10 +211,12 @@ useEffect(() => {
                     setPlanets={setPlanets}
                     planetsMultiverse={planetsMultiverse}
                     setPlanetsMultiverse={setPlanetsMultiverse}
-                    starshipLevels={starshipLevels}
-                    setStarshipLevels={setStarshipLevels}
+                    starship={starship}
+                    setStarship={setStarship}
                     resourcesSearch={resourcesSearch}
                     setResourcesSearch={setResourcesSearch}
+                    resourcesNeeded={resourcesNeeded}
+                    setResourcesNeeded={setResourcesNeeded}
                   />
                 }
               />

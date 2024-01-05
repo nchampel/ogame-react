@@ -2,12 +2,12 @@ import { Box, Button, Card, Typography } from "@mui/material";
 import numeral from 'numeral';
 import { useCallback } from "react";
 import { planetApi } from "../api/planet-api";
+import { starshipApi } from "../api/starship-api";
 
 const Search = (props) => {
     // const isMounted = useMounted();
-    const { resources, setResources, starshipLevels, setStarshipLevels, resourcesSearch, setResourcesSearch } = props
-    // const [resources, setResources] = useState({metal: 0, crystal: 0, deuterium: 0, energy: 0})
-    console.log(resourcesSearch)
+    const { resources, setResources, starship, setStarship, resourcesSearch, setResourcesSearch, resourcesNeeded,
+    setResourcesNeeded } = props
 
     const saveResources = useCallback(async (resources) => {
         try {
@@ -26,58 +26,87 @@ const Search = (props) => {
         }
     }, []);
 
-    const handleLevelSearch = ((type, level) => {
+    const handleLevelSearch = ((type) => {
         // on vérifie qu'il y a assez de ressources pour le niveau suivant
         if (type === 'life_level' && resources['metal'] >= resourcesSearch.life) {
             const resourcesTemp = {...resources}
             resourcesTemp.metal -= resourcesSearch.life
-            const starshipLevelsTemp = {...starshipLevels}
-            starshipLevelsTemp.life_level += 1
-            setStarshipLevels(starshipLevelsTemp)
+            const starshipTemp = {...starship}
+            starshipTemp.life_level += 1
+            setStarship(starshipTemp)
+            const resourcesSearchTemp = {...resourcesSearch}
+            resourcesSearchTemp.life = 100 * Math.pow(2, starshipTemp.life_level - 1)
+            setResourcesSearch(resourcesSearchTemp)
 
             setResources(resourcesTemp)
             saveResources(resourcesTemp)
-            saveLevelSearch('life_level', starshipLevels.life_level + 1)
+            saveLevelSearch('life_level', starship.life_level + 1)
+
+            const resourcesNeededTemp = {...resourcesNeeded}
+            resourcesNeededTemp.metal = 1000000 * (starship.life_level + 1)
+            setResourcesNeeded(resourcesNeededTemp)
         }
         if (type === 'fire_level' && resources['crystal'] >= resourcesSearch.fire) {
             const resourcesTemp = {...resources}
             resourcesTemp.crystal -= resourcesSearch.fire
-            const starshipLevelsTemp = {...starshipLevels}
-            starshipLevelsTemp.fire_level += 1
-            setStarshipLevels(starshipLevelsTemp)
+            const starshipTemp = {...starship}
+            starshipTemp.fire_level += 1
+            setStarship(starshipTemp)
+            const resourcesSearchTemp = {...resourcesSearch}
+            resourcesSearchTemp.fire = 50 * Math.pow(2, starshipTemp.fire_level - 1)
+            setResourcesSearch(resourcesSearchTemp)
 
             setResources(resourcesTemp)
             saveResources(resourcesTemp)
-            saveLevelSearch('fire_level', starshipLevels.fire_level + 1)
+            saveLevelSearch('fire_level', starship.fire_level + 1)
+
+            const resourcesNeededTemp = {...resourcesNeeded}
+            resourcesNeededTemp.crystal = 1000000 * (starship.fire_level + 1)
+            setResourcesNeeded(resourcesNeededTemp)
         }
         if (type === 'shield_level' && resources['deuterium'] >= resourcesSearch.shield) {
             const resourcesTemp = {...resources}
             resourcesTemp.deuterium -= resourcesSearch.shield
-            const starshipLevelsTemp = {...starshipLevels}
-            starshipLevelsTemp.shield_level += 1
-            setStarshipLevels(starshipLevelsTemp)
+            const starshipTemp = {...starship}
+            starshipTemp.shield_level += 1
+            setStarship(starshipTemp)
+            const resourcesSearchTemp = {...resourcesSearch}
+            resourcesSearchTemp.shield = 20 * Math.pow(2, starshipTemp.shield_level - 1)
+            setResourcesSearch(resourcesSearchTemp)
 
             setResources(resourcesTemp)
             saveResources(resourcesTemp)
-            saveLevelSearch('shield_level', starshipLevels.shield_level + 1)
+            saveLevelSearch('shield_level', starship.shield_level + 1)
+
+            const resourcesNeededTemp = {...resourcesNeeded}
+            resourcesNeededTemp.deuterium = 1000000 * (starship.shield_level + 1)
+            setResourcesNeeded(resourcesNeededTemp)
         }
     })
-    
-    const addBooster = () => {
-        
 
-        // if (resources['crystal'] >= booster.cost)
-        // {
-        //     const resourcesTemp = {...resources}
-        //     resourcesTemp.metal -= booster.cost
+    const buildStarship = useCallback(async () => {
+        try {
+            await starshipApi.buildStarship()
+        } catch (err) {
+            console.error(err);
+        }
+      }, []);
 
-        //     setResources(resourcesTemp)
-        //     saveResources(resourcesTemp)
-        //     saveLevelBooster(booster.coefficient + 1)
-        // }
-        
-    }
-    
+      const handleBuildStarship = (resourcesNeeded) => {
+
+            if (!starship.is_built && resourcesNeeded['metal'] <= resources.metal && resourcesNeeded['crystal'] <= resources.crystal && resourcesNeeded['deuterium'] <= resources.deuterium) {
+                const starshipTemp = {...starship}
+                starshipTemp.is_built = 1;
+                setStarship(starshipTemp)
+                const resourcesTemp = {...resources}
+                resourcesTemp.metal -= resourcesNeeded['metal']
+                resourcesTemp.crystal -= resourcesNeeded['crystal']
+                resourcesTemp.deuterium -= resourcesNeeded['deuterium']
+                setResources(resourcesTemp)
+                buildStarship()
+            }
+      }
+
     return (
     <Box sx={{ minHeight: '600px' }}>
         <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>   
@@ -85,30 +114,41 @@ const Search = (props) => {
         marginBottom: '15px',
         marginTop: '15px'
         }}>
-            <Typography>{`Vie : ${starshipLevels.life_level}`}</Typography>
+            <Typography>{`Vie : ${starship.life_level}`}</Typography>
             <Typography>{`${numeral(resourcesSearch.life).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>
         </Card>
         <Card sx={{
         marginBottom: '15px',
         marginTop: '15px'
         }}>
-            <Typography>{`Armes : ${starshipLevels.fire_level}`}</Typography>
+            <Typography>{`Armes : ${starship.fire_level}`}</Typography>
             <Typography>{`${numeral(resourcesSearch.fire).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Cristal`}</Typography>
         </Card>
         <Card sx={{
         marginBottom: '15px',
         marginTop: '15px'
         }}>
-            <Typography>{`Bouclier : ${starshipLevels.shield_level}`}</Typography>
+            <Typography>{`Bouclier : ${starship.shield_level}`}</Typography>
             <Typography>{`${numeral(resourcesSearch.shield).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Deutérium`}</Typography>
         </Card>
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>    */}
         
-        <Card>
-            <Button onClick={() => handleLevelSearch('life_level', starshipLevels.life_level)}>Vie</Button>
-            <Button onClick={() => handleLevelSearch('fire_level', starshipLevels.fire_level)}>Armes</Button>
-            <Button onClick={() => handleLevelSearch('shield_level', starshipLevels.shield_level)}>Bouclier</Button>
+        <Card sx={{
+        marginBottom: '15px'
+        }}>
+            <Button onClick={() => handleLevelSearch('life_level')}>Vie</Button>
+            <Button onClick={() => handleLevelSearch('fire_level')}>Armes</Button>
+            <Button onClick={() => handleLevelSearch('shield_level')}>Bouclier</Button>
+        </Card>
+        <Card sx={{
+        marginBottom: '15px'
+        }}>
+            <Typography>
+                {starship.is_built ? 'Vaisseau en attente' : 'Pas de vaisseau'}
+            </Typography>
+            <Typography>{`Métal : ${numeral(resourcesNeeded.metal).format('1,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resourcesNeeded.crystal).format('1,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resourcesNeeded.deuterium).format('1,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
+            {starship.life_level >= 1 && starship.fire_level >= 1 && starship.shield_level >= 1 && (<Button onClick={() => handleBuildStarship(resourcesNeeded)}>Construire vaisseau</Button>)}
         </Card>
     </Box>
 )}
