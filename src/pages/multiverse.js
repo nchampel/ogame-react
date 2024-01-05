@@ -7,7 +7,7 @@ import { planetApi } from "../api/planet-api";
 
 const Multiverse = (props) => {
     // const isMounted = useMounted();
-    const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starshipLevels } = props
+    const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starship } = props
     const [results, setResults] = useState([])
     const [resultsToDisplay, setResultsToDisplay] = useState([])
 
@@ -19,22 +19,31 @@ const Multiverse = (props) => {
         }
     }, []);
 
-    const saveResourcesPlanetsMultiverse = useCallback(async (resources) => {
-        try {
-            await planetsApi.saveResourcesPlanetsMultiverse(resources)
-        } catch (err) {
-            console.error(err);
-        }
-    }, []);
-
     const getResultsAttack = useCallback(async (planet) => {
       try {
-          const dataResults = await planetsApi.getResultsAttack(planet, starshipLevels, resources)
+          const dataResults = await planetsApi.getResultsAttack(planet, starship, resources)
           setResults(dataResults)
         } catch (err) {
           console.error(err);
       }
   }, []);
+
+  const getResourcesAttack = useCallback(async (planet) => {
+    try {
+        const dataResults = await planetsApi.getResourcesAttack(planet, resources)
+        setResults(dataResults)
+      } catch (err) {
+        console.error(err);
+    }
+}, []);
+
+  const SaveDiscoveredPlanet = useCallback(async (planetId) => {
+    try {
+        await planetsApi.SaveDiscoveredPlanet(planetId)
+      } catch (err) {
+        console.error(err);
+    }
+}, []);
 
     const [pagin, setPagin] = useState(0);
     const [paginTextField, setPaginTextField] = useState(0);
@@ -66,34 +75,34 @@ const Multiverse = (props) => {
         // console.log(idx)
         // console.log(planets.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage)[idx])
         console.log(planetsMultiverse[idx + pagin * rowsPerPage])
-        console.log(planet)
-        if (1000000 <= resources.deuterium) {
-          if (planet.type === 'ennemi'){
-            // getResultsAttack(planet)
+        // console.log(planet)
+        if (1000000 <= resources.deuterium && starship.is_built) {
+          if (planet.type === 'ennemi' || planet.type === 'boss'){
+            getResultsAttack(planet)
             handleViewResults()
           } else {
-
+            getResourcesAttack(planet)
           }
+          const planetsMultiverseTemp = [...planetsMultiverse]
+          planetsMultiverseTemp[idx + pagin * rowsPerPage].is_discovered = true
+          setPlanetsMultiverse(planetsMultiverseTemp)
+          SaveDiscoveredPlanet(planet.id)
          
-            // mettre is_discovered à true et le sauvegarder et mettre à jour dans la liste des planètes
             // faire le cas spécial du combat avec le boss => si - 50% 20 % de chance qu'il explose etc.
-            // vérifier si vaisseau construit
-          // const resourcesTemp = {...resources}
-          // resourcesTemp.deuterium -= 1000000
-          // resourcesTemp.deuterium += planet.deuterium
-          // resourcesTemp.metal += planet.metal
-          // resourcesTemp.crystal += planet.crystal
-          // setResources(resourcesTemp)
-          // saveResources(resourcesTemp)
-          // const planetsTemp = [...planetsMultiverse]
+          const resourcesTemp = {...resources}
+          resourcesTemp.deuterium -= 1000000
+          resourcesTemp.deuterium += planet.deuterium
+          resourcesTemp.metal += planet.metal
+          resourcesTemp.crystal += planet.crystal
+          setResources(resourcesTemp)
+          saveResources(resourcesTemp)
+          const planetsTemp = [...planetsMultiverse]
           // const planetAttacked = planetsMultiverse[idx + pagin * rowsPerPage]
-          // planetAttacked.metal = 0
-          // planetAttacked.crystal = 0
-          // planetAttacked.deuterium = 0
-          // planetAttacked.cost = 0
+          planetsTemp[idx + pagin * rowsPerPage].metal = 0
+          planetsTemp[idx + pagin * rowsPerPage].crystal = 0
+          planetsTemp[idx + pagin * rowsPerPage].deuterium = 0
           // planetsTemp[idx + pagin * rowsPerPage] = planetAttacked
-          // setPlanetsMultiverse(planetsTemp)
-          // saveResourcesPlanetsMultiverse(planetsTemp)
+          setPlanetsMultiverse(planetsTemp)
         }
       };
 
@@ -157,7 +166,7 @@ const Multiverse = (props) => {
                         align="center"
                         key={round.round}
                         sx={{ mb: 1 }}
-                    >{`Tour n° ${round.round} Pdv du vaisseau ${round.life_points_starship} et feu de ${round.fire_starship}. Le bouclier bloque ${round.shield_starship} points de dégâts. Pdv de l'ennemi ${round.life_points_enemy} et feu de ${round.fire_enemy}. Le bouclier bloque ${round.shield_enemy} points de dégâts.`}</Grid>
+                    >{!round.exploded ? `Tour n° ${round.round} Pdv du vaisseau ${round.life_points_starship} et feu de ${round.fire_starship}. Le bouclier bloque ${round.shield_starship} points de dégâts. Pdv de l'ennemi ${round.life_points_enemy} et feu de ${round.fire_enemy}. Le bouclier bloque ${round.shield_enemy} points de dégâts.` : `Le boss a explosé`}</Grid>
                     {round.winner === "Player" && (
                         <Grid
                             item
@@ -196,7 +205,7 @@ const Multiverse = (props) => {
         </Dialog>
     <Box sx={{ minHeight: '600px' }}>
         <Typography sx={{ mb: 1}}>Multivers</Typography>   
-        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Vie : ${starshipLevels.life_level} Armes : ${starshipLevels.fire_level} Bouclier : ${starshipLevels.shield_level}`}</Typography>   
+        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Vie : ${starship.life_level} Armes : ${starship.fire_level} Bouclier : ${starship.shield_level}`}</Typography>   
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>   
         <Button onClick={() => addBooster(1)}>Acheter booster</Button> */}
@@ -313,7 +322,7 @@ const Multiverse = (props) => {
                                 //   fontWeight="Bold"
                                   fontSize={14}
                                 >
-                                  {planet.is_discovered ? '-' : planet.name}
+                                  {!planet.is_discovered ? '-' : planet.name}
                                 </Typography>
                             </Box>
                           </Box>
@@ -330,7 +339,7 @@ const Multiverse = (props) => {
                                 //   fontWeight="Bold"
                                   fontSize={14}
                                 >
-                                  {planet.is_discovered ? '-' : planet.type}
+                                  {!planet.is_discovered ? '-' : planet.type}
                                 </Typography>
                             </Box>
                           </Box>
@@ -348,7 +357,7 @@ const Multiverse = (props) => {
                               <Typography
                                 fontSize={12}
                               >
-                                {planet.is_discovered && planet.type === 'ressources' ? '-' : planet.life_level}
+                                {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet.life_level}
                               </Typography>
                             </Box>
                           </Box>
@@ -364,7 +373,7 @@ const Multiverse = (props) => {
                               <Typography
                                 fontSize={12}
                               >
-                                {planet.is_discovered && planet.type === 'ressources' ? '-' : planet.fire_level}
+                                {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet.fire_level}
                               </Typography>
                             </Box>
                           </Box>
@@ -380,7 +389,7 @@ const Multiverse = (props) => {
                               <Typography
                                 fontSize={12}
                               >
-                                {planet.is_discovered && planet.type === 'ressources' ? '-' : planet.shield_level}
+                                {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet.shield_level}
                               </Typography>
                             </Box>
                             </Box>
@@ -398,7 +407,7 @@ const Multiverse = (props) => {
                               <Typography
                                 fontSize={12}
                               >
-                                {planet.is_discovered ? '-' : numeral(planet.metal).format('1,000,000,000,000').replaceAll(',', ' ')}
+                                {!planet.is_discovered ? '-' : numeral(planet.metal).format('1,000,000,000,000').replaceAll(',', ' ')}
                               </Typography>
                             </Box>
                           </Box>
@@ -414,7 +423,7 @@ const Multiverse = (props) => {
                               <Typography
                                 fontSize={12}
                               >
-                                {planet.is_discovered ? '-' : numeral(planet.crystal).format('1,000,000,000,000').replaceAll(',', ' ')}
+                                {!planet.is_discovered ? '-' : numeral(planet.crystal).format('1,000,000,000,000').replaceAll(',', ' ')}
                               </Typography>
                             </Box>
                           </Box>
@@ -430,7 +439,7 @@ const Multiverse = (props) => {
                               <Typography
                                 fontSize={12}
                               >
-                                {planet.is_discovered ? '-' : numeral(planet.deuterium).format('1,000,000,000,000').replaceAll(',', ' ')}
+                                {!planet.is_discovered ? '-' : numeral(planet.deuterium).format('1,000,000,000,000').replaceAll(',', ' ')}
                               </Typography>
                             </Box>
                             </Box>

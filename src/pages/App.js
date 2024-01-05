@@ -19,7 +19,7 @@ function App() {
   const [booster, setBooster] = useState({coefficient: 1, cost: 10000})
   const [planets, setPlanets] = useState([])
   const [planetsMultiverse, setPlanetsMultiverse] = useState([])
-  const [starship, setStarship] = useState({life_level: 1, fire_level: 1, shield_level: 1, is_built: 0})
+  const [starship, setStarship] = useState({life_level: 1, fire_level: 1, shield_level: 1, is_built: false})
   const [resourcesSearch, setResourcesSearch] = useState({life: 100, fire: 50, shield: 20})
   const [resourcesNeeded, setResourcesNeeded] = useState({metal: 0, crystal: 0, deuterium: 0})
 

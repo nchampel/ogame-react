@@ -96,7 +96,7 @@ const Search = (props) => {
 
             if (!starship.is_built && resourcesNeeded['metal'] <= resources.metal && resourcesNeeded['crystal'] <= resources.crystal && resourcesNeeded['deuterium'] <= resources.deuterium) {
                 const starshipTemp = {...starship}
-                starshipTemp.is_built = 1;
+                starshipTemp.is_built = true;
                 setStarship(starshipTemp)
                 const resourcesTemp = {...resources}
                 resourcesTemp.metal -= resourcesNeeded['metal']
