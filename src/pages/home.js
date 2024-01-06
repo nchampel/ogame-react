@@ -12,7 +12,7 @@ import Buildings from '../components/buildings';
 const Dashboard = (props) => {
     const { resources, setResources, buildings, setBuildings, usedEnergy, setUsedEnergy,
         remainingEnergy, setRemainingEnergy, energy, setEnergy, buildingsResources, setBuildingsResources,
-    booster, planets, setPlanets} = props
+    booster, planets, setPlanets, starship} = props
 
     const saveResources = useCallback(async (resources) => {
         try {
@@ -133,7 +133,7 @@ const Dashboard = (props) => {
     const buildSatellites = (number) => {
         // on vérifie que les ressources nécessaires sont là
         // console.log(buildingsResources[type]['energy'])
-        if (buildings.shield_level >= 4 &&
+        if (starship.shield_level >= 4 &&
             resources['crystal'] >= number * 2000 &&
             resources['deuterium'] >= number * 500)
         {

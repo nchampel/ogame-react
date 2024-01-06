@@ -6,10 +6,12 @@ import { planetsApi } from "../api/planets-api";
 import { planetApi } from "../api/planet-api";
 
 const Multiverse = (props) => {
-    // const isMounted = useMounted();
-    const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starship } = props
+    const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starship, setStarship,
+    planetsDiscovered, setPlanetsDiscovered, planetsNotDiscovered, setPlanetsNotDiscovered } = props
     const [results, setResults] = useState([])
     const [resultsToDisplay, setResultsToDisplay] = useState([])
+    const [planetsToDisplay, setPlanetsToDisplay] = useState(planetsDiscovered)
+    const [planetsNumber, setPlanetsNumber] = useState(planetsDiscovered.length)
 
     const saveResources = useCallback(async (resources) => {
         try {
@@ -19,23 +21,59 @@ const Multiverse = (props) => {
         }
     }, []);
 
-    const getResultsAttack = useCallback(async (planet) => {
+    const handleResourcesRobbed = (planet, planetsDiscoveredTemp) => {
+      const resourcesTemp = {...resources}
+      resourcesTemp.deuterium -= 1000000
+      resourcesTemp.deuterium += planet.deuterium
+      resourcesTemp.metal += planet.metal
+      resourcesTemp.crystal += planet.crystal
+      setResources(resourcesTemp)
+      saveResources(resourcesTemp)
+      const planetsTemp = [...planetsMultiverse]
+      // const planetAttacked = planetsMultiverse[idx + pagin * rowsPerPage]
+      planetsTemp[planetsMultiverse.findIndex(element => element.id === planet.id)].metal = 0
+      planetsTemp[planetsMultiverse.findIndex(element => element.id === planet.id)].crystal = 0
+      planetsTemp[planetsMultiverse.findIndex(element => element.id === planet.id)].deuterium = 0
+      // planetsTemp[idx + pagin * rowsPerPage] = planetAttacked
+      setPlanetsMultiverse(planetsTemp)
+      // const planetsDiscoveredTemp = [...planetsDiscovered]
+      planetsDiscoveredTemp[0].metal = 0
+      planetsDiscoveredTemp[0].crystal = 0
+      planetsDiscoveredTemp[0].deuterium = 0
+      setPlanetsDiscovered(planetsDiscoveredTemp)
+
+      // const planetsNotDiscoveredTemp = [...planetsNotDiscovered]
+      // planetsNotDiscoveredTemp[0].metal = 0
+      // planetsNotDiscoveredTemp[0].crystal = 0
+      // planetsNotDiscoveredTemp[0].deuterium = 0
+      // setPlanetsDiscovered(planetsNotDiscoveredTemp)
+
+  };
+
+    const getResultsAttack = useCallback(async (planet, idx) => {
       try {
           const dataResults = await planetsApi.getResultsAttack(planet, starship, resources)
           setResults(dataResults)
+          if (dataResults[dataResults.length - 1].winner === 'Enemy'){
+            const starshipTemp = {...starship}
+            starshipTemp.is_built = false
+            setStarship(starshipTemp)
+          } else {
+            handleResourcesRobbed(planet, idx)
+          }
         } catch (err) {
           console.error(err);
       }
   }, []);
 
-  const getResourcesAttack = useCallback(async (planet) => {
-    try {
-        const dataResults = await planetsApi.getResourcesAttack(planet, resources)
-        setResults(dataResults)
-      } catch (err) {
-        console.error(err);
-    }
-}, []);
+//   const getResourcesAttack = useCallback(async (planet) => {
+//     try {
+//         const dataResults = await planetsApi.getResourcesAttack(planet, resources)
+//         setResults(dataResults)
+//       } catch (err) {
+//         console.error(err);
+//     }
+// }, []);
 
   const SaveDiscoveredPlanet = useCallback(async (planetId) => {
     try {
@@ -49,6 +87,7 @@ const Multiverse = (props) => {
     const [paginTextField, setPaginTextField] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [open, setOpen] = useState(false)
+    const [type, setType] = useState('discovered')
 
     const handleClose = () => {
       setOpen(false);
@@ -60,7 +99,7 @@ const Multiverse = (props) => {
     setOpen(true);
 };
 
-    const handlePageChange = (event, newPage) => {
+    const handlePageChange = (_, newPage) => {
         setPagin(newPage);
       };
 
@@ -74,35 +113,34 @@ const Multiverse = (props) => {
     const fight = (planet, idx) => {
         // console.log(idx)
         // console.log(planets.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage)[idx])
-        console.log(planetsMultiverse[idx + pagin * rowsPerPage])
+        // console.log(planetsMultiverse[idx + pagin * rowsPerPage])
         // console.log(planet)
+        const planetsDiscoveredTemp = [...planetsDiscovered]
         if (1000000 <= resources.deuterium && starship.is_built) {
+          if (!planet.is_discovered){
+            const planetsMultiverseTemp = [...planetsMultiverse]
+            // planetsMultiverseTemp[idx + pagin * rowsPerPage].is_discovered = true
+            planetsMultiverseTemp[planetsMultiverse.findIndex(element => element.id === planet.id)].is_discovered = true
+            setPlanetsMultiverse(planetsMultiverseTemp)
+            
+            // console.log(planetsDiscovered.findIndex(element => element.id === planet.id))
+            // planetsDiscoveredTemp[planetsDiscovered.findIndex(element => element.id === planet.id)].is_discovered = true
+            planetsDiscoveredTemp.unshift(planet)
+            planetsDiscoveredTemp[0].is_discovered = true
+            setPlanetsDiscovered(planetsDiscoveredTemp)
+            const planetsNotDiscoveredTemp = [...planetsNotDiscovered]
+            // console.log(planetsNotDiscoveredTemp.filter(element => element.id !== planet.id))
+            const planetsNotDiscoveredTempUpdated = planetsNotDiscoveredTemp.filter(element => element.id !== planet.id)
+            setPlanetsNotDiscovered(planetsNotDiscoveredTempUpdated)
+            SaveDiscoveredPlanet(planet.id)
+          }
           if (planet.type === 'ennemi' || planet.type === 'boss'){
-            getResultsAttack(planet)
+            getResultsAttack(planet, idx)
             handleViewResults()
           } else {
-            getResourcesAttack(planet)
+            handleResourcesRobbed(planet, planetsDiscoveredTemp)
           }
-          const planetsMultiverseTemp = [...planetsMultiverse]
-          planetsMultiverseTemp[idx + pagin * rowsPerPage].is_discovered = true
-          setPlanetsMultiverse(planetsMultiverseTemp)
-          SaveDiscoveredPlanet(planet.id)
-         
-            // faire le cas spécial du combat avec le boss => si - 50% 20 % de chance qu'il explose etc.
-          const resourcesTemp = {...resources}
-          resourcesTemp.deuterium -= 1000000
-          resourcesTemp.deuterium += planet.deuterium
-          resourcesTemp.metal += planet.metal
-          resourcesTemp.crystal += planet.crystal
-          setResources(resourcesTemp)
-          saveResources(resourcesTemp)
-          const planetsTemp = [...planetsMultiverse]
-          // const planetAttacked = planetsMultiverse[idx + pagin * rowsPerPage]
-          planetsTemp[idx + pagin * rowsPerPage].metal = 0
-          planetsTemp[idx + pagin * rowsPerPage].crystal = 0
-          planetsTemp[idx + pagin * rowsPerPage].deuterium = 0
-          // planetsTemp[idx + pagin * rowsPerPage] = planetAttacked
-          setPlanetsMultiverse(planetsTemp)
+          
         }
       };
 
@@ -130,6 +168,41 @@ const Multiverse = (props) => {
             };
         
     }, [resultsToDisplay, results, counter]);
+
+    const handlePlanetsToDisplay = ((type) => {
+      if (type === 'all'){
+        setPlanetsToDisplay(planetsMultiverse)
+        setPlanetsNumber(planetsMultiverse.length)
+        setPagin(0)
+        setType('all')
+      } else if (type === 'discovered'){
+        setPlanetsToDisplay(planetsDiscovered)
+        setPlanetsNumber(planetsDiscovered.length)
+        setPagin(0)
+        setType('discovered')
+      } else if (type === 'notDiscovered'){
+        setPlanetsToDisplay(planetsNotDiscovered)
+        setPlanetsNumber(planetsNotDiscovered.length)
+        setPagin(0)
+        setType('notDiscovered')
+      }
+    })
+
+    useEffect(() => {
+      if (type === 'all'){
+        setPlanetsToDisplay(planetsMultiverse)
+        setPlanetsNumber(planetsMultiverse.length)
+        // setPagin(0)
+      } else if (type === 'discovered'){
+        setPlanetsToDisplay(planetsDiscovered)
+        setPlanetsNumber(planetsDiscovered.length)
+        // setPagin(0)
+      } else if (type === 'notDiscovered'){
+        setPlanetsToDisplay(planetsNotDiscovered)
+        setPlanetsNumber(planetsNotDiscovered.length)
+        // setPagin(0)
+      }
+    }, [planetsDiscovered])
     
     return (
     <>
@@ -166,7 +239,7 @@ const Multiverse = (props) => {
                         align="center"
                         key={round.round}
                         sx={{ mb: 1 }}
-                    >{!round.exploded ? `Tour n° ${round.round} Pdv du vaisseau ${round.life_points_starship} et feu de ${round.fire_starship}. Le bouclier bloque ${round.shield_starship} points de dégâts. Pdv de l'ennemi ${round.life_points_enemy} et feu de ${round.fire_enemy}. Le bouclier bloque ${round.shield_enemy} points de dégâts.` : `Le boss a explosé`}</Grid>
+                    >{!round.exploded ? `Tour n° ${round.round} Pdv du vaisseau ${numeral(round.life_points_starship).format('0,000,000,000,000').replaceAll(',', ' ')} et feu de ${numeral(round.fire_starship).format('0,000,000,000,000').replaceAll(',', ' ')}. Le bouclier bloque ${numeral(round.shield_starship).format('0,000,000,000,000').replaceAll(',', ' ')} points de dégâts. Pdv de l'ennemi ${numeral(round.life_points_enemy).format('0,000,000,000,000').replaceAll(',', ' ')} et feu de ${numeral(round.fire_enemy).format('0,000,000,000,000').replaceAll(',', ' ')}. Le bouclier bloque ${numeral(round.shield_enemy).format('0,000,000,000,000').replaceAll(',', ' ')} points de dégâts.` : `Le boss a explosé`}</Grid>
                     {round.winner === "Player" && (
                         <Grid
                             item
@@ -205,7 +278,7 @@ const Multiverse = (props) => {
         </Dialog>
     <Box sx={{ minHeight: '600px' }}>
         <Typography sx={{ mb: 1}}>Multivers</Typography>   
-        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Vie : ${starship.life_level} Armes : ${starship.fire_level} Bouclier : ${starship.shield_level}`}</Typography>   
+        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Vie : ${starship.life_level} Armes : ${starship.fire_level} Bouclier : ${starship.shield_level} Vaisseau ${starship.is_built ? 'opérationnel' : 'détruit'}`}</Typography>   
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>   
         <Button onClick={() => addBooster(1)}>Acheter booster</Button> */}
@@ -220,7 +293,10 @@ const Multiverse = (props) => {
                     setPaginTextField(e.target.value)
                 }
             }/>
-                <Table sx={{ minWidth: 700 }}>
+            <Button onClick={() => handlePlanetsToDisplay('discovered')}>Découvertes</Button>
+            <Button onClick={() => handlePlanetsToDisplay('notDiscovered')}>Non Découvertes</Button>
+            <Button onClick={() => handlePlanetsToDisplay('all')}>Toutes</Button>
+                <Table sx={{ minWidth: 700, minHeight: 400 }}>
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ p: 1 }}>
@@ -308,7 +384,7 @@ const Multiverse = (props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {planetsMultiverse.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage).map((planet, idx) => (
+                    {planetsToDisplay.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage).map((planet, idx) => (
                       <TableRow hover key={planet.id}>
                         <TableCell  sx={{ p: 0 }}>
                           <Box
@@ -466,7 +542,7 @@ const Multiverse = (props) => {
                 </Table>
               <TablePagination
                 component="div"
-                count={501}
+                count={planetsNumber}
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleLimitChange}
                 page={pagin}

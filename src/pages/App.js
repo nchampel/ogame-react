@@ -22,6 +22,9 @@ function App() {
   const [starship, setStarship] = useState({life_level: 1, fire_level: 1, shield_level: 1, is_built: false})
   const [resourcesSearch, setResourcesSearch] = useState({life: 100, fire: 50, shield: 20})
   const [resourcesNeeded, setResourcesNeeded] = useState({metal: 0, crystal: 0, deuterium: 0})
+  const [planetsDiscovered, setPlanetsDiscovered] = useState([])
+  const [planetsNotDiscovered, setPlanetsNotDiscovered] = useState([])
+  // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
   // const tdeuterium = 40
 
@@ -35,7 +38,7 @@ function App() {
         const dataPlanets = await planetsApi.getPlanetsData()
         const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData()
         const dataStarship = await starshipApi.getStarshipData()
-        console.log(dataPlanetsMultiverse)
+        // console.log(dataPlanetsMultiverse)
         // const dataBuildingsResources = await planetApi.getBuildingsResources()
         if (isMounted()) {
         setResources(dataResources);
@@ -54,7 +57,11 @@ function App() {
           dataPlanets[idx]['cost'] = Math.round((metal + crystal + deuterium) / 10)
         })
         setPlanets(dataPlanets)
-        setPlanetsMultiverse(dataPlanetsMultiverse)
+        setPlanetsMultiverse(dataPlanetsMultiverse.all)
+        setPlanetsDiscovered(dataPlanetsMultiverse.discovered)
+        setPlanetsNotDiscovered(dataPlanetsMultiverse.not_discovered)
+        // setPlanetsDiscoveredNumber(501 - dataPlanetsMultiverse.not_discovered.length)
+        // console.log(dataPlanetsMultiverse.discovered)
         const buildingsResourcesTemp = {
             metal: {
                 metal: Math.round(60 * Math.pow(1.5, dataBuildings.metal - 1)),
@@ -155,13 +162,13 @@ const addResourcesPlanets = () => {
 const addResourcesPlanetsMultiverse = () => {
   const resourcesTemp = [...planetsMultiverse]
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
-  planets.forEach((planet, index) => {
+  planetsMultiverse.forEach((_, index) => {
     resourcesTemp[index]['metal'] += Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 60)
     resourcesTemp[index]['crystal'] += Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 60)
     resourcesTemp[index]['deuterium'] += Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
   })
   setPlanetsMultiverse(resourcesTemp)
-  // saveResourcesPlanetsMultiverse(resourcesTemp)
+  saveResourcesPlanetsMultiverse(resourcesTemp)
 }
 
 
@@ -217,6 +224,10 @@ useEffect(() => {
                     setResourcesSearch={setResourcesSearch}
                     resourcesNeeded={resourcesNeeded}
                     setResourcesNeeded={setResourcesNeeded}
+                    planetsDiscovered={planetsDiscovered}
+                    setPlanetsDiscovered={setPlanetsDiscovered}
+                    planetsNotDiscovered={planetsNotDiscovered}
+                    setPlanetsNotDiscovered={setPlanetsNotDiscovered}
                   />
                 }
               />
