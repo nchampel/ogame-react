@@ -193,6 +193,7 @@ const Dashboard = (props) => {
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center'}}>
                 <Typography>Créer</Typography>
                 <Box>
+                    <Button onClick={() => buildSatellites(1)}>1 satellite</Button>
                     <Button onClick={() => buildSatellites(10)}>10 satellites</Button>
                     <Button onClick={() => buildSatellites(100)}>100 satellites</Button>
                     <Button onClick={() => buildSatellites(1000)}>1000 satellites</Button>

@@ -13,7 +13,7 @@ const Reinitialization = () => {
 
     const reinitialization = useCallback(async () => {
         try {
-            await planetApi.saveLevelSearch(2)
+            await planetApi.reinitialization(2)
             // setBooster(boosterData)
         } catch (err) {
             console.error(err);

@@ -12,6 +12,7 @@ const Multiverse = (props) => {
     const [resultsToDisplay, setResultsToDisplay] = useState([])
     const [planetsToDisplay, setPlanetsToDisplay] = useState(planetsDiscovered)
     const [planetsNumber, setPlanetsNumber] = useState(planetsDiscovered.length)
+    const [resourcesRobbed, setResourcesRobbed] = useState({metal: 0, crystal: 0, deuterium: 0})
 
     const saveResources = useCallback(async (resources) => {
         try {
@@ -41,6 +42,12 @@ const Multiverse = (props) => {
       planetsDiscoveredTemp[0].crystal = 0
       planetsDiscoveredTemp[0].deuterium = 0
       setPlanetsDiscovered(planetsDiscoveredTemp)
+      const resourcesRobbedTemp = {...resourcesRobbed}
+      resourcesRobbedTemp.metal = planet.metal
+      resourcesRobbedTemp.crystal = planet.crystal
+      resourcesRobbedTemp.deuterium = planet.deuterium
+      setResourcesRobbed(resourcesRobbedTemp)
+      setOpenRob(true)
 
       // const planetsNotDiscoveredTemp = [...planetsNotDiscovered]
       // planetsNotDiscoveredTemp[0].metal = 0
@@ -50,7 +57,7 @@ const Multiverse = (props) => {
 
   };
 
-    const getResultsAttack = useCallback(async (planet, idx) => {
+    const getResultsAttack = useCallback(async (planet, planetsDiscoveredTemp) => {
       try {
           const dataResults = await planetsApi.getResultsAttack(planet, starship, resources)
           setResults(dataResults)
@@ -59,7 +66,7 @@ const Multiverse = (props) => {
             starshipTemp.is_built = false
             setStarship(starshipTemp)
           } else {
-            handleResourcesRobbed(planet, idx)
+            handleResourcesRobbed(planet, planetsDiscoveredTemp)
           }
         } catch (err) {
           console.error(err);
@@ -86,17 +93,22 @@ const Multiverse = (props) => {
     const [pagin, setPagin] = useState(0);
     const [paginTextField, setPaginTextField] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [open, setOpen] = useState(false)
+    const [openFight, setOpenFight] = useState(false)
+    const [openRob, setOpenRob] = useState(false)
     const [type, setType] = useState('discovered')
 
-    const handleClose = () => {
-      setOpen(false);
+    const handleCloseFight = () => {
+      setOpenFight(false);
       setResultsToDisplay([]);
       setCounter(1);
   };
 
+  const handleCloseRob = () => {
+    setOpenRob(false);;
+};
+
   const handleViewResults = () => {
-    setOpen(true);
+    setOpenFight(true);
 };
 
     const handlePageChange = (_, newPage) => {
@@ -135,7 +147,7 @@ const Multiverse = (props) => {
             SaveDiscoveredPlanet(planet.id)
           }
           if (planet.type === 'ennemi' || planet.type === 'boss'){
-            getResultsAttack(planet, idx)
+            getResultsAttack(planet, planetsDiscoveredTemp)
             handleViewResults()
           } else {
             handleResourcesRobbed(planet, planetsDiscoveredTemp)
@@ -149,7 +161,7 @@ const Multiverse = (props) => {
       useEffect(() => {
         // getData(energyInfos);
             const timer = setInterval(() => {
-                if (counter <= results.length && open) {
+                if (counter <= results.length && openFight) {
                     // setResultsToDisplay([]);
                     const tempResults = [];
                     // tempResults = [...resultsToDisplay];
@@ -203,14 +215,18 @@ const Multiverse = (props) => {
         // setPagin(0)
       }
     }, [planetsDiscovered])
+
+    // useEffect(() => {
+    //   console.log(resourcesRobbed)
+    // }, [resourcesRobbed])
     
     return (
     <>
     <Dialog
-        open={open}
+        open={openFight}
         // TransitionComponent={Transition}
         keepMounted
-        onClose={handleClose}
+        onClose={handleCloseFight}
         aria-describedby="alert-dialog-slide-description"
         fullWidth
         maxWidth="xl"
@@ -251,6 +267,7 @@ const Multiverse = (props) => {
                             }}
                         >
                             Combat gagné !
+                            {`Vous avez gagné ${numeral(round.metal).format('0,000,000,000,000').replaceAll(',', ' ')} métal, ${numeral(round.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} cristal, ${numeral(round.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} deutérium`}
                         </Grid>
                     )}
                     {round.winner === "Enemy" && (
@@ -271,7 +288,39 @@ const Multiverse = (props) => {
             </Grid>
         </DialogContent>
         <DialogActions>
-            <Button onClick={handleClose} style={{ color: "white" }}>
+            <Button onClick={handleCloseFight} style={{ color: "white" }}>
+                OK
+            </Button>
+        </DialogActions>
+        </Dialog>
+        <Dialog
+        open={openRob}
+        // TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseRob}
+        aria-describedby="alert-dialog-slide-description"
+        fullWidth
+        maxWidth="xl"
+        PaperProps={{
+            style: {
+                backgroundColor: "#434A54",
+                color: "white",
+            },
+        }}
+        >
+        <DialogTitle>Résultats</DialogTitle>
+        <DialogContent>
+        
+                
+          <Typography
+              
+          >
+              {`Vous avez gagné ${numeral(resourcesRobbed.metal).format('0,000,000,000,000').replaceAll(',', ' ')} métal, ${numeral(resourcesRobbed.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} cristal, ${numeral(resourcesRobbed.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} deutérium`}
+          </Typography>
+                    
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleCloseRob} style={{ color: "white" }}>
                 OK
             </Button>
         </DialogActions>
