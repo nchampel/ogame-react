@@ -8,14 +8,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Buildings = (props) => {
     // const isMounted = useMounted();
-    const { buildingsResources, buildings, isAuthenticated } = props
+    const { buildingsResources, buildings } = props
     // console.log(buildingsResources.metal)
     
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
     
     return (
     <>
