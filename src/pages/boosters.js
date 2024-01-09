@@ -2,12 +2,19 @@ import { Box, Button, Typography } from "@mui/material";
 import numeral from 'numeral';
 import { useCallback } from "react";
 import { planetApi } from "../api/planet-api";
+import { useNavigate } from "react-router-dom";
 
 const Boosters = (props) => {
     // const isMounted = useMounted();
-    const { resources, setResources, booster, setBooster } = props
+    const { resources, setResources, booster, setBooster, isAuthenticated } = props
     // const [resources, setResources] = useState({metal: 0, crystal: 0, deuterium: 0, energy: 0})
     // console.log(buildingsResources.metal)
+
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate(`/login`)
+    }
 
     const saveResources = useCallback(async (resources) => {
         try {

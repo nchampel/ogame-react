@@ -3,11 +3,18 @@ import numeral from 'numeral';
 import { useCallback } from "react";
 import { planetApi } from "../api/planet-api";
 import { starshipApi } from "../api/starship-api";
+import { useNavigate } from "react-router-dom";
 
 const Search = (props) => {
     // const isMounted = useMounted();
     const { resources, setResources, starship, setStarship, resourcesSearch, setResourcesSearch, resourcesNeeded,
-    setResourcesNeeded } = props
+    setResourcesNeeded, isAuthenticated } = props
+
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate(`/login`)
+    }
 
     const saveResources = useCallback(async (resources) => {
         try {

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { planetApi } from '../api/planet-api';
 import { planetsApi } from '../api/planets-api';
 import { starshipApi } from '../api/starship-api';
+import Login from './login';
 
 function App() {
   const isMounted = useMounted();
@@ -24,6 +25,7 @@ function App() {
   const [resourcesNeeded, setResourcesNeeded] = useState({metal: 0, crystal: 0, deuterium: 0})
   const [planetsDiscovered, setPlanetsDiscovered] = useState([])
   const [planetsNotDiscovered, setPlanetsNotDiscovered] = useState([])
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
   // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
   // const tdeuterium = 40
@@ -34,7 +36,7 @@ function App() {
     try {
         const dataResources = await planetApi.getResources()
         const dataBuildings = await planetApi.getBuildings()
-        const boosterCost = await planetApi.getBoosterCost(dataBuildings.booster)
+        const boosterCost = await planetApi.getBoosterCost(dataResources.booster)
         const dataPlanets = await planetsApi.getPlanetsData()
         const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData()
         const dataStarship = await starshipApi.getStarshipData()
@@ -49,8 +51,8 @@ function App() {
         })
         setStarship({life_level: dataStarship.life_level, fire_level: dataStarship.fire_level,
           shield_level: dataStarship.shield_level, is_built: dataStarship.is_built})
-        setBooster({coefficient: dataBuildings.booster, cost: boosterCost})
-        dataPlanets.forEach((planet, idx) => {
+        setBooster({coefficient: dataResources.booster, cost: boosterCost})
+        dataPlanets.forEach((_, idx) => {
           const metal = dataPlanets[idx]['metal']
           const crystal = dataPlanets[idx]['crystal']
           const deuterium = dataPlanets[idx]['deuterium']
@@ -68,21 +70,21 @@ function App() {
                 crystal: Math.round(15 * Math.pow(1.5, dataBuildings.metal - 1)),
                 energy: Math.round(10 * (dataBuildings.metal) * Math.pow(1.1, dataBuildings.metal)),
                 next_energy: Math.round(10 * (dataBuildings.metal + 1) * Math.pow(1.1, (dataBuildings.metal + 1))),
-                production: dataBuildings.booster * Math.round(30 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal))
+                production: dataResources.booster * Math.round(30 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal))
             },
             crystal: {
                 metal: Math.round(48 * Math.pow(1.6, dataBuildings.crystal - 1)),
                 crystal: Math.round(24 * Math.pow(1.6, dataBuildings.crystal - 1)),
                 energy: Math.round(10 * (dataBuildings.crystal) * Math.pow(1.1, dataBuildings.crystal)),
                 next_energy: Math.round(10 * (dataBuildings.crystal + 1) * Math.pow(1.1, (dataBuildings.crystal + 1))),
-                production: dataBuildings.booster * Math.round(20 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal))
+                production: dataResources.booster * Math.round(20 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal))
             },
             deuterium: {
                 metal: Math.round(225 * Math.pow(1.5, dataBuildings.deuterium - 1)),
                 crystal: Math.round(75 * Math.pow(1.5, dataBuildings.deuterium - 1)),
                 energy: Math.round(10 * (dataBuildings.deuterium) * Math.pow(1.1, dataBuildings.deuterium)),
                 next_energy: Math.round(20 * (dataBuildings.deuterium + 1) * Math.pow(1.1, (dataBuildings.deuterium + 1))),
-                production: dataBuildings.booster * Math.round(10 * dataBuildings.deuterium * Math.pow(1.1, dataBuildings.deuterium))
+                production: dataResources.booster * Math.round(10 * dataBuildings.deuterium * Math.pow(1.1, dataBuildings.deuterium))
             },
             energy: {
                 metal: Math.round(60 * Math.pow(1.5, dataBuildings.energy - 1)),
@@ -192,14 +194,17 @@ useEffect(() => {
       
       <BrowserRouter>
         <div style={{ display: "flex" }}>
-          <Sidebar />
+          {isAuthenticated && <Sidebar />}
           <Routes>
+          <Route path={"/login"} element={<Login setIsAuthenticated={setIsAuthenticated} />}></Route>
+          
           {routes.map((route) => (
               <Route
                 key={route.path}
                 path={route.path}
                 element={
                   <route.element
+                    isAuthenticated={isAuthenticated}
                     resources={resources}
                     setResources={setResources}
                     buildings={buildings}

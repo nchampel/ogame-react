@@ -4,15 +4,23 @@ import { useCallback, useEffect, useState } from "react";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import { planetsApi } from "../api/planets-api";
 import { planetApi } from "../api/planet-api";
+import { useNavigate } from "react-router-dom";
 
 const Multiverse = (props) => {
     const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starship, setStarship,
-    planetsDiscovered, setPlanetsDiscovered, planetsNotDiscovered, setPlanetsNotDiscovered } = props
+    planetsDiscovered, setPlanetsDiscovered, planetsNotDiscovered, setPlanetsNotDiscovered,
+    isAuthenticated } = props
     const [results, setResults] = useState([])
     const [resultsToDisplay, setResultsToDisplay] = useState([])
     const [planetsToDisplay, setPlanetsToDisplay] = useState(planetsDiscovered)
     const [planetsNumber, setPlanetsNumber] = useState(planetsDiscovered.length)
     const [resourcesRobbed, setResourcesRobbed] = useState({metal: 0, crystal: 0, deuterium: 0})
+
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate(`/login`)
+    }
 
     const saveResources = useCallback(async (resources) => {
         try {

@@ -3,13 +3,19 @@ import {
     Typography
   } from '@mui/material';
   import numeral from 'numeral';
+import { useNavigate } from 'react-router-dom';
 
 
 const Buildings = (props) => {
     // const isMounted = useMounted();
-    const { buildingsResources, buildings } = props
+    const { buildingsResources, buildings, isAuthenticated } = props
     // console.log(buildingsResources.metal)
     
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate(`/login`)
+    }
     
     return (
     <>

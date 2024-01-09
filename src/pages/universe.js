@@ -4,13 +4,20 @@ import { useCallback, useEffect, useState } from "react";
 import { planetApi } from "../api/planet-api";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import { planetsApi } from "../api/planets-api";
+import { useNavigate } from "react-router-dom";
 // import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport, frFR } from "@mui/x-data-grid";
 
 const Universe = (props) => {
     // const isMounted = useMounted();
-    const { resources, setResources, planets, setPlanets } = props
+    const { resources, setResources, planets, setPlanets, isAuthenticated } = props
     // const [resources, setResources] = useState({metal: 0, crystal: 0, deuterium: 0, energy: 0})
     // console.log(buildingsResources.metal)
+
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate(`/login`)
+    }
 
     const saveResources = useCallback(async (resources) => {
       try {

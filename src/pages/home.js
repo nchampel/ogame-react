@@ -8,11 +8,18 @@ import { useCallback, useEffect } from 'react';
 import numeral from 'numeral';
 import { planetApi } from '../api/planet-api';
 import Buildings from '../components/buildings';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = (props) => {
     const { resources, setResources, buildings, setBuildings, usedEnergy, setUsedEnergy,
         remainingEnergy, setRemainingEnergy, energy, setEnergy, buildingsResources, setBuildingsResources,
-    booster, planets, setPlanets, starship} = props
+    booster, planets, setPlanets, starship, isAuthenticated} = props
+
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate(`/login`)
+    }
 
     const saveResources = useCallback(async (resources) => {
         try {
@@ -158,7 +165,8 @@ const Dashboard = (props) => {
     //   }, [resources]);
     
     return (
-    <Box sx={{ minHeight: '600px' }}>
+        <>{isAuthenticated ? (
+            <Box sx={{ minHeight: '600px' }}>
         <Typography sx={{ mb: 1}}>Bienvenue</Typography>
         <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(remainingEnergy).format('0,000,000,000,000').replaceAll(',', ' ')} / ${numeral(energy).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
         <Buildings buildingsResources={buildingsResources} buildings={buildings} />
@@ -201,6 +209,8 @@ const Dashboard = (props) => {
             </Box>
         </Card>
     </Box>
+        ) : ( <Typography>Il faut être connecté</Typography>)}</>
+    
 )}
 
 export default Dashboard;
