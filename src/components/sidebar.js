@@ -14,10 +14,10 @@ const Sidebar = () => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          marginRight: '20px'
         }}
       >
-        <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/">Constructions</Link>
+        <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/">Explications</Link>
+        <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/build">Constructions</Link>
         <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/search">Recherche</Link>
         <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/boosters">Boosters</Link>
         <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/universe">Univers</Link>

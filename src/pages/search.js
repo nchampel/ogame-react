@@ -114,6 +114,19 @@ const Search = (props) => {
             }
       }
 
+      const SearchCard = ({ title, type }) => {
+        return (
+          <Card sx={{ marginTop: '15px' }}>
+            {/* <Typography>{`${title} : ${buildings[type]}`}</Typography>
+            <Typography>{`${numeral(buildingsResources[type]['production']).format('0,000,000,000,000').replaceAll(',', ' ')} /h`}</Typography>
+            <Typography>{`Métal : ${numeral(buildingsResources[type]['metal']).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(buildingsResources[type]['crystal']).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(buildingsResources[type]['next_energy'] - buildingsResources[type]['energy']).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
+            <Button onClick={() => addLevel(type, buildings[type])}>
+              Construire
+            </Button> */}
+          </Card>
+        );
+      };
+
     return (
     <Box sx={{ minHeight: '600px' }}>
         <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>   

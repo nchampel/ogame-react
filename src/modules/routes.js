@@ -1,13 +1,18 @@
 import Boosters from "../pages/boosters";
-import Dashboard from "../pages/home";
+import Dashboard from "../pages/dashboard";
+import Home from "../pages/home";
 import Multiverse from "../pages/multiverse";
 import Reinitialization from "../pages/reinitialization";
 import Search from "../pages/search";
 import Universe from "../pages/universe";
 
 const routes = [
+  {
+    path: '/',
+    element: Home
+  },
     {
-      path: '/',
+      path: '/build',
       element: Dashboard
     },
     {

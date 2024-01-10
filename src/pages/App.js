@@ -8,6 +8,7 @@ import { planetApi } from '../api/planet-api';
 import { planetsApi } from '../api/planets-api';
 import { starshipApi } from '../api/starship-api';
 import Login from './login';
+import { Box, Grid } from '@mui/material';
 
 function App() {
   const isMounted = useMounted();
@@ -70,21 +71,21 @@ function App() {
                 crystal: Math.round(15 * Math.pow(1.5, dataBuildings.metal - 1)),
                 energy: Math.round(10 * (dataBuildings.metal) * Math.pow(1.1, dataBuildings.metal)),
                 next_energy: Math.round(10 * (dataBuildings.metal + 1) * Math.pow(1.1, (dataBuildings.metal + 1))),
-                production: dataResources.booster * Math.round(30 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal))
+                production: 8 * dataResources.booster * Math.round(30 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal))
             },
             crystal: {
                 metal: Math.round(48 * Math.pow(1.6, dataBuildings.crystal - 1)),
                 crystal: Math.round(24 * Math.pow(1.6, dataBuildings.crystal - 1)),
                 energy: Math.round(10 * (dataBuildings.crystal) * Math.pow(1.1, dataBuildings.crystal)),
                 next_energy: Math.round(10 * (dataBuildings.crystal + 1) * Math.pow(1.1, (dataBuildings.crystal + 1))),
-                production: dataResources.booster * Math.round(20 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal))
+                production: 8 * dataResources.booster * Math.round(20 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal))
             },
             deuterium: {
                 metal: Math.round(225 * Math.pow(1.5, dataBuildings.deuterium - 1)),
                 crystal: Math.round(75 * Math.pow(1.5, dataBuildings.deuterium - 1)),
                 energy: Math.round(10 * (dataBuildings.deuterium) * Math.pow(1.1, dataBuildings.deuterium)),
                 next_energy: Math.round(20 * (dataBuildings.deuterium + 1) * Math.pow(1.1, (dataBuildings.deuterium + 1))),
-                production: dataResources.booster * Math.round(10 * dataBuildings.deuterium * Math.pow(1.1, dataBuildings.deuterium))
+                production: 8 * dataResources.booster * Math.round(10 * dataBuildings.deuterium * Math.pow(1.1, dataBuildings.deuterium))
             },
             energy: {
                 metal: Math.round(60 * Math.pow(1.5, dataBuildings.energy - 1)),
@@ -192,9 +193,13 @@ useEffect(() => {
   return (
     <div className="App">
       
-      <BrowserRouter>
-        <div style={{ display: "flex" }}>
-          {isAuthenticated && <Sidebar />}
+      {/* <BrowserRouter> */}
+        {/* <div style={{ display: "flex" }}> */}
+          <Grid container sx={{ alignItems: "center", justifyContent: "center"}}>
+          <Grid item md={2}>
+            {isAuthenticated && <Sidebar />}</Grid>
+          <Grid item md={10}>
+          {/* <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}> */}
           <Routes>
           <Route path={"/login"} element={<Login setIsAuthenticated={setIsAuthenticated} />}></Route>
           
@@ -238,8 +243,12 @@ useEffect(() => {
               />
             ))}
           </Routes>
-        </div>
-      </BrowserRouter>
+          </Grid>
+          {/* </Box> */}
+          </Grid>
+        {/* </div> */}
+
+      {/* </BrowserRouter> */}
     </div>
   );
 }
