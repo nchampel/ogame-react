@@ -10,6 +10,7 @@ import { starshipApi } from '../api/starship-api';
 import Login from './login';
 import { Box, Grid, Typography } from '@mui/material';
 import numeral from 'numeral';
+import { searchApi } from '../api/search-api';
 
 function App() {
   const isMounted = useMounted();
@@ -22,11 +23,12 @@ function App() {
   const [booster, setBooster] = useState({coefficient: 1, cost: 10000})
   const [planets, setPlanets] = useState([])
   const [planetsMultiverse, setPlanetsMultiverse] = useState([])
-  const [starship, setStarship] = useState({life_level: 1, fire_level: 1, shield_level: 1, is_built: false})
+  const [starship, setStarship] = useState({is_built: false})
   const [resourcesSearch, setResourcesSearch] = useState({life: 100, fire: 50, shield: 20})
   const [resourcesNeeded, setResourcesNeeded] = useState({metal: 0, crystal: 0, deuterium: 0})
   const [planetsDiscovered, setPlanetsDiscovered] = useState([])
   const [planetsNotDiscovered, setPlanetsNotDiscovered] = useState([])
+  const [searchLevels, setSearchLevels] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(true)
   // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
@@ -42,17 +44,26 @@ function App() {
         const dataPlanets = await planetsApi.getPlanetsData()
         const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData()
         const dataStarship = await starshipApi.getStarshipData()
-        // console.log(dataPlanetsMultiverse)
+        const dataSearch = await searchApi.getSearchData()
+        console.log(dataSearch)
         // const dataBuildingsResources = await planetApi.getBuildingsResources()
         if (isMounted()) {
         setResources(dataResources);
         setBuildings(dataBuildings)
-        setResourcesSearch({life: 100 * Math.pow(2, dataStarship.life_level - 1),
-          fire: 50 * Math.pow(2, dataStarship.fire_level - 1),
-          shield: 20 * Math.pow(2, dataStarship.shield_level - 1),
+        setResourcesSearch({
+          life: {'metal': dataSearch.life.metal * Math.pow(2, dataSearch.life.level - 1),
+          'crystal': dataSearch.life.crystal * Math.pow(2, dataSearch.life.level - 1),
+          'deuterium': dataSearch.life.deuterium * Math.pow(2, dataSearch.life.level - 1)},
+          fire: {'metal': dataSearch.life.metal * Math.pow(2, dataSearch.fire.level - 1),
+          'crystal': dataSearch.fire.crystal * Math.pow(2, dataSearch.fire.level - 1),
+          'deuterium': dataSearch.fire.deuterium * Math.pow(2, dataSearch.fire.level - 1)},
+          shield: {'metal': dataSearch.shield.metal * Math.pow(2, dataSearch.shield.level - 1),
+          'crystal': dataSearch.shield.crystal * Math.pow(2, dataSearch.shield.level - 1),
+          'deuterium': dataSearch.shield.deuterium * Math.pow(2, dataSearch.shield.level - 1)},
         })
-        setStarship({life_level: dataStarship.life_level, fire_level: dataStarship.fire_level,
-          shield_level: dataStarship.shield_level, is_built: dataStarship.is_built})
+        setStarship({is_built: dataStarship.is_built})
+          setSearchLevels({life_level: dataSearch.life.level, fire_level: dataSearch.fire.level,
+            shield_level: dataSearch.shield.level, })
         setBooster({coefficient: dataResources.booster, cost: boosterCost})
         dataPlanets.forEach((_, idx) => {
           const metal = dataPlanets[idx]['metal']
@@ -104,8 +115,8 @@ function App() {
         setUsedEnergy(energyMetal + energyCrystal + energyDeuterium)
         setRemainingEnergy(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium + 50 * dataResources.satellites)
         setEnergy(buildingsResourcesTemp.energy.production + 50 * dataResources.satellites)   
-        setResourcesNeeded({'metal': 1000000 * dataStarship.life_level, 'crystal': 1000000 * dataStarship.fire_level,
-                                'deuterium': 1000000 * dataStarship.shield_level})
+        setResourcesNeeded({'metal': 1000000 * dataSearch.life_level, 'crystal': 1000000 * dataSearch.fire_level,
+                                'deuterium': 1000000 * dataSearch.shield_level})
     }
     } catch (err) {
         console.error(err);
@@ -240,6 +251,8 @@ useEffect(() => {
                     setPlanetsDiscovered={setPlanetsDiscovered}
                     planetsNotDiscovered={planetsNotDiscovered}
                     setPlanetsNotDiscovered={setPlanetsNotDiscovered}
+                    searchLevels={searchLevels}
+                    setSearchLevels={setSearchLevels}
                   />
                 }
               />

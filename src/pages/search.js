@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Search = (props) => {
     // const isMounted = useMounted();
     const { resources, setResources, starship, setStarship, resourcesSearch, setResourcesSearch, resourcesNeeded,
-    setResourcesNeeded, isAuthenticated } = props
+    setResourcesNeeded, isAuthenticated, searchLevels, setSearchLevels } = props
 
     const navigate = useNavigate();
 
@@ -38,16 +38,16 @@ const Search = (props) => {
         if (type === 'life_level' && resources['metal'] >= resourcesSearch.life) {
             const resourcesTemp = {...resources}
             resourcesTemp.metal -= resourcesSearch.life
-            const starshipTemp = {...starship}
-            starshipTemp.life_level += 1
-            setStarship(starshipTemp)
+            const searchesTemp = {...searchLevels}
+            searchesTemp.life_level += 1
+            setSearchLevels(searchesTemp)
             const resourcesSearchTemp = {...resourcesSearch}
-            resourcesSearchTemp.life = 100 * Math.pow(2, starshipTemp.life_level - 1)
+            resourcesSearchTemp.life = 100 * Math.pow(2, searchesTemp.life_level - 1)
             setResourcesSearch(resourcesSearchTemp)
 
             setResources(resourcesTemp)
             saveResources(resourcesTemp)
-            saveLevelSearch('life_level', starship.life_level + 1)
+            saveLevelSearch('life', searchLevels.life_level + 1)
 
             const resourcesNeededTemp = {...resourcesNeeded}
             resourcesNeededTemp.metal = 1000000 * (starship.life_level + 1)
@@ -56,16 +56,16 @@ const Search = (props) => {
         if (type === 'fire_level' && resources['crystal'] >= resourcesSearch.fire) {
             const resourcesTemp = {...resources}
             resourcesTemp.crystal -= resourcesSearch.fire
-            const starshipTemp = {...starship}
-            starshipTemp.fire_level += 1
-            setStarship(starshipTemp)
+            const searchesTemp = {...searchLevels}
+            searchesTemp.fire_level += 1
+            setSearchLevels(searchesTemp)
             const resourcesSearchTemp = {...resourcesSearch}
-            resourcesSearchTemp.fire = 50 * Math.pow(2, starshipTemp.fire_level - 1)
+            resourcesSearchTemp.fire = 50 * Math.pow(2, searchesTemp.fire_level - 1)
             setResourcesSearch(resourcesSearchTemp)
 
             setResources(resourcesTemp)
             saveResources(resourcesTemp)
-            saveLevelSearch('fire_level', starship.fire_level + 1)
+            saveLevelSearch('fire', searchLevels.fire_level + 1)
 
             const resourcesNeededTemp = {...resourcesNeeded}
             resourcesNeededTemp.crystal = 1000000 * (starship.fire_level + 1)
@@ -74,19 +74,19 @@ const Search = (props) => {
         if (type === 'shield_level' && resources['deuterium'] >= resourcesSearch.shield) {
             const resourcesTemp = {...resources}
             resourcesTemp.deuterium -= resourcesSearch.shield
-            const starshipTemp = {...starship}
-            starshipTemp.shield_level += 1
-            setStarship(starshipTemp)
+            const searchesTemp = {...starship}
+            searchesTemp.shield_level += 1
+            setSearchLevels(searchesTemp)
             const resourcesSearchTemp = {...resourcesSearch}
-            resourcesSearchTemp.shield = 20 * Math.pow(2, starshipTemp.shield_level - 1)
+            resourcesSearchTemp.shield = 20 * Math.pow(2, searchesTemp.shield_level - 1)
             setResourcesSearch(resourcesSearchTemp)
 
             setResources(resourcesTemp)
             saveResources(resourcesTemp)
-            saveLevelSearch('shield_level', starship.shield_level + 1)
+            saveLevelSearch('shield', starship.shield_level + 1)
 
             const resourcesNeededTemp = {...resourcesNeeded}
-            resourcesNeededTemp.deuterium = 1000000 * (starship.shield_level + 1)
+            resourcesNeededTemp.deuterium = 1000000 * (searchLevels.shield_level + 1)
             setResourcesNeeded(resourcesNeededTemp)
         }
     })
@@ -114,16 +114,17 @@ const Search = (props) => {
             }
       }
 
-      const SearchCard = ({ title, type }) => {
+      const searchCards = [{name: 'Vie', typeLevel: 'life_level'}]
+
+      const SearchCard = ({ search, type }) => {
         return (
-          <Card sx={{ marginTop: '15px' }}>
-            {/* <Typography>{`${title} : ${buildings[type]}`}</Typography>
-            <Typography>{`${numeral(buildingsResources[type]['production']).format('0,000,000,000,000').replaceAll(',', ' ')} /h`}</Typography>
-            <Typography>{`Métal : ${numeral(buildingsResources[type]['metal']).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(buildingsResources[type]['crystal']).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(buildingsResources[type]['next_energy'] - buildingsResources[type]['energy']).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
-            <Button onClick={() => addLevel(type, buildings[type])}>
-              Construire
-            </Button> */}
-          </Card>
+            <Card sx={{
+                marginBottom: '15px',
+                marginTop: '15px'
+                }}>
+                    <Typography>{`${search.name} : ${searchLevels[search.typeLevel]}`}</Typography>
+                    <Typography>{`${numeral(resourcesSearch[type]['metal']).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>
+                </Card>
         );
       };
 
@@ -134,21 +135,21 @@ const Search = (props) => {
         marginBottom: '15px',
         marginTop: '15px'
         }}>
-            <Typography>{`Vie : ${starship.life_level}`}</Typography>
-            <Typography>{`${numeral(resourcesSearch.life).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>
+            <Typography>{`Vie : ${searchLevels.life_level}`}</Typography>
+            <Typography>{`${numeral(resourcesSearch.life.metal).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>
         </Card>
         <Card sx={{
         marginBottom: '15px',
         marginTop: '15px'
         }}>
-            <Typography>{`Armes : ${starship.fire_level}`}</Typography>
+            <Typography>{`Armes : ${searchLevels.fire_level}`}</Typography>
             <Typography>{`${numeral(resourcesSearch.fire).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Cristal`}</Typography>
         </Card>
         <Card sx={{
         marginBottom: '15px',
         marginTop: '15px'
         }}>
-            <Typography>{`Bouclier : ${starship.shield_level}`}</Typography>
+            <Typography>{`Bouclier : ${searchLevels.shield_level}`}</Typography>
             <Typography>{`${numeral(resourcesSearch.shield).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Deutérium`}</Typography>
         </Card>
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
