@@ -5,7 +5,6 @@ import {
     Typography
   } from '@mui/material';
 import { useCallback, useEffect } from 'react';
-import numeral from 'numeral';
 import { planetApi } from '../api/planet-api';
 import Buildings from '../components/buildings';
 import { useNavigate } from 'react-router-dom';
@@ -169,7 +168,7 @@ const Dashboard = (props) => {
     return (
         <>{isAuthenticated ? (
             <Box sx={{ minHeight: '600px' }}>
-        <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(remainingEnergy).format('0,000,000,000,000').replaceAll(',', ' ')} / ${numeral(energy).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
+        
         <Buildings buildingsResources={buildingsResources} buildings={buildings} addLevel={addLevel} />
         
         <Card sx={{

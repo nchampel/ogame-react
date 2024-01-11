@@ -5,6 +5,8 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import { planetsApi } from "../api/planets-api";
 import { planetApi } from "../api/planet-api";
 import { useNavigate } from "react-router-dom";
+import DialogFight from "../components/dialogFight";
+import DialogRob from "../components/dialogRob";
 
 const Multiverse = (props) => {
     const { resources, setResources, planetsMultiverse, setPlanetsMultiverse, starship, setStarship,
@@ -227,119 +229,83 @@ const Multiverse = (props) => {
     // useEffect(() => {
     //   console.log(resourcesRobbed)
     // }, [resourcesRobbed])
+
+    const tableCellHeadTitles = ['Nom', 'Type', 'Vie', 'Armes', 'Bouclier', 'Métal', 'Cristal', 'Deutérium', 'Attaquer']
+
+    const TableCellHead = ({ title }) => {
+      return (
+        <TableCell sx={{ p: 1 }}>
+          <Typography
+          //   sx={{ mx: 3 }}
+            fontWeight="Bold"
+            fontSize={13}
+          >
+            {title}
+          </Typography>
+        </TableCell>
+      );
+    };
+
+    const tableCellRowLevels = ['life_level', 'fire_level', 'shield_level' ]
+    
+    const TableCellRowLevels = ({ planet, level }) => {
+      return (
+      <TableCell sx={{ p: 0 }}>
+        <Box
+          sx={{
+            alignItems: "center",
+            display: "flex",
+          }}
+        >
+          <Box sx={{ ml: 2 }}>
+            <Typography
+              fontSize={12}
+            >
+              {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet[level]}
+            </Typography>
+          </Box>
+          </Box>
+          </TableCell>
+    )}
+    
+    const tableCellRowResources = ['metal', 'crystal', 'deuterium']
+
+    const TableCellRowResources = ({ planet, type }) => {
+      return (
+        <TableCell sx={{ p: 0 }}>
+        <Box
+          sx={{
+            alignItems: "center",
+            display: "flex",
+            // p: 1,
+          }}
+        >
+          <Box>
+            <Typography
+              fontSize={12}
+            >
+              {!planet.is_discovered ? '-' : numeral(planet[type]).format('1,000,000,000,000').replaceAll(',', ' ')}
+            </Typography>
+          </Box>
+        </Box>
+      </TableCell>
+      )}
     
     return (
     <>
-    <Dialog
-        open={openFight}
-        // TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseFight}
-        aria-describedby="alert-dialog-slide-description"
-        fullWidth
-        maxWidth="xl"
-        PaperProps={{
-            style: {
-                backgroundColor: "#434A54",
-                color: "white",
-            },
-        }}
-        >
-        <DialogTitle>Résultats du combat</DialogTitle>
-        <DialogContent>
-        <Grid
-                        container
-                        justifyContent="center"
-                        sx={{
-                            color: "white",
-                            mt: 5,
-                        }}
-                    >
-                {resultsToDisplay.map((round) => (
-                    <>
-                    <Grid
-                        item
-                        xs={12}
-                        align="center"
-                        key={round.round}
-                        sx={{ mb: 1 }}
-                    >{!round.exploded ? `Tour n° ${round.round} Pdv du vaisseau ${numeral(round.life_points_starship).format('0,000,000,000,000').replaceAll(',', ' ')} et feu de ${numeral(round.fire_starship).format('0,000,000,000,000').replaceAll(',', ' ')}. Le bouclier bloque ${numeral(round.shield_starship).format('0,000,000,000,000').replaceAll(',', ' ')} points de dégâts. Pdv de l'ennemi ${numeral(round.life_points_enemy).format('0,000,000,000,000').replaceAll(',', ' ')} et feu de ${numeral(round.fire_enemy).format('0,000,000,000,000').replaceAll(',', ' ')}. Le bouclier bloque ${numeral(round.shield_enemy).format('0,000,000,000,000').replaceAll(',', ' ')} points de dégâts.` : `Le boss a explosé`}</Grid>
-                    {round.winner === "Player" && (
-                        <Grid
-                            item
-                            key="win"
-                            style={{
-                                fontSize: 20,
-                                marginTop: 50,
-                                marginBottom: 50,
-                            }}
-                        >
-                            Combat gagné !
-                            {`Vous avez gagné ${numeral(round.metal).format('0,000,000,000,000').replaceAll(',', ' ')} métal, ${numeral(round.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} cristal, ${numeral(round.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} deutérium`}
-                        </Grid>
-                    )}
-                    {round.winner === "Enemy" && (
-                        <Grid
-                            item
-                            key="lost"
-                            style={{
-                                fontSize: 20,
-                                marginTop: 50,
-                                marginBottom: 50,
-                            }}
-                        >
-                            Combat perdu !
-                        </Grid>
-                    )}
-                </>
-                ))}
-            </Grid>
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={handleCloseFight} style={{ color: "white" }}>
-                OK
-            </Button>
-        </DialogActions>
-        </Dialog>
-        <Dialog
-        open={openRob}
-        // TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseRob}
-        aria-describedby="alert-dialog-slide-description"
-        fullWidth
-        maxWidth="xl"
-        PaperProps={{
-            style: {
-                backgroundColor: "#434A54",
-                color: "white",
-            },
-        }}
-        >
-        <DialogTitle>Résultats</DialogTitle>
-        <DialogContent>
-        
-                
-          <Typography
-              
-          >
-              {`Vous avez gagné ${numeral(resourcesRobbed.metal).format('0,000,000,000,000').replaceAll(',', ' ')} métal, ${numeral(resourcesRobbed.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} cristal, ${numeral(resourcesRobbed.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} deutérium`}
-          </Typography>
-                    
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={handleCloseRob} style={{ color: "white" }}>
-                OK
-            </Button>
-        </DialogActions>
-        </Dialog>
+        <DialogFight 
+        openFight={openFight} 
+        handleCloseFight={handleCloseFight} 
+        resultsToDisplay={resultsToDisplay}
+        />
+        <DialogRob 
+        openRob={openRob} 
+        handleCloseRob={handleCloseRob} 
+        resourcesRobbed={resourcesRobbed}
+        />
     <Box sx={{ minHeight: '600px' }}>
         <Typography sx={{ mb: 1}}>Multivers</Typography>   
-        <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Vie : ${starship.life_level} Armes : ${starship.fire_level} Bouclier : ${starship.shield_level} Vaisseau ${starship.is_built ? 'opérationnel' : 'détruit'}`}</Typography>   
-        {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
-        <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>   
-        <Button onClick={() => addBooster(1)}>Acheter booster</Button> */}
-        
+        <Typography>{`Vie : ${starship.life_level} Armes : ${starship.fire_level} Bouclier : ${starship.shield_level} Vaisseau ${starship.is_built ? 'opérationnel' : 'détruit'}`}</Typography>           
         <Card>
             <TextField value={paginTextField} onChange={
                 (e) => {
@@ -356,88 +322,9 @@ const Multiverse = (props) => {
                 <Table sx={{ minWidth: 700, minHeight: 400 }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Nom
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Type
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Vie
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Armes
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Bouclier
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Métal
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Cristal
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Deutérium
-                        </Typography>
-                      </TableCell>
-                      
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Attaquer
-                        </Typography>
-                      </TableCell>
+                      {tableCellHeadTitles.map((title) => {
+                        return <TableCellHead title={title} />
+                      })}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -478,105 +365,13 @@ const Multiverse = (props) => {
                           </Box>
                         </TableCell>
 
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                              // p: 1,
-                            }}
-                          >
-                            <Box sx={{ ml: 2 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet.life_level}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box sx={{ ml: 2 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet.fire_level}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box sx={{ ml: 2 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {!planet.is_discovered || planet.type === 'ressources' ? '-' : planet.shield_level}
-                              </Typography>
-                            </Box>
-                            </Box>
-                            </TableCell>
+                        {tableCellRowLevels.map((level) => {
+                          return <TableCellRowLevels level={level} planet={planet} />
+                        })}
 
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                              // p: 1,
-                            }}
-                          >
-                            <Box>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {!planet.is_discovered ? '-' : numeral(planet.metal).format('1,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {!planet.is_discovered ? '-' : numeral(planet.crystal).format('1,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box sx={{ ml: 2 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {!planet.is_discovered ? '-' : numeral(planet.deuterium).format('1,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                            </Box>
-                            </TableCell>
+                        {tableCellRowResources.map((resource) => {
+                          return <TableCellRowResources planet={planet} type={resource} />
+                        })}
                             
                         <TableCell sx={{ p: 0 }}>
                             <Box

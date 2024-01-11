@@ -8,7 +8,8 @@ import { planetApi } from '../api/planet-api';
 import { planetsApi } from '../api/planets-api';
 import { starshipApi } from '../api/starship-api';
 import Login from './login';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
+import numeral from 'numeral';
 
 function App() {
   const isMounted = useMounted();
@@ -200,6 +201,7 @@ useEffect(() => {
             {isAuthenticated && <Sidebar />}</Grid>
           <Grid item md={10}>
           {/* <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}> */}
+          <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(remainingEnergy).format('0,000,000,000,000').replaceAll(',', ' ')} / ${numeral(energy).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
           <Routes>
           <Route path={"/login"} element={<Login setIsAuthenticated={setIsAuthenticated} />}></Route>
           

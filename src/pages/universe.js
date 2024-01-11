@@ -71,15 +71,51 @@ const Universe = (props) => {
         saveResourcesPlanets(planetsTemp)
       }
     };
+
+    const tableCellHeadTitles = ['Nom', 'Métal', 'Cristal', 'Deutérium', 'Coût', 'Attaquer']
+
+    const TableCellHead = ({ title }) => {
+      return (
+        <TableCell sx={{ p: 1 }}>
+          <Typography
+          //   sx={{ mx: 3 }}
+            fontWeight="Bold"
+            fontSize={13}
+          >
+            {title}
+          </Typography>
+        </TableCell>
+      );
+    };
+
+    const tableCellRow = ['metal', 'crystal', 'deuterium', 'cost']
+
+    const TableCellRow = ({ planet, type }) => {
+      return (
+      <TableCell  sx={{ p: 0 }}>
+        <Box
+          sx={{
+            alignItems: "center",
+            display: "flex",
+          }}
+        >
+          <Box sx={{ ml: 2 }}>
+              <Typography
+              //   fontWeight="Bold"
+                fontSize={14}
+              >
+                {numeral(planet[type]).format('0,000,000,000,000').replaceAll(',', ' ')}
+              </Typography>
+          </Box>
+        </Box>
+      </TableCell>
+      )
+    }
   
     return (
     <Box sx={{ minHeight: '600px' }}>
         <Typography sx={{ mb: 1}}>Planètes</Typography>
-         <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>   
-        {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
-        <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>   
-        <Button onClick={() => addBooster(1)}>Acheter booster</Button> */}
-        
+         {/* <Typography>{`Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>    */}   
         <Card>
             <TextField value={paginTextField} onChange={
                 (e) => {
@@ -93,65 +129,15 @@ const Universe = (props) => {
                 <Table sx={{ minWidth: 700 }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Nom
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Métal
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Cristal
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Deutérium
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Coût
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{ p: 1 }}>
-                        <Typography
-                        //   sx={{ mx: 3 }}
-                          fontWeight="Bold"
-                          fontSize={13}
-                        >
-                          Attaquer
-                        </Typography>
-                      </TableCell>
+                      {tableCellHeadTitles.map((tableCell) => {
+                        return <TableCellHead title={tableCell} />
+                      })}
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {planets.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage).map((planet, idx) => (
                       <TableRow hover key={planet.id}>
+                        
                         <TableCell  sx={{ p: 0 }}>
                           <Box
                             sx={{
@@ -170,71 +156,10 @@ const Universe = (props) => {
                           </Box>
                         </TableCell>
 
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                              // p: 0,
-                            }}
-                          >
-                            <Box sx={{ ml: 1 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {numeral(planet.metal).format('0,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box sx={{ ml: 1 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {numeral(planet.crystal).format('0,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell sx={{ p: 0 }}>
-                          <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box sx={{ ml: 1 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {numeral(planet.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                            </Box>
-                            </TableCell>
-                            <TableCell sx={{ p: 0 }}>
-                            <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                          >
-                            <Box sx={{ ml: 1 }}>
-                              <Typography
-                                fontSize={12}
-                              >
-                                {numeral(planet.cost).format('0,000,000,000,000').replaceAll(',', ' ')}
-                              </Typography>
-                            </Box>
-                            </Box>
-                        </TableCell>
+                        {tableCellRow.map((type) => {
+                          return <TableCellRow planet={planet} type={type}/>
+                        })}
+
                         <TableCell sx={{ p: 0 }}>
                             <Box
                             sx={{
