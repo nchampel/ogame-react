@@ -5,7 +5,7 @@ function Home() {
     // const navigate = useNavigate();
   return (
     <Box sx={{ minHeight: '600px' }}>
-        <Typography>Bienvenue sur L'unicité Sacrée</Typography>
+        <Typography>Bienvenue sur Lunicité Sacrée</Typography>
         <Typography>Le but est de détruire le boss.</Typography>
         <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/build">Retour au jeu</Link>
     </Box>

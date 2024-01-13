@@ -15,10 +15,10 @@ const routes = [
       path: '/build',
       element: Dashboard
     },
-    {
-      path: '/boosters',
-      element: Boosters
-    },
+    // {
+    //   path: '/boosters',
+    //   element: Boosters
+    // },
     {
       path: '/universe',
       element: Universe
@@ -31,10 +31,10 @@ const routes = [
       path: '/search',
       element: Search
     },
-    {
-      path: '/reinitialization',
-      element: Reinitialization
-    },
+    // {
+    //   path: '/reinitialization',
+    //   element: Reinitialization
+    // },
 ]
 
 export default routes;

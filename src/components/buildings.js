@@ -10,6 +10,8 @@ const Buildings = (props) => {
     // const isMounted = useMounted();
     const { buildingsResources, buildings, addLevel } = props
 
+    // console.log(buildings)
+
     const buildingCardData = [{title: 'Mine de métal', type: 'metal'},
     {title: 'Mine de cristal', type: 'crystal'},
     {title: 'Synthétiseur de deutérium', type: 'deuterium'}]

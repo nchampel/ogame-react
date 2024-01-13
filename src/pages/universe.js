@@ -129,8 +129,8 @@ const Universe = (props) => {
                 <Table sx={{ minWidth: 700 }}>
                   <TableHead>
                     <TableRow>
-                      {tableCellHeadTitles.map((tableCell) => {
-                        return <TableCellHead title={tableCell} />
+                      {tableCellHeadTitles.map((tableCell, idx) => {
+                        return <TableCellHead key={idx} title={tableCell} />
                       })}
                     </TableRow>
                   </TableHead>

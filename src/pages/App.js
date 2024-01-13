@@ -45,7 +45,7 @@ function App() {
         const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData()
         const dataStarship = await starshipApi.getStarshipData()
         const dataSearch = await searchApi.getSearchData()
-        console.log(dataSearch)
+        // console.log(dataSearch)
         // const dataBuildingsResources = await planetApi.getBuildingsResources()
         if (isMounted()) {
         setResources(dataResources);
@@ -164,10 +164,10 @@ const saveResourcesPlanetsMultiverse = useCallback(async (resources) => {
 const addResourcesPlanets = () => {
   const resourcesTemp = [...planets]
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
-  planets.forEach((planet, index) => {
-    resourcesTemp[index]['metal'] += Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 60)
-    resourcesTemp[index]['crystal'] += Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 60)
-    resourcesTemp[index]['deuterium'] += Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
+  planets.forEach((_, index) => {
+    resourcesTemp[index]['metal'] += 8 * Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 60)
+    resourcesTemp[index]['crystal'] += 8 * Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 60)
+    resourcesTemp[index]['deuterium'] += 8 * Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
     resourcesTemp[index]['cost'] = Math.round((resourcesTemp[index]['metal'] + resourcesTemp[index]['crystal'] + resourcesTemp[index]['deuterium']) / 10)
   })
   setPlanets(resourcesTemp)
@@ -178,9 +178,9 @@ const addResourcesPlanetsMultiverse = () => {
   const resourcesTemp = [...planetsMultiverse]
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
   planetsMultiverse.forEach((_, index) => {
-    resourcesTemp[index]['metal'] += Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 60)
-    resourcesTemp[index]['crystal'] += Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 60)
-    resourcesTemp[index]['deuterium'] += Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
+    resourcesTemp[index]['metal'] += 8 * Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 60)
+    resourcesTemp[index]['crystal'] += 8 * Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 60)
+    resourcesTemp[index]['deuterium'] += 8 * Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
   })
   setPlanetsMultiverse(resourcesTemp)
   saveResourcesPlanetsMultiverse(resourcesTemp)

@@ -18,6 +18,8 @@ const Reinitialization = (props) => {
         try {
             await planetApi.reinitialization(2)
             // setBooster(boosterData)
+            // mettre toutes les données réinitilisées dans les useState
+            navigate(`/`)
         } catch (err) {
             console.error(err);
         }
@@ -27,7 +29,7 @@ const Reinitialization = (props) => {
     
     return (
     <Box sx={{ minHeight: '600px' }}>
-        <Typography>Attention au user_id !</Typography>   
+        <Typography>Attention ! La réinitialisation du compte est irréversible !</Typography>   
         
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>    */}

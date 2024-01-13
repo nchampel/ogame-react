@@ -322,8 +322,8 @@ const Multiverse = (props) => {
                 <Table sx={{ minWidth: 700, minHeight: 400 }}>
                   <TableHead>
                     <TableRow>
-                      {tableCellHeadTitles.map((title) => {
-                        return <TableCellHead title={title} />
+                      {tableCellHeadTitles.map((title, idx) => {
+                        return <TableCellHead key={idx} title={title} />
                       })}
                     </TableRow>
                   </TableHead>
@@ -365,12 +365,12 @@ const Multiverse = (props) => {
                           </Box>
                         </TableCell>
 
-                        {tableCellRowLevels.map((level) => {
-                          return <TableCellRowLevels level={level} planet={planet} />
+                        {tableCellRowLevels.map((level, idx) => {
+                          return <TableCellRowLevels key={idx} level={level} planet={planet} />
                         })}
 
-                        {tableCellRowResources.map((resource) => {
-                          return <TableCellRowResources planet={planet} type={resource} />
+                        {tableCellRowResources.map((resource, idx) => {
+                          return <TableCellRowResources key={idx} planet={planet} type={resource} />
                         })}
                             
                         <TableCell sx={{ p: 0 }}>

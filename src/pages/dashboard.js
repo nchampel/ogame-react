@@ -37,6 +37,7 @@ const Dashboard = (props) => {
     }, []);
 
     const addLevel = (type, level) => {
+        // console.log(buildingsResources)
         // on vérifie que les ressources nécessaires sont là
         // console.log(buildingsResources[type]['energy'])
         // console.log(remainingEnergy)
