@@ -6,7 +6,7 @@ function Home() {
   return (
     <Box sx={{ minHeight: '600px' }}>
         <Typography>Bienvenue sur Lunicité Sacrée</Typography>
-        <Typography>Le but est de détruire le boss.</Typography>
+        <Typography>Le but du jeu est de détruire le boss.</Typography>
         <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/build">Retour au jeu</Link>
     </Box>
   );
