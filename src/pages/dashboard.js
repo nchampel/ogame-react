@@ -2,27 +2,28 @@ import {
     Box,
     Button,
     Card,
-    Typography
+    Typography,
+    Link
   } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import { planetApi } from '../api/planet-api';
 import Buildings from '../components/buildings';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 const Dashboard = (props) => {
     const { resources, setResources, buildings, setBuildings, usedEnergy, setUsedEnergy,
         remainingEnergy, setRemainingEnergy, energy, setEnergy, buildingsResources, setBuildingsResources,
     booster, planets, setPlanets, starship, isAuthenticated} = props
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources)
+            await planetApi.saveResources(resources, localStorage.getItem('jwt'))
         } catch (err) {
             console.error(err);
         }
@@ -61,7 +62,7 @@ const Dashboard = (props) => {
             saveLevel(type, level + 1)
             const buildingsTemp = {...buildings}
             buildingsTemp[type] = level + 1
-            console.log(buildingsTemp)
+            // console.log(buildingsTemp)
             setBuildings(buildingsTemp)
         }
         
@@ -172,7 +173,7 @@ const Dashboard = (props) => {
         
         <Buildings buildingsResources={buildingsResources} buildings={buildings} addLevel={addLevel} />
         
-        <Card sx={{
+        {/* <Card sx={{
         marginBottom: '15px'
         }}>
             <Button onClick={() => addResourcesHours(1)}>1 h</Button>
@@ -180,7 +181,7 @@ const Dashboard = (props) => {
             <Button onClick={() => addResourcesHours(10)}>10 h</Button>
             <Button onClick={() => addResourcesHours(24)}>24 h</Button>
             <Button onClick={() => addResourcesHours(48)}>48 h</Button>
-        </Card>
+        </Card> */}
         <Card sx={{
         marginTop: '15px'
         }}>
@@ -195,7 +196,8 @@ const Dashboard = (props) => {
             </Box>
         </Card>
     </Box>
-        ) : ( <Typography>Il faut être connecté</Typography>)}</>
+        ) : ( <><Typography>Il faut être connecté</Typography>
+        <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/login">Se connecter</Link></>)}</>
     
 )}
 

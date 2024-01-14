@@ -8,9 +8,9 @@ const Reinitialization = (props) => {
     const { isAuthenticated } = props
     const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     
 

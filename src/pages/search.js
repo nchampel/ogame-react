@@ -10,11 +10,11 @@ const Search = (props) => {
     const { resources, setResources, starship, setStarship, resourcesSearch, setResourcesSearch, resourcesNeeded,
     setResourcesNeeded, isAuthenticated, searchLevels, setSearchLevels } = props
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     const saveResources = useCallback(async (resources) => {
         try {

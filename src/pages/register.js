@@ -3,51 +3,41 @@ import { ErrorMessage, Formik } from "formik";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { userApi } from "../api/user-api";
-import { useEffect, useState } from "react";
-function Login(props) {
+import { useCallback, useEffect } from "react";
+function Register(props) {
     const { setIsAuthenticated, isAuthenticated } = props
     const navigate = useNavigate();
-    // const [waitJWT, setWaitJWT] = useState(true)
-    // const history = useHistory();
+    if (isAuthenticated) {
+      navigate("build/")
+    }
+    const verifyJWT = useCallback(async () => {
+      try {
+        // let verify = null
+        let jwt = null
+          if (localStorage.getItem("jwt") !== null) {
+              jwt = localStorage.getItem("jwt").replaceAll('"', '')
+          }
+             const verify = await userApi.verifyJWT(jwt)
+             if (verify === 'Authentifié') {
+              setIsAuthenticated(true)
+              navigate("build/")
+             }
+            
+          } catch (err) {
+              console.error(err);
+          }
+      }, []);
 
-    // useEffect(() => {
-    //   console.log('t')
-    //   if(!waitJWT){
-    //     navigate(`/build`) 
-    //   }
-      
-    // },[waitJWT])
-
-    // useEffect(() => {
-    //   console.log('use')
-    //   if (isAuthenticated) {
-    //     navigate("/build");
-    //   }
-    // }, [isAuthenticated]);
-
-    // useEffect(() => {
-    //   const redirectAfterAuthentication = async () => {
-    //     if (isAuthenticated) {
-    //       console.log(isAuthenticated)
-    //       // navigate('/build');
-    //     }
-    //   };
-  
-    //   redirectAfterAuthentication();
-    // }, [isAuthenticated, navigate]);
-    useEffect(() => {
-      console.log("Le useEffect est déclenché. isAuthenticated :", isAuthenticated);
-        if (isAuthenticated) {
-          // console.log(isAuthenticated)
-          navigate('/build');
-        }
-    }, [isAuthenticated]);
+      useEffect(() => {
+        verifyJWT();
+      }, []);
   return (
     <>
     <Formik
-      initialValues={{ pseudo: "", password: "" }}
+      initialValues={{ pseudo: "", password: "", email: "" }}
       validationSchema={Yup.object().shape({
         pseudo: Yup.string().required("Un pseudo doit être saisi"),
+        email: Yup.string().required("Un email doit être saisi"),
         password: Yup.string().required("Un mot de passe doit être saisi"),
       })}
       onSubmit={async (
@@ -56,7 +46,7 @@ function Login(props) {
       ) => {
         try {
             // setIsAuthenticated(true)
-          const jsonAnswer = await userApi.login(
+          const jsonAnswer = await userApi.subscribe(
             values
           );
         //   const data = await apiRef.login(
@@ -64,39 +54,15 @@ function Login(props) {
         //     values
         //   );
         //   console.log(data);
-        // on enregistre le jwt
-
-        if (jsonAnswer.authenticated) {
-          window.localStorage.setItem('jwt', JSON.stringify(jsonAnswer.jwt));
-          setIsAuthenticated(true);
-        }
-        
-        // if (jsonAnswer.authenticated){
-        //   window.localStorage.setItem('jwt', JSON.stringify(jsonAnswer.jwt));
-        //   // setIsAuthenticated(true)
-        //   await new Promise(resolve => {
-        //     setIsAuthenticated(true);
-        //     navigate('/build');
-        //     resolve();
-        //   });
+        if (jsonAnswer === 'Enregistré'){
+            setStatus({ success: true });
+            resetForm({});
+            setSubmitting(false);
+            navigate(`/login`)
           
-          // setWaitJWT(false)
-        //   let jwt = null
-        // if (localStorage.getItem("jwt") !== null) {
-        //     jwt = localStorage.getItem("jwt").replaceAll('"', '')
-        // }
-        //    const verify = await userApi.verifyJWT(jwt)
-        //    console.log(verify)
-        // setTimeout(() => {
-        //     navigate(`/build`);
-        //   }, 2000);
-          // navigate(`/build`)
-        // }
-            
-          setStatus({ success: true });
-          resetForm({});
-          setSubmitting(false);
           // toast.success("Commentaire du commercial enregistré !");
+        }
+            
         } catch (err) {
           console.error(err);
           // toast.error("Il y a eu un souci lors de l'enregistrement !");
@@ -123,21 +89,7 @@ function Login(props) {
             // item
             // xs={2}
             >
-              {/* <Autocomplete
-                    options={qualificationLabel}
-                    onChange={(e, value) => {
-                      handleChangeQualification(value);
-                      setFieldValue(
-                        "choiceQualification",
-                        value !== null ? value : choiceQualification
-                      );
-                    }}
-                    // onChange={handleChangeQualification}
-                    value={values.choiceQualification}
-                    renderInput={(params) => (
-                      
-                    )}
-                  /> */}
+              
               <TextField
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -150,6 +102,24 @@ function Login(props) {
                 helperText={touched.pseudo && errors.pseudo}
               />
             </Grid>
+            {/* <ErrorMessage name="pseudo"></ErrorMessage> */}
+            <Grid
+            // item
+            // xs={2}
+            >
+              <TextField
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.email}
+                fullWidth
+                label="Email"
+                name="email"
+                variant="filled"
+                error={Boolean(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
+              />
+            </Grid>
+            {/* <ErrorMessage name="email"></ErrorMessage> */}
             <Grid
             // item
             // xs={2}
@@ -167,6 +137,7 @@ function Login(props) {
                 helperText={touched.password && errors.password}
               />
             </Grid>
+            {/* <ErrorMessage name="password"></ErrorMessage> */}
             <Grid
             // item
             // xs={1}
@@ -178,17 +149,17 @@ function Login(props) {
                   handleSubmit(); /* setDisplayDateRecall(false); setDisplayError(false); setDisplayRejection(false); */
                 }}
               >
-                Se connecter
+                S'enregistrer
               </Button>
             </Grid>
-            {/* <ErrorMessage name="pseudo"></ErrorMessage> */}
+            
           </Grid>
         </form>
       )}
     </Formik>
-    <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/register">S'inscrire</Link>
+    <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/login">Se connecter</Link>
     </>
   );
 }
 
-export default Login;
+export default Register;

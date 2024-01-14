@@ -18,11 +18,11 @@ const Multiverse = (props) => {
     const [planetsNumber, setPlanetsNumber] = useState(planetsDiscovered.length)
     const [resourcesRobbed, setResourcesRobbed] = useState({metal: 0, crystal: 0, deuterium: 0})
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     const saveResources = useCallback(async (resources) => {
         try {
