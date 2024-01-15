@@ -59,13 +59,13 @@ function App() {
            console.log(verify)
            console.log(isAuthenticated)
         // } 
-        const dataResources = await planetApi.getResources()
-        const dataBuildings = await planetApi.getBuildings()
-        const boosterCost = await planetApi.getBoosterCost(dataResources.booster)
-        const dataPlanets = await planetsApi.getPlanetsData()
-        const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData()
-        const dataStarship = await starshipApi.getStarshipData()
-        const dataSearch = await searchApi.getSearchData()
+        const dataResources = await planetApi.getResources(localStorage.getItem("jwt").replaceAll('"', ''))
+        const dataBuildings = await planetApi.getBuildings(localStorage.getItem("jwt").replaceAll('"', ''))
+        const boosterCost = await planetApi.getBoosterCost(dataResources.booster, localStorage.getItem("jwt").replaceAll('"', ''))
+        const dataPlanets = await planetsApi.getPlanetsData(localStorage.getItem("jwt").replaceAll('"', ''))
+        const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData(localStorage.getItem("jwt").replaceAll('"', ''))
+        const dataStarship = await starshipApi.getStarshipData(localStorage.getItem("jwt").replaceAll('"', ''))
+        const dataSearch = await searchApi.getSearchData(localStorage.getItem("jwt").replaceAll('"', ''))
         // console.log(dataSearch)
         // const dataBuildingsResources = await planetApi.getBuildingsResources()
         if (isMounted()) {
@@ -167,7 +167,7 @@ useEffect(() => {
 
 const saveResources = useCallback(async (resources) => {
   try {
-      await planetApi.saveResources(resources)
+      await planetApi.saveResources(resources, localStorage.getItem('jwt').replaceAll('"', ''))
   } catch (err) {
       console.error(err);
   }
@@ -176,16 +176,16 @@ const saveResources = useCallback(async (resources) => {
 const addResources = () => {
   const resourcesTemp = {...resources}
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
-  resourcesTemp.metal += Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60) === 0 && buildings.metal > 0 ? 1 : booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60)
-  resourcesTemp.crystal += Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 60) === 0 && buildings.crystal > 0 ? 1 : booster.coefficient * Math.round(30 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 60)
-  resourcesTemp.deuterium += Math.round(10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 60) === 0 && buildings.deuterium > 0 ? 1 : booster.coefficient * Math.round(30 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 60)
+  resourcesTemp.metal += 8 * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60) === 0 && buildings.metal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60)
+  resourcesTemp.crystal += 8 * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 60) === 0 && buildings.crystal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 60)
+  resourcesTemp.deuterium += 8 * Math.round(10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 60) === 0 && buildings.deuterium > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 60)
   setResources(resourcesTemp)
   saveResources(resourcesTemp)
 }
 
 const saveResourcesPlanets = useCallback(async (planets) => {
   try {
-      await planetsApi.saveResourcesPlanets(planets)
+      await planetsApi.saveResourcesPlanets(planets, localStorage.getItem("jwt").replaceAll('"', ''))
   } catch (err) {
       console.error(err);
   }
@@ -193,7 +193,7 @@ const saveResourcesPlanets = useCallback(async (planets) => {
 
 const saveResourcesPlanetsMultiverse = useCallback(async (resources) => {
   try {
-      await planetsApi.saveResourcesPlanetsMultiverse(resources)
+      await planetsApi.saveResourcesPlanetsMultiverse(resources, localStorage.getItem("jwt").replaceAll('"', ''))
   } catch (err) {
       console.error(err);
   }
@@ -229,9 +229,9 @@ const addResourcesPlanetsMultiverse = () => {
 useEffect(() => {
   const timer = setInterval(() => {
       addResources();
-      addResourcesPlanets();
-      addResourcesPlanetsMultiverse();
-  }, 60000);
+      // addResourcesPlanets();
+      // addResourcesPlanetsMultiverse();
+  }, 10000);
   // 60000 en temps normal
   return () => {
       // Each time a new useEffect is executed, the previous useEffect will be cleaned up

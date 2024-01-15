@@ -1,6 +1,6 @@
 class PlanetApi {
 
-    async getResources() {
+    async getResources(accessToken) {
         const data = {};
         // data.energy = energy;
         // let formData = new FormData();
@@ -12,7 +12,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -26,7 +27,7 @@ class PlanetApi {
         return json;
     }
 
-    async getBuildings() {
+    async getBuildings(accessToken) {
         const data = {};
                 
         const url = `${process.env.REACT_APP_BACK}/buildings/get/`
@@ -36,7 +37,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                // 'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -51,7 +53,7 @@ class PlanetApi {
     }
 
     // pas utilisé
-    async getBuildingsResources() {
+    async getBuildingsResources(accessToken) {
         const data = {};
                 
         const url = `${process.env.REACT_APP_BACK}/buildings-resources/get/`
@@ -61,7 +63,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                // 'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -100,7 +103,7 @@ class PlanetApi {
         return json;
     }
 
-    async saveLevel(type, level) {
+    async saveLevel(type, level, accessToken) {
         const data = { type, level };
                 
         const url = `${process.env.REACT_APP_BACK}/level/save/`
@@ -110,7 +113,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -124,7 +128,7 @@ class PlanetApi {
         return json;
     }
 
-    async getBoosterCost(coefficient) {
+    async getBoosterCost(coefficient, accessToken) {
         const data = { coefficient };
                 
         const url = `${process.env.REACT_APP_BACK}/booster/cost/get/`
@@ -134,7 +138,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -148,7 +153,7 @@ class PlanetApi {
         return json;
     }
 
-    async saveLevelBooster(coefficient) {
+    async saveLevelBooster(coefficient, accessToken) {
         const data = { coefficient };
                 
         const url = `${process.env.REACT_APP_BACK}/booster/coefficient/save/`
@@ -158,7 +163,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -172,7 +178,7 @@ class PlanetApi {
         return json;
     }
     
-    async saveLevelSearch(type, level) {
+    async saveLevelSearch(type, level, accessToken) {
         const data = { type, level };
                 
         const url = `${process.env.REACT_APP_BACK}/search/level/save/`
@@ -182,7 +188,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -195,7 +202,7 @@ class PlanetApi {
         const json = await response.json();
         return json;
     }
-    async reinitialization(user_id) {
+    async reinitialization(user_id, accessToken) {
         const data = { user_id };
                 
         const url = `${process.env.REACT_APP_BACK}/reinitialization/`
@@ -205,7 +212,8 @@ class PlanetApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error

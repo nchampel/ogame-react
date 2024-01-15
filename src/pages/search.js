@@ -18,7 +18,7 @@ const Search = (props) => {
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources)
+            await planetApi.saveResources(resources, localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -26,7 +26,7 @@ const Search = (props) => {
 
     const saveLevelSearch = useCallback(async (type, level) => {
         try {
-            planetApi.saveLevelSearch(type, level)
+            planetApi.saveLevelSearch(type, level, localStorage.getItem("jwt").replaceAll('"', ''))
             // setBooster(boosterData)
         } catch (err) {
             console.error(err);
@@ -93,7 +93,7 @@ const Search = (props) => {
 
     const buildStarship = useCallback(async () => {
         try {
-            await starshipApi.buildStarship()
+            await starshipApi.buildStarship(localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }

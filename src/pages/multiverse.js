@@ -26,7 +26,7 @@ const Multiverse = (props) => {
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources)
+            await planetApi.saveResources(resources, localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -69,7 +69,7 @@ const Multiverse = (props) => {
 
     const getResultsAttack = useCallback(async (planet, planetsDiscoveredTemp) => {
       try {
-          const dataResults = await planetsApi.getResultsAttack(planet, starship, resources)
+          const dataResults = await planetsApi.getResultsAttack(planet, starship, resources, localStorage.getItem("jwt").replaceAll('"', ''))
           setResults(dataResults)
           if (dataResults[dataResults.length - 1].winner === 'Enemy'){
             const starshipTemp = {...starship}
@@ -94,7 +94,7 @@ const Multiverse = (props) => {
 
   const SaveDiscoveredPlanet = useCallback(async (planetId) => {
     try {
-        await planetsApi.SaveDiscoveredPlanet(planetId)
+        await planetsApi.SaveDiscoveredPlanet(planetId, localStorage.getItem("jwt").replaceAll('"', ''))
       } catch (err) {
         console.error(err);
     }

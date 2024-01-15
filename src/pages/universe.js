@@ -21,7 +21,7 @@ const Universe = (props) => {
 
     const saveResources = useCallback(async (resources) => {
       try {
-          await planetApi.saveResources(resources)
+          await planetApi.saveResources(resources, localStorage.getItem("jwt").replaceAll('"', ''))
       } catch (err) {
           console.error(err);
       }
@@ -29,7 +29,7 @@ const Universe = (props) => {
 
   const saveResourcesPlanets = useCallback(async (planets) => {
     try {
-        await planetsApi.saveResourcesPlanets(planets)
+        await planetsApi.saveResourcesPlanets(planets, localStorage.getItem("jwt").replaceAll('"', ''))
     } catch (err) {
         console.error(err);
     }

@@ -31,7 +31,7 @@ const Dashboard = (props) => {
 
     const saveLevel = useCallback(async (type, level) => {
         try {
-            await planetApi.saveLevel(type, level)
+            await planetApi.saveLevel(type, level, localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -182,7 +182,7 @@ const Dashboard = (props) => {
             <Button onClick={() => addResourcesHours(24)}>24 h</Button>
             <Button onClick={() => addResourcesHours(48)}>48 h</Button>
         </Card> */}
-        <Card sx={{
+        {/* <Card sx={{
         marginTop: '15px'
         }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center'}}>
@@ -194,7 +194,7 @@ const Dashboard = (props) => {
                     <Button onClick={() => buildSatellites(1000)}>1000 satellites</Button>
                 </Box>
             </Box>
-        </Card>
+        </Card> */}
     </Box>
         ) : ( <><Typography>Il faut être connecté</Typography>
         <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/login">Se connecter</Link></>)}</>
