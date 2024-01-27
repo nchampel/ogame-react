@@ -9,7 +9,7 @@ import { planetApi } from '../api/planet-api';
 import { planetsApi } from '../api/planets-api';
 import { starshipApi } from '../api/starship-api';
 import Login from './login';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import numeral from 'numeral';
 import { searchApi } from '../api/search-api';
 import Register from './register';
@@ -34,6 +34,8 @@ function App() {
   const [planetsNotDiscovered, setPlanetsNotDiscovered] = useState([])
   const [searchLevels, setSearchLevels] = useState([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [emptyJWT, setEmptyJWT] = useState(true)
+  const [open, setOpen] = useState(false)
   // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
   // const tdeuterium = 40
@@ -45,19 +47,28 @@ function App() {
   //   navigate("login/")
   // } 
 
+  const handleClose = (() => {
+    setOpen(false)
+  })
+
+  const handleOpen = (() => {
+    setOpen(true)
+  })
+
   const getPlanetDatas = useCallback(async () => {
     try {
       // let verify = null
       let jwt = null
         if (localStorage.getItem("jwt") !== null) {
             jwt = localStorage.getItem("jwt").replaceAll('"', '')
+            setEmptyJWT(false)
         }
            const verify = await userApi.verifyJWT(jwt)
            if (verify === 'Authentifié') {
             setIsAuthenticated(true)
            }
-           console.log(verify)
-           console.log(isAuthenticated)
+          //  console.log(verify)
+          //  console.log(isAuthenticated)
         // } 
         const dataResources = await planetApi.getResources(localStorage.getItem("jwt").replaceAll('"', ''))
         const dataBuildings = await planetApi.getBuildings(localStorage.getItem("jwt").replaceAll('"', ''))
@@ -140,7 +151,7 @@ function App() {
           setEnergy(buildingsResourcesTemp.energy.production + 50 * dataResources.satellites)   
           setResourcesNeeded({'metal': 1000000 * dataSearch.life_level, 'crystal': 1000000 * dataSearch.fire_level,
                                 'deuterium': 1000000 * dataSearch.shield_level})
-                                console.log('authentifié')
+                                // console.log('authentifié')
         } 
         else {
           navigate("/login")
@@ -157,9 +168,9 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  console.log('maj')
+  // console.log('maj')
   if (isAuthenticated){
-    console.log('maj true')
+    // console.log('maj true')
     getPlanetDatas();
   }
   
@@ -176,11 +187,11 @@ const saveResources = useCallback(async (resources) => {
 const addResources = () => {
   const resourcesTemp = {...resources}
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
-  resourcesTemp.metal += 8 * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60) === 0 && buildings.metal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60)
-  resourcesTemp.crystal += 8 * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 60) === 0 && buildings.crystal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 60)
-  resourcesTemp.deuterium += 8 * Math.round(10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 60) === 0 && buildings.deuterium > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 60)
+  resourcesTemp.metal += 8 * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 360) === 0 && buildings.metal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 360)
+  resourcesTemp.crystal += 8 * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 360) === 0 && buildings.crystal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 360)
+  resourcesTemp.deuterium += 8 * Math.round(10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 360) === 0 && buildings.deuterium > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 360)
   setResources(resourcesTemp)
-  saveResources(resourcesTemp)
+  // saveResources(resourcesTemp)
 }
 
 const saveResourcesPlanets = useCallback(async (planets) => {
@@ -203,13 +214,13 @@ const addResourcesPlanets = () => {
   const resourcesTemp = [...planets]
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
   planets.forEach((_, index) => {
-    resourcesTemp[index]['metal'] += 8 * Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 60)
-    resourcesTemp[index]['crystal'] += 8 * Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 60)
-    resourcesTemp[index]['deuterium'] += 8 * Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
+    resourcesTemp[index]['metal'] += 8 * Math.round(30 * resourcesTemp[index]['metal_level'] * Math.pow(1.1, resourcesTemp[index]['metal_level']) / 360)
+    resourcesTemp[index]['crystal'] += 8 * Math.round(30 * resourcesTemp[index]['crystal_level'] * Math.pow(1.1, resourcesTemp[index]['crystal_level']) / 360)
+    resourcesTemp[index]['deuterium'] += 8 * Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 360)
     resourcesTemp[index]['cost'] = Math.round((resourcesTemp[index]['metal'] + resourcesTemp[index]['crystal'] + resourcesTemp[index]['deuterium']) / 10)
   })
   setPlanets(resourcesTemp)
-  saveResourcesPlanets(resourcesTemp)
+  // saveResourcesPlanets(resourcesTemp)
 }
 
 const addResourcesPlanetsMultiverse = () => {
@@ -221,15 +232,27 @@ const addResourcesPlanetsMultiverse = () => {
     resourcesTemp[index]['deuterium'] += 8 * Math.round(30 * resourcesTemp[index]['deuterium_level'] * Math.pow(1.1, resourcesTemp[index]['deuterium_level']) / 60)
   })
   setPlanetsMultiverse(resourcesTemp)
-  saveResourcesPlanetsMultiverse(resourcesTemp)
+  // saveResourcesPlanetsMultiverse(resourcesTemp)
 }
 
+const handleDeconnection = (() => {
+  localStorage.removeItem('jwt');
+  // setEmptyJWT(true)
+  window.location.reload()
+  // setIsAuthenticated(false)
+  // setOpen(false)
+});
 
+useEffect(() => {
+  if (emptyJWT) {
+    navigate("/login")
+  }
+}, [emptyJWT]);
 
 useEffect(() => {
   const timer = setInterval(() => {
       addResources();
-      // addResourcesPlanets();
+      addResourcesPlanets();
       // addResourcesPlanetsMultiverse();
   }, 10000);
   // 60000 en temps normal
@@ -246,11 +269,62 @@ useEffect(() => {
       {/* <BrowserRouter> */}
         {/* <div style={{ display: "flex" }}> */}
           <Grid container sx={{ alignItems: "center", justifyContent: "center"}}>
-          <Grid item md={2}>
-            {isAuthenticated && <Sidebar />}</Grid>
+          
+            {isAuthenticated && <Grid item md={2}><Sidebar /></Grid>}
           <Grid item md={10}>
           {/* <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}> */}
-          {isAuthenticated &&  <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(remainingEnergy).format('0,000,000,000,000').replaceAll(',', ' ')} / ${numeral(energy).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>}
+          {isAuthenticated &&  (
+            <>
+              <Dialog
+                open={open}
+                // TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+                fullWidth
+                maxWidth="xl"
+                PaperProps={{
+                    style: {
+                        backgroundColor: "#434A54",
+                        color: "white",
+                    },
+                }}
+                >
+                {/* <DialogTitle>Résultats du combat</DialogTitle> */}
+                <DialogContent>
+                <Grid
+                    container
+                    justifyContent="center"
+                    sx={{
+                        color: "white",
+                        mt: 5,
+                    }}
+                >
+                    <Typography>Voulez-vous vous déconnecter ?</Typography>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                <Grid
+                    container
+                    justifyContent="center"
+                    sx={{
+                        color: "white",
+                        mt: 5,
+                    }}
+                >
+                    <Button onClick={handleDeconnection} style={{ color: "white" }}>
+                        Oui
+                    </Button>
+                    <Button onClick={handleClose} style={{ color: "white" }}>
+                        Non
+                    </Button>
+                  </Grid>
+                </DialogActions>
+                </Dialog>
+              <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')} Cristal : ${numeral(resources.crystal).format('0,000,000,000,000').replaceAll(',', ' ')} Deutérium : ${numeral(resources.deuterium).format('0,000,000,000,000').replaceAll(',', ' ')} Energie : ${numeral(remainingEnergy).format('0,000,000,000,000').replaceAll(',', ' ')} / ${numeral(energy).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>
+              <Button onClick={handleOpen}>Déconnexion</Button>
+            </>
+          )}
           <Routes>
           <Route path={"/login"} element={<Login setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />}></Route>
           <Route path={"/register"} element={<Register setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />}></Route>

@@ -157,7 +157,7 @@ const Universe = (props) => {
                         </TableCell>
 
                         {tableCellRow.map((type) => {
-                          return <TableCellRow planet={planet} type={type}/>
+                          return <TableCellRow planet={planet} type={type} key={type} />
                         })}
 
                         <TableCell sx={{ p: 0 }}>

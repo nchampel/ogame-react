@@ -1,4 +1,4 @@
-import { Button, Grid, TextField, Link } from "@mui/material";
+import { Button, Grid, TextField, Link, DialogContent, DialogActions, Typography, Dialog } from "@mui/material";
 import { ErrorMessage, Formik } from "formik";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
@@ -7,36 +7,14 @@ import { useEffect, useState } from "react";
 function Login(props) {
     const { setIsAuthenticated, isAuthenticated } = props
     const navigate = useNavigate();
-    // const [waitJWT, setWaitJWT] = useState(true)
-    // const history = useHistory();
+    const [open, setOpen] = useState(false)
 
-    // useEffect(() => {
-    //   console.log('t')
-    //   if(!waitJWT){
-    //     navigate(`/build`) 
-    //   }
-      
-    // },[waitJWT])
+    const handleClose = (() => {
+      setOpen(false)
+    })
 
-    // useEffect(() => {
-    //   console.log('use')
-    //   if (isAuthenticated) {
-    //     navigate("/build");
-    //   }
-    // }, [isAuthenticated]);
-
-    // useEffect(() => {
-    //   const redirectAfterAuthentication = async () => {
-    //     if (isAuthenticated) {
-    //       console.log(isAuthenticated)
-    //       // navigate('/build');
-    //     }
-    //   };
-  
-    //   redirectAfterAuthentication();
-    // }, [isAuthenticated, navigate]);
     useEffect(() => {
-      console.log("Le useEffect est déclenché. isAuthenticated :", isAuthenticated);
+      // console.log("Le useEffect est déclenché. isAuthenticated :", isAuthenticated);
         if (isAuthenticated) {
           // console.log(isAuthenticated)
           navigate('/build');
@@ -44,6 +22,40 @@ function Login(props) {
     }, [isAuthenticated]);
   return (
     <>
+    <Dialog
+        open={open}
+        // TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+        fullWidth
+        maxWidth="xl"
+        PaperProps={{
+            style: {
+                backgroundColor: "#434A54",
+                color: "white",
+            },
+        }}
+        >
+        {/* <DialogTitle>Résultats du combat</DialogTitle> */}
+        <DialogContent>
+        <Grid
+            container
+            justifyContent="center"
+            sx={{
+                color: "white",
+                mt: 5,
+            }}
+        >
+            <Typography>Veuillez attendre quelques minutes avant de pouvoir tenter de vous connecter.</Typography>
+            </Grid>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleClose} style={{ color: "white" }}>
+                OK
+            </Button>
+        </DialogActions>
+        </Dialog>
     <Formik
       initialValues={{ pseudo: "", password: "" }}
       validationSchema={Yup.object().shape({
@@ -69,29 +81,10 @@ function Login(props) {
         if (jsonAnswer.authenticated) {
           window.localStorage.setItem('jwt', JSON.stringify(jsonAnswer.jwt));
           setIsAuthenticated(true);
+        } else if (jsonAnswer.msg === 'Trop de tentatives de connexion') {
+          // console.log('Veuillez attendre quelques minutes avant de pouvoir vous connecter')
+          setOpen(true)
         }
-        
-        // if (jsonAnswer.authenticated){
-        //   window.localStorage.setItem('jwt', JSON.stringify(jsonAnswer.jwt));
-        //   // setIsAuthenticated(true)
-        //   await new Promise(resolve => {
-        //     setIsAuthenticated(true);
-        //     navigate('/build');
-        //     resolve();
-        //   });
-          
-          // setWaitJWT(false)
-        //   let jwt = null
-        // if (localStorage.getItem("jwt") !== null) {
-        //     jwt = localStorage.getItem("jwt").replaceAll('"', '')
-        // }
-        //    const verify = await userApi.verifyJWT(jwt)
-        //    console.log(verify)
-        // setTimeout(() => {
-        //     navigate(`/build`);
-        //   }, 2000);
-          // navigate(`/build`)
-        // }
             
           setStatus({ success: true });
           resetForm({});
@@ -118,26 +111,19 @@ function Login(props) {
         <form onSubmit={handleSubmit}>
           <Grid
           // container
+          style={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            height: '100vh'
+          }}
           >
             <Grid
             // item
             // xs={2}
+            sx={{ mb: 1}}
             >
-              {/* <Autocomplete
-                    options={qualificationLabel}
-                    onChange={(e, value) => {
-                      handleChangeQualification(value);
-                      setFieldValue(
-                        "choiceQualification",
-                        value !== null ? value : choiceQualification
-                      );
-                    }}
-                    // onChange={handleChangeQualification}
-                    value={values.choiceQualification}
-                    renderInput={(params) => (
-                      
-                    )}
-                  /> */}
+              
               <TextField
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -148,11 +134,13 @@ function Login(props) {
                 variant="filled"
                 error={Boolean(touched.pseudo && errors.pseudo)}
                 helperText={touched.pseudo && errors.pseudo}
+                style={{ background: 'white', width: '300px' }}
               />
             </Grid>
             <Grid
             // item
             // xs={2}
+            sx={{ mb: 1}}
             >
               <TextField
                 onBlur={handleBlur}
@@ -165,28 +153,37 @@ function Login(props) {
                 variant="filled"
                 error={Boolean(touched.password && errors.password)}
                 helperText={touched.password && errors.password}
+                style={{ background: 'white', width: '300px' }}
               />
             </Grid>
             <Grid
             // item
             // xs={1}
+            sx={{ mb: 1}}
             >
               <Button
                 color="primary"
                 variant="contained"
                 onClick={() => {
-                  handleSubmit(); /* setDisplayDateRecall(false); setDisplayError(false); setDisplayRejection(false); */
+                  handleSubmit();
                 }}
               >
                 Se connecter
               </Button>
+              
+            </Grid>
+            <Grid
+            // item
+            // xs={1}
+            sx={{ mb: 1}}
+            >
+              <Link component={RouterLink} underline="none" to="/register">S'inscrire</Link>
             </Grid>
             {/* <ErrorMessage name="pseudo"></ErrorMessage> */}
           </Grid>
         </form>
       )}
     </Formik>
-    <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/register">S'inscrire</Link>
     </>
   );
 }
