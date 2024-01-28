@@ -14,6 +14,7 @@ import numeral from 'numeral';
 import { searchApi } from '../api/search-api';
 import Register from './register';
 import { userApi } from '../api/user-api';
+// import Nature from './nature';
 
 function App() {
   const isMounted = useMounted();
@@ -36,6 +37,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [emptyJWT, setEmptyJWT] = useState(true)
   const [open, setOpen] = useState(false)
+  const [nature, setNature] = useState(null)
   // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
   // const tdeuterium = 40
@@ -46,6 +48,11 @@ function App() {
   // if (localStorage.getItem("jwt") === null) {
   //   navigate("login/")
   // } 
+
+  useEffect(() => {
+    console.log(isAuthenticated)
+    // setIsAuthenticated(true)
+  }, [isAuthenticated])
 
   const handleClose = (() => {
     setOpen(false)
@@ -64,23 +71,34 @@ function App() {
             setEmptyJWT(false)
         }
            const verify = await userApi.verifyJWT(jwt)
-           if (verify === 'Authentifié') {
+           if (verify.msg === 'Authentifié') {
             setIsAuthenticated(true)
+            setNature(verify.nature)
            }
           //  console.log(verify)
           //  console.log(isAuthenticated)
         // } 
-        const dataResources = await planetApi.getResources(localStorage.getItem("jwt").replaceAll('"', ''))
-        const dataBuildings = await planetApi.getBuildings(localStorage.getItem("jwt").replaceAll('"', ''))
-        const boosterCost = await planetApi.getBoosterCost(dataResources.booster, localStorage.getItem("jwt").replaceAll('"', ''))
-        const dataPlanets = await planetsApi.getPlanetsData(localStorage.getItem("jwt").replaceAll('"', ''))
-        const dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData(localStorage.getItem("jwt").replaceAll('"', ''))
-        const dataStarship = await starshipApi.getStarshipData(localStorage.getItem("jwt").replaceAll('"', ''))
-        const dataSearch = await searchApi.getSearchData(localStorage.getItem("jwt").replaceAll('"', ''))
-        // console.log(dataSearch)
+        let dataResources = null
+          let dataBuildings = null
+          let boosterCost = null
+          let dataPlanets = null
+          let dataPlanetsMultiverse = null
+          let dataStarship = null
+          let dataSearch = null
+        if (verify.msg !== 'Pas de token') {
+
+          dataResources = await planetApi.getResources(localStorage.getItem("jwt").replaceAll('"', ''))
+          dataBuildings = await planetApi.getBuildings(localStorage.getItem("jwt").replaceAll('"', ''))
+          boosterCost = await planetApi.getBoosterCost(dataResources.booster, localStorage.getItem("jwt").replaceAll('"', ''))
+          dataPlanets = await planetsApi.getPlanetsData(localStorage.getItem("jwt").replaceAll('"', ''))
+          dataPlanetsMultiverse = await planetsApi.getPlanetsMultiverseData(localStorage.getItem("jwt").replaceAll('"', ''))
+          dataStarship = await starshipApi.getStarshipData(localStorage.getItem("jwt").replaceAll('"', ''))
+          dataSearch = await searchApi.getSearchData(localStorage.getItem("jwt").replaceAll('"', ''))
+
+        }
         // const dataBuildingsResources = await planetApi.getBuildingsResources()
         if (isMounted()) {
-        if (verify === 'Authentifié'){
+        if (verify.msg === 'Authentifié'){
           // setIsAuthenticated(true)
           setResources(dataResources);
           setBuildings(dataBuildings)
@@ -154,6 +172,7 @@ function App() {
                                 // console.log('authentifié')
         } 
         else {
+          // console.log('login')
           navigate("/login")
         }
         
@@ -187,11 +206,11 @@ const saveResources = useCallback(async (resources) => {
 const addResources = () => {
   const resourcesTemp = {...resources}
   // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
-  resourcesTemp.metal += 8 * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 360) === 0 && buildings.metal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 360)
-  resourcesTemp.crystal += 8 * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 360) === 0 && buildings.crystal > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 360)
-  resourcesTemp.deuterium += 8 * Math.round(10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 360) === 0 && buildings.deuterium > 0 ? 1 : 8 * booster.coefficient * Math.round(30 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 360)
+  resourcesTemp.metal += Math.round((8 * 30 * buildings.metal * Math.pow(1.1, buildings.metal) / 360) + 2) === 0 && buildings.metal > 0 ? 1 : Math.round((8 * booster.coefficient * 30 * buildings.metal * Math.pow(1.1, buildings.metal) / 360) + 2)
+  resourcesTemp.crystal += Math.round((8 * 20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 360) + 1) === 0 && buildings.crystal > 0 ? 1 : Math.round((8 * booster.coefficient * 20 * buildings.crystal * Math.pow(1.1, buildings.crystal) / 360) + 1)
+  resourcesTemp.deuterium += Math.round(8 * 10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 360) === 0 && buildings.deuterium > 0 ? 1 : Math.round(8 * booster.coefficient * 30 * buildings.deuterium * Math.pow(1.1, buildings.deuterium) / 360)
   setResources(resourcesTemp)
-  // saveResources(resourcesTemp)
+  saveResources(resourcesTemp)
 }
 
 const saveResourcesPlanets = useCallback(async (planets) => {
@@ -252,7 +271,7 @@ useEffect(() => {
 useEffect(() => {
   const timer = setInterval(() => {
       addResources();
-      addResourcesPlanets();
+      // addResourcesPlanets();
       // addResourcesPlanetsMultiverse();
   }, 10000);
   // 60000 en temps normal
@@ -270,10 +289,10 @@ useEffect(() => {
         {/* <div style={{ display: "flex" }}> */}
           <Grid container sx={{ alignItems: "center", justifyContent: "center"}}>
           
-            {isAuthenticated && <Grid item md={2}><Sidebar /></Grid>}
+            {isAuthenticated && nature !== null && <Grid item md={2}><Sidebar nature={nature} /></Grid>}
           <Grid item md={10}>
           {/* <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}> */}
-          {isAuthenticated &&  (
+          {isAuthenticated && nature !== null &&  (
             <>
               <Dialog
                 open={open}
@@ -326,8 +345,24 @@ useEffect(() => {
             </>
           )}
           <Routes>
-          <Route path={"/login"} element={<Login setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />}></Route>
-          <Route path={"/register"} element={<Register setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />}></Route>
+            <Route path={"/login"} element={
+            <Login 
+            setIsAuthenticated={setIsAuthenticated} 
+            isAuthenticated={isAuthenticated} 
+            nature={nature}
+            setNature={setNature}
+            />}>
+            </Route>
+          <Route path={"/register"} element={
+          <Register 
+          setIsAuthenticated={setIsAuthenticated} 
+          isAuthenticated={isAuthenticated} 
+          />}></Route>
+          {/* <Route path={"/determine-nature"} element={
+          <Nature 
+          isAuthenticated={isAuthenticated} 
+          setIsAuthenticated={setIsAuthenticated}
+          />}></Route> */}
           
           {routes.map((route) => (
               <Route
@@ -336,6 +371,7 @@ useEffect(() => {
                 element={
                   <route.element
                     isAuthenticated={isAuthenticated}
+                    setIsAuthenticated={setIsAuthenticated}
                     resources={resources}
                     setResources={setResources}
                     buildings={buildings}
@@ -366,6 +402,8 @@ useEffect(() => {
                     setPlanetsNotDiscovered={setPlanetsNotDiscovered}
                     searchLevels={searchLevels}
                     setSearchLevels={setSearchLevels}
+                    nature={nature}
+                    setNature={setNature}
                   />
                 }
               />

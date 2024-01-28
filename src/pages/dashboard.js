@@ -21,6 +21,11 @@ const Dashboard = (props) => {
     //     navigate(`/login`)
     // }
 
+    // useEffect(() => {
+    //     console.log(isAuthenticated)
+    //     setIsAuthenticated(true)
+    //   }, [isAuthenticated])
+
     const saveResources = useCallback(async (resources) => {
         try {
             await planetApi.saveResources(resources, localStorage.getItem('jwt'))
@@ -169,10 +174,16 @@ const Dashboard = (props) => {
     
     return (
         <>{isAuthenticated ? (
-            <Box sx={{ minHeight: '600px' }}>
+            <Box sx={{ minHeight: '600px', mr: 2 }}>
         
         <Buildings buildingsResources={buildingsResources} buildings={buildings} addLevel={addLevel} />
-        
+        <Typography sx={{
+        mt: 2, textAlign: 'left', mb: 2
+        }}>La Luni produit naturellement un peu de métal et de cristal.</Typography>
+        <Typography sx={{
+        mt: 2, textAlign: 'left', mb: 2
+        }}>Pour construire les mines et le synthétiseur, il faut de l'énergie et des ressources. Pour avoir de l'énergie, il faut construire puis améliorer la centrale solaire. Pour les ressources, plus le niveau de votre bâtiment est élevé, plus il les produira vite.</Typography>
+        <Typography sx={{ textAlign: 'left' }}>Pour l'instant le jeu se limite à cela, mais des fonctionnalités déjà en test seront rapidement ajoutées ! (par exemple des ressources additionnelles seront récoltables au bout d'un certain temps)</Typography>
         {/* <Card sx={{
         marginBottom: '15px'
         }}>

@@ -20,7 +20,7 @@ function Register(props) {
               jwt = localStorage.getItem("jwt").replaceAll('"', '')
           }
              const verify = await userApi.verifyJWT(jwt)
-             if (verify === 'Authentifié') {
+             if (verify.msg === 'Authentifié') {
               setIsAuthenticated(true)
               navigate("build/")
              }

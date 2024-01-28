@@ -2,6 +2,7 @@ import Boosters from "../pages/boosters";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
 import Multiverse from "../pages/multiverse";
+import Nature from "../pages/nature";
 import Register from "../pages/register";
 import Reinitialization from "../pages/reinitialization";
 import Search from "../pages/search";
@@ -40,6 +41,10 @@ const routes = [
     //   path: '/reinitialization',
     //   element: Reinitialization
     // },
+    {
+      path: '/determine-nature',
+      element: Nature
+    },
 ]
 
 export default routes;

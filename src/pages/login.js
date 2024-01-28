@@ -5,9 +5,10 @@ import * as Yup from "yup";
 import { userApi } from "../api/user-api";
 import { useEffect, useState } from "react";
 function Login(props) {
-    const { setIsAuthenticated, isAuthenticated } = props
+    const { setIsAuthenticated, isAuthenticated, nature, setNature } = props
     const navigate = useNavigate();
     const [open, setOpen] = useState(false)
+    
 
     const handleClose = (() => {
       setOpen(false)
@@ -15,10 +16,14 @@ function Login(props) {
 
     useEffect(() => {
       // console.log("Le useEffect est déclenché. isAuthenticated :", isAuthenticated);
-        if (isAuthenticated) {
-          // console.log(isAuthenticated)
+      // console.log('nature', nature)  
+      // console.log('jwt', localStorage.hasOwnProperty("jwt"))  
+      if (isAuthenticated && nature !== null && nature !== undefined) {
+          
           navigate('/build');
-        }
+      } else if (isAuthenticated && (nature === null || nature === undefined)) {
+        navigate('/determine-nature')
+      }
     }, [isAuthenticated]);
   return (
     <>
@@ -71,16 +76,14 @@ function Login(props) {
           const jsonAnswer = await userApi.login(
             values
           );
-        //   const data = await apiRef.login(
-        //     process.env.REACT_APP_URL + "App/Calls/login.php",
-        //     values
-        //   );
-        //   console.log(data);
         // on enregistre le jwt
 
         if (jsonAnswer.authenticated) {
           window.localStorage.setItem('jwt', JSON.stringify(jsonAnswer.jwt));
           setIsAuthenticated(true);
+          // console.log('auth')
+          setNature(jsonAnswer.nature)
+          // console.log(jsonAnswer.nature)
         } else if (jsonAnswer.msg === 'Trop de tentatives de connexion') {
           // console.log('Veuillez attendre quelques minutes avant de pouvoir vous connecter')
           setOpen(true)

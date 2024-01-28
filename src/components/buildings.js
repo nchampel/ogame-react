@@ -21,8 +21,8 @@ const Buildings = (props) => {
     const BuildingCard = ({ title, type }) => {
         return (
           <Card sx={{ marginTop: '15px', background: '#313742', 
-          color: 'white', boxShadow: '0px 2px 4px rgba(150, 150, 150, 0.5)',
-          padding: '2px', minWidth: '300px'}}>
+          color: 'white', boxShadow: '0px 2px 4px rgba(150, 150, 150, 0.2)',
+          padding: '2px', minWidth: '300px', border: '1px solid white'}}>
             <Box sx={{margin: '0px 20px'}}>
             <Typography>{`${title} : ${buildings[type]}`}</Typography>
             <Typography>{`${numeral(buildingsResources[type]['production']).format('0,000,000,000,000').replaceAll(',', ' ')} /h`}</Typography>
@@ -55,8 +55,8 @@ const Buildings = (props) => {
     
         <Card  item
         sx={{ marginTop: '15px', background: '#313742', 
-        color: 'white', boxShadow: '0px 2px 4px rgba(150, 150, 150, 0.5)',
-        padding: '2px', minWidth: '300px'}}>
+        color: 'white', boxShadow: '0px 2px 4px rgba(150, 150, 150, 0.2)',
+        padding: '2px', minWidth: '300px', border: '1px solid white'}}>
           <Box sx={{margin: '0px 20px'}}>
             <Typography>{`Centrale solaire : ${buildings.energy}`}</Typography>
             <Typography>{` + ${numeral(buildingsResources.energy.next_production - buildingsResources.energy.production).format('0,000,000,000,000').replaceAll(',', ' ')} énergie`}</Typography>
