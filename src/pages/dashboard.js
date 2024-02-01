@@ -2,27 +2,33 @@ import {
     Box,
     Button,
     Card,
-    Typography
+    Typography,
+    Link
   } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import { planetApi } from '../api/planet-api';
 import Buildings from '../components/buildings';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 const Dashboard = (props) => {
     const { resources, setResources, buildings, setBuildings, usedEnergy, setUsedEnergy,
         remainingEnergy, setRemainingEnergy, energy, setEnergy, buildingsResources, setBuildingsResources,
     booster, planets, setPlanets, starship, isAuthenticated} = props
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
+
+    // useEffect(() => {
+    //     console.log(isAuthenticated)
+    //     setIsAuthenticated(true)
+    //   }, [isAuthenticated])
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources)
+            await planetApi.saveResources(resources, localStorage.getItem('jwt').replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -30,7 +36,7 @@ const Dashboard = (props) => {
 
     const saveLevel = useCallback(async (type, level) => {
         try {
-            await planetApi.saveLevel(type, level)
+            await planetApi.saveLevel(type, level, localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -61,7 +67,7 @@ const Dashboard = (props) => {
             saveLevel(type, level + 1)
             const buildingsTemp = {...buildings}
             buildingsTemp[type] = level + 1
-            console.log(buildingsTemp)
+            // console.log(buildingsTemp)
             setBuildings(buildingsTemp)
         }
         
@@ -74,14 +80,14 @@ const Dashboard = (props) => {
                 crystal: Math.round(15 * Math.pow(1.5, buildings.metal - 1)),
                 energy: Math.round(10 * (buildings.metal) * Math.pow(1.1, buildings.metal)),
                 next_energy: Math.round(10 * (buildings.metal + 1) * Math.pow(1.1, (buildings.metal + 1))),
-                production: 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal))
+                production: 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal)) + 720
             },
             crystal: {
                 metal: Math.round(48 * Math.pow(1.6, buildings.crystal - 1)),
                 crystal: Math.round(24 * Math.pow(1.6, buildings.crystal - 1)),
                 energy: Math.round(10 * (buildings.crystal) * Math.pow(1.1, buildings.crystal)),
                 next_energy: Math.round(10 * (buildings.crystal + 1) * Math.pow(1.1, (buildings.crystal + 1))),
-                production: 8 * booster.coefficient * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal))
+                production: 8 * booster.coefficient * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal)) + 360
             },
             deuterium: {
                 metal: Math.round(225 * Math.pow(1.5, buildings.deuterium - 1)),
@@ -168,11 +174,17 @@ const Dashboard = (props) => {
     
     return (
         <>{isAuthenticated ? (
-            <Box sx={{ minHeight: '600px' }}>
+            <Box sx={{ minHeight: '600px', mr: 2 }}>
         
         <Buildings buildingsResources={buildingsResources} buildings={buildings} addLevel={addLevel} />
-        
-        <Card sx={{
+        <Typography sx={{
+        mt: 2, textAlign: 'left', mb: 2
+        }}>La Luni produit naturellement un peu de métal et de cristal.</Typography>
+        <Typography sx={{
+        mt: 2, textAlign: 'left', mb: 2
+        }}>Pour construire les mines et le synthétiseur, il faut de l'énergie et des ressources. Pour avoir de l'énergie, il faut construire puis améliorer la centrale solaire. Pour les ressources, plus le niveau de votre bâtiment est élevé, plus il les produira vite.</Typography>
+        <Typography sx={{ textAlign: 'left' }}>Pour l'instant le jeu se limite à cela, mais des fonctionnalités déjà en test seront rapidement ajoutées ! (par exemple des ressources additionnelles seront récoltables au bout d'un certain temps)</Typography>
+        {/* <Card sx={{
         marginBottom: '15px'
         }}>
             <Button onClick={() => addResourcesHours(1)}>1 h</Button>
@@ -180,8 +192,8 @@ const Dashboard = (props) => {
             <Button onClick={() => addResourcesHours(10)}>10 h</Button>
             <Button onClick={() => addResourcesHours(24)}>24 h</Button>
             <Button onClick={() => addResourcesHours(48)}>48 h</Button>
-        </Card>
-        <Card sx={{
+        </Card> */}
+        {/* <Card sx={{
         marginTop: '15px'
         }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent:'center'}}>
@@ -193,9 +205,10 @@ const Dashboard = (props) => {
                     <Button onClick={() => buildSatellites(1000)}>1000 satellites</Button>
                 </Box>
             </Box>
-        </Card>
+        </Card> */}
     </Box>
-        ) : ( <Typography>Il faut être connecté</Typography>)}</>
+        ) : ( <><Typography>Il faut être connecté</Typography>
+        <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/login">Se connecter</Link></>)}</>
     
 )}
 

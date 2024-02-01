@@ -1,6 +1,6 @@
 class PlanetsApi {
 
-    async getPlanetsData() {
+    async getPlanetsData(accessToken) {
         const data = {};
         
         const url = `${process.env.REACT_APP_BACK}/planets/get/`
@@ -10,7 +10,8 @@ class PlanetsApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                // 'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -24,7 +25,7 @@ class PlanetsApi {
         return json;
     }
     
-    async saveResourcesPlanets(planets) {
+    async saveResourcesPlanets(planets, accessToken) {
         const data = { planets };
         
         const url = `${process.env.REACT_APP_BACK}/planets/resources/save/`
@@ -34,7 +35,8 @@ class PlanetsApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -48,7 +50,7 @@ class PlanetsApi {
         return json;
     }
 
-    async getPlanetsMultiverseData() {
+    async getPlanetsMultiverseData(accessToken) {
         const data = {};
         
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/get/`
@@ -58,7 +60,8 @@ class PlanetsApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                // 'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -72,7 +75,7 @@ class PlanetsApi {
         return json;
     }
     
-    async saveResourcesPlanetsMultiverse(planets) {
+    async saveResourcesPlanetsMultiverse(planets, accessToken) {
         const data = { planets };
         
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/resources/save/`
@@ -82,7 +85,8 @@ class PlanetsApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -95,7 +99,7 @@ class PlanetsApi {
         const json = await response.json();
         return json;
     }
-    async getResultsAttack(planet, starshipLevels, resources) {
+    async getResultsAttack(planet, starshipLevels, resources, accessToken) {
         const data = { planet, starshipLevels, resources };
         
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/attack/results/get/`
@@ -105,7 +109,8 @@ class PlanetsApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error
@@ -119,7 +124,7 @@ class PlanetsApi {
         return json;
     }
 
-    async SaveDiscoveredPlanet(planet_id) {
+    async SaveDiscoveredPlanet(planet_id, accessToken) {
         const data = { planet_id };
         
         const url = `${process.env.REACT_APP_BACK}/planets/multiverse/discovered/save/`
@@ -129,7 +134,8 @@ class PlanetsApi {
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: "follow", // manual, *follow, error

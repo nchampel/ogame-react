@@ -13,15 +13,15 @@ const Universe = (props) => {
     // const [resources, setResources] = useState({metal: 0, crystal: 0, deuterium: 0, energy: 0})
     // console.log(buildingsResources.metal)
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     const saveResources = useCallback(async (resources) => {
       try {
-          await planetApi.saveResources(resources)
+          await planetApi.saveResources(resources, localStorage.getItem("jwt").replaceAll('"', ''))
       } catch (err) {
           console.error(err);
       }
@@ -29,7 +29,7 @@ const Universe = (props) => {
 
   const saveResourcesPlanets = useCallback(async (planets) => {
     try {
-        await planetsApi.saveResourcesPlanets(planets)
+        await planetsApi.saveResourcesPlanets(planets, localStorage.getItem("jwt").replaceAll('"', ''))
     } catch (err) {
         console.error(err);
     }
@@ -157,7 +157,7 @@ const Universe = (props) => {
                         </TableCell>
 
                         {tableCellRow.map((type) => {
-                          return <TableCellRow planet={planet} type={type}/>
+                          return <TableCellRow planet={planet} type={type} key={type} />
                         })}
 
                         <TableCell sx={{ p: 0 }}>

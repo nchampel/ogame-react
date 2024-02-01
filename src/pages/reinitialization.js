@@ -8,15 +8,15 @@ const Reinitialization = (props) => {
     const { isAuthenticated } = props
     const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     
 
     const reinitialization = useCallback(async () => {
         try {
-            await planetApi.reinitialization(2)
+            await planetApi.reinitialization(2, localStorage.getItem("jwt").replaceAll('"', ''))
             // setBooster(boosterData)
             // mettre toutes les données réinitilisées dans les useState
             navigate(`/`)

@@ -10,15 +10,15 @@ const Boosters = (props) => {
     // const [resources, setResources] = useState({metal: 0, crystal: 0, deuterium: 0, energy: 0})
     // console.log(buildingsResources.metal)
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources)
+            await planetApi.saveResources(resources, localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -26,7 +26,7 @@ const Boosters = (props) => {
 
     const saveLevelBooster = useCallback(async (level) => {
         try {
-            const boosterData = await planetApi.saveLevelBooster(level)
+            const boosterData = await planetApi.saveLevelBooster(level, localStorage.getItem("jwt").replaceAll('"', ''))
             setBooster(boosterData)
         } catch (err) {
             console.error(err);

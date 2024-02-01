@@ -10,15 +10,17 @@ const Search = (props) => {
     const { resources, setResources, starship, setStarship, resourcesSearch, setResourcesSearch, resourcesNeeded,
     setResourcesNeeded, isAuthenticated, searchLevels, setSearchLevels } = props
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    if (!isAuthenticated) {
-        navigate(`/login`)
-    }
+    // if (!isAuthenticated) {
+    //     navigate(`/login`)
+    // }
+
+    console.log(searchLevels)
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources)
+            await planetApi.saveResources(resources, localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -26,7 +28,7 @@ const Search = (props) => {
 
     const saveLevelSearch = useCallback(async (type, level) => {
         try {
-            planetApi.saveLevelSearch(type, level)
+            planetApi.saveLevelSearch(type, level, localStorage.getItem("jwt").replaceAll('"', ''))
             // setBooster(boosterData)
         } catch (err) {
             console.error(err);
@@ -93,7 +95,7 @@ const Search = (props) => {
 
     const buildStarship = useCallback(async () => {
         try {
-            await starshipApi.buildStarship()
+            await starshipApi.buildStarship(localStorage.getItem("jwt").replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -114,7 +116,7 @@ const Search = (props) => {
             }
       }
 
-      const searchCards = [{name: 'Vie', typeLevel: 'life_level'}]
+      const searchCards = [{name: 'Vie', typeLevel: 'life_level', }]
 
       const SearchCard = ({ search, type }) => {
         return (
@@ -143,14 +145,14 @@ const Search = (props) => {
         marginTop: '15px'
         }}>
             <Typography>{`Armes : ${searchLevels.fire_level}`}</Typography>
-            <Typography>{`${numeral(resourcesSearch.fire).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Cristal`}</Typography>
+            <Typography>{`${numeral(resourcesSearch.fire.crystal).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Cristal`}</Typography>
         </Card>
         <Card sx={{
         marginBottom: '15px',
         marginTop: '15px'
         }}>
             <Typography>{`Bouclier : ${searchLevels.shield_level}`}</Typography>
-            <Typography>{`${numeral(resourcesSearch.shield).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Deutérium`}</Typography>
+            <Typography>{`${numeral(resourcesSearch.shield.deuterium).format('0,000,000,000,000,000,000,000').replaceAll(',', ' ')} Deutérium`}</Typography>
         </Card>
         {/* <Typography>{`Booster : x ${booster.coefficient}`}</Typography>   
         <Typography>{`Coût : ${numeral(booster.cost).format('0,000,000,000,000').replaceAll(',', ' ')} Métal`}</Typography>    */}

@@ -2,6 +2,8 @@ import Boosters from "../pages/boosters";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
 import Multiverse from "../pages/multiverse";
+import Nature from "../pages/nature";
+import Register from "../pages/register";
 import Reinitialization from "../pages/reinitialization";
 import Search from "../pages/search";
 import Universe from "../pages/universe";
@@ -9,11 +11,15 @@ import Universe from "../pages/universe";
 const routes = [
   {
     path: '/',
-    element: Home
+    element: Register
   },
     {
       path: '/build',
       element: Dashboard
+    },
+    {
+      path: '/help',
+      element: Home
     },
     // {
     //   path: '/boosters',
@@ -23,10 +29,10 @@ const routes = [
       path: '/universe',
       element: Universe
     },
-    {
-      path: '/multiverse',
-      element: Multiverse
-    },
+    // {
+    //   path: '/multiverse',
+    //   element: Multiverse
+    // },
     {
       path: '/search',
       element: Search
@@ -35,6 +41,10 @@ const routes = [
     //   path: '/reinitialization',
     //   element: Reinitialization
     // },
+    {
+      path: '/determine-nature',
+      element: Nature
+    },
 ]
 
 export default routes;
