@@ -11,7 +11,7 @@ const Sidebar = (props) => {
     
     return (
       
-      <Box style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <Box style={{ display: 'flex', flexDirection: 'column', height: '95vh' }}>
         <Typography >{`Alignement ${names[nature]}`}</Typography>
         <Box
             sx={{

@@ -28,7 +28,7 @@ const Dashboard = (props) => {
 
     const saveResources = useCallback(async (resources) => {
         try {
-            await planetApi.saveResources(resources, localStorage.getItem('jwt'))
+            await planetApi.saveResources(resources, localStorage.getItem('jwt').replaceAll('"', ''))
         } catch (err) {
             console.error(err);
         }
@@ -80,14 +80,14 @@ const Dashboard = (props) => {
                 crystal: Math.round(15 * Math.pow(1.5, buildings.metal - 1)),
                 energy: Math.round(10 * (buildings.metal) * Math.pow(1.1, buildings.metal)),
                 next_energy: Math.round(10 * (buildings.metal + 1) * Math.pow(1.1, (buildings.metal + 1))),
-                production: 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal))
+                production: 8 * booster.coefficient * Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal)) + 720
             },
             crystal: {
                 metal: Math.round(48 * Math.pow(1.6, buildings.crystal - 1)),
                 crystal: Math.round(24 * Math.pow(1.6, buildings.crystal - 1)),
                 energy: Math.round(10 * (buildings.crystal) * Math.pow(1.1, buildings.crystal)),
                 next_energy: Math.round(10 * (buildings.crystal + 1) * Math.pow(1.1, (buildings.crystal + 1))),
-                production: 8 * booster.coefficient * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal))
+                production: 8 * booster.coefficient * Math.round(20 * buildings.crystal * Math.pow(1.1, buildings.crystal)) + 360
             },
             deuterium: {
                 metal: Math.round(225 * Math.pow(1.5, buildings.deuterium - 1)),

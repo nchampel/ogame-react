@@ -135,14 +135,14 @@ function App() {
                   crystal: Math.round(15 * Math.pow(1.5, dataBuildings.metal - 1)),
                   energy: Math.round(10 * (dataBuildings.metal) * Math.pow(1.1, dataBuildings.metal)),
                   next_energy: Math.round(10 * (dataBuildings.metal + 1) * Math.pow(1.1, (dataBuildings.metal + 1))),
-                  production: 8 * dataResources.booster * Math.round(30 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal))
+                  production: 8 * dataResources.booster * Math.round(30 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal)) + 720
               },
               crystal: {
                   metal: Math.round(48 * Math.pow(1.6, dataBuildings.crystal - 1)),
                   crystal: Math.round(24 * Math.pow(1.6, dataBuildings.crystal - 1)),
                   energy: Math.round(10 * (dataBuildings.crystal) * Math.pow(1.1, dataBuildings.crystal)),
                   next_energy: Math.round(10 * (dataBuildings.crystal + 1) * Math.pow(1.1, (dataBuildings.crystal + 1))),
-                  production: 8 * dataResources.booster * Math.round(20 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal))
+                  production: 8 * dataResources.booster * Math.round(20 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal)) + 360
               },
               deuterium: {
                   metal: Math.round(225 * Math.pow(1.5, dataBuildings.deuterium - 1)),
@@ -412,6 +412,7 @@ useEffect(() => {
           </Grid>
           {/* </Box> */}
           </Grid>
+          <Typography>2024 - Studio Zensaikeunde - Tous droits réservés</Typography>
         {/* </div> */}
 
       {/* </BrowserRouter> */}
