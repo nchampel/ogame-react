@@ -1,4 +1,4 @@
-import { Button, Grid, TextField, Link, DialogContent, DialogActions, Typography, Dialog } from "@mui/material";
+import { Button, Grid, TextField, Link, DialogContent, DialogActions, Typography, Dialog, Box } from "@mui/material";
 import { ErrorMessage, Formik } from "formik";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
@@ -61,6 +61,8 @@ function Login(props) {
             </Button>
         </DialogActions>
         </Dialog>
+        <Box sx={{ minHeight: '600px' }}>
+
     <Formik
       initialValues={{ pseudo: "", password: "" }}
       validationSchema={Yup.object().shape({
@@ -187,6 +189,7 @@ function Login(props) {
         </form>
       )}
     </Formik>
+        </Box>
     </>
   );
 }

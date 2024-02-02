@@ -126,6 +126,15 @@ const Nature = (props) => {
         {value: "sm", label: "Vous ne réagissez pas et attendez la suite des événements"},
     ]
 
+    function compareRandom() {
+      return Math.random() - 0.5;
+  }
+  
+  question1Data.sort(compareRandom);
+  question2Data.sort(compareRandom);
+  question3Data.sort(compareRandom);
+  question4Data.sort(compareRandom);
+
     const FormControlLabelQuestion = ({ data }) => {
         return (
             <FormControlLabel
@@ -158,7 +167,9 @@ const Nature = (props) => {
     //         <Button onClick={() => reinitialization()}>Réinitialiser</Button>
     //     </Card>
     // </Box>
-    <><Dialog
+    <>
+    <Box sx={{ minHeight: '600px' }}>
+      <Dialog
     open={openQuestions}
     // TransitionComponent={Transition}
     keepMounted
@@ -175,6 +186,7 @@ const Nature = (props) => {
     >
     {/* <DialogTitle>Résultats du combat</DialogTitle> */}
     <DialogContent>
+      
     <Formik
             initialValues={initialValuesQuestions}
             // enableReinitialize
@@ -496,6 +508,7 @@ const Nature = (props) => {
     <Button onClick={handleOpen} style={{ color: "white" }}>
             Répondre
         </Button>
+      </Box>
     </>
     
 )}

@@ -30,6 +30,8 @@ const Sidebar = (props) => {
             {/* <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/multiverse">Multivers</Link> */}
             {/* !!!!!!!!!!!!!!!!!!!! attention !!!!!!!!!!!! réinitialisation n'a pas user_id dynamique */}
             {/* <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/reinitialization">Réinitialisation</Link> */}
+            <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/ranking">Classement</Link>
+            <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/thanks">Remerciements</Link>
         </Box>
       </Box>
 )}
