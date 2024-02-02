@@ -61,7 +61,7 @@ const Ranking = () => {
     const [currentTab, setCurrentTab] = useState('sotoc');
 
     const handleTabsChange = (_, value) => {
-      console.log(value)
+      // console.log(value)
       setCurrentTab(value);
     };
 

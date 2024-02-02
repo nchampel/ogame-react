@@ -49,10 +49,10 @@ function App() {
   //   navigate("login/")
   // } 
 
-  useEffect(() => {
-    console.log(isAuthenticated)
-    // setIsAuthenticated(true)
-  }, [isAuthenticated])
+  // useEffect(() => {
+  //   // console.log(isAuthenticated)
+  //   // setIsAuthenticated(true)
+  // }, [isAuthenticated])
 
   const handleClose = (() => {
     setOpen(false)
