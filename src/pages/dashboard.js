@@ -93,7 +93,7 @@ const Dashboard = (props) => {
                 metal: Math.round(225 * Math.pow(1.5, buildings.deuterium - 1)),
                 crystal: Math.round(75 * Math.pow(1.5, buildings.deuterium - 1)),
                 energy: Math.round(10 * (buildings.deuterium) * Math.pow(1.1, buildings.deuterium)),
-                next_energy: Math.round(20 * (buildings.deuterium + 1) * Math.pow(1.1, (buildings.deuterium + 1))),
+                next_energy: Math.round(10 * (buildings.deuterium + 1) * Math.pow(1.1, (buildings.deuterium + 1))),
                 production: 8 * booster.coefficient * Math.round(10 * buildings.deuterium * Math.pow(1.1, buildings.deuterium))
             },
             energy: {
@@ -107,12 +107,12 @@ const Dashboard = (props) => {
         setBuildingsResources(buildingsResourcesTemp)
         const energyMetal = Math.round(10 * (buildings.metal) * Math.pow(1.1, (buildings.metal)))
         const energyCrystal = Math.round(10 * (buildings.crystal) * Math.pow(1.1, (buildings.crystal)))
-        const energyDeuterium = Math.round(20 * (buildings.deuterium) * Math.pow(1.1, (buildings.deuterium)))
+        const energyDeuterium = Math.round(10 * (buildings.deuterium) * Math.pow(1.1, (buildings.deuterium)))
         // console.log(energyMetal)
         // console.log(energyCrystal)
         // console.log(energyDeuterium)
         setUsedEnergy(energyMetal + energyCrystal + energyDeuterium)
-        setRemainingEnergy(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)) - energyMetal - energyCrystal - energyDeuterium + resources.satellites * 50)
+        setRemainingEnergy(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)) - energyMetal - energyCrystal - energyDeuterium + resources.satellites * 35)
         // console.log(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)))
     }, [buildings]);
 
@@ -160,8 +160,8 @@ const Dashboard = (props) => {
             // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
             setResources(resourcesTemp)
             
-            setRemainingEnergy(remainingEnergy + 50 * number)
-            setEnergy(energy + 50 * number)
+            setRemainingEnergy(remainingEnergy + 35 * number)
+            setEnergy(energy + 35 * number)
 
             saveResources(resourcesTemp)
         }

@@ -3,9 +3,11 @@ import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
 import Multiverse from "../pages/multiverse";
 import Nature from "../pages/nature";
+import Ranking from "../pages/ranking";
 import Register from "../pages/register";
 import Reinitialization from "../pages/reinitialization";
 import Search from "../pages/search";
+import Thanks from "../pages/thanks";
 import Universe from "../pages/universe";
 
 const routes = [
@@ -44,6 +46,14 @@ const routes = [
     {
       path: '/determine-nature',
       element: Nature
+    },
+    {
+      path: '/ranking',
+      element: Ranking
+    },
+    {
+      path: '/thanks',
+      element: Thanks
     },
 ]
 

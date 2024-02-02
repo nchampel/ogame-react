@@ -148,7 +148,7 @@ function App() {
                   metal: Math.round(225 * Math.pow(1.5, dataBuildings.deuterium - 1)),
                   crystal: Math.round(75 * Math.pow(1.5, dataBuildings.deuterium - 1)),
                   energy: Math.round(10 * (dataBuildings.deuterium) * Math.pow(1.1, dataBuildings.deuterium)),
-                  next_energy: Math.round(20 * (dataBuildings.deuterium + 1) * Math.pow(1.1, (dataBuildings.deuterium + 1))),
+                  next_energy: Math.round(10 * (dataBuildings.deuterium + 1) * Math.pow(1.1, (dataBuildings.deuterium + 1))),
                   production: 8 * dataResources.booster * Math.round(10 * dataBuildings.deuterium * Math.pow(1.1, dataBuildings.deuterium))
               },
               energy: {
@@ -163,10 +163,10 @@ function App() {
           setBuildingsResources(buildingsResourcesTemp)
           const energyMetal = Math.round(10 * (dataBuildings.metal) * Math.pow(1.1, (dataBuildings.metal)))
           const energyCrystal = Math.round(10 * (dataBuildings.crystal) * Math.pow(1.1, (dataBuildings.crystal)))
-          const energyDeuterium = Math.round(20 * (dataBuildings.deuterium) * Math.pow(1.1, (dataBuildings.deuterium)))
+          const energyDeuterium = Math.round(10 * (dataBuildings.deuterium) * Math.pow(1.1, (dataBuildings.deuterium)))
           setUsedEnergy(energyMetal + energyCrystal + energyDeuterium)
-          setRemainingEnergy(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium + 50 * dataResources.satellites)
-          setEnergy(buildingsResourcesTemp.energy.production + 50 * dataResources.satellites)   
+          setRemainingEnergy(Math.round(20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)) - energyMetal - energyCrystal - energyDeuterium + 35 * dataResources.satellites)
+          setEnergy(buildingsResourcesTemp.energy.production + 35 * dataResources.satellites)   
           setResourcesNeeded({'metal': 1000000 * dataSearch.life_level, 'crystal': 1000000 * dataSearch.fire_level,
                                 'deuterium': 1000000 * dataSearch.shield_level})
                                 // console.log('authentifié')
@@ -269,18 +269,22 @@ useEffect(() => {
 }, [emptyJWT]);
 
 useEffect(() => {
-  const timer = setInterval(() => {
-      addResources();
-      // addResourcesPlanets();
-      // addResourcesPlanetsMultiverse();
-  }, 10000);
-  // 60000 en temps normal
-  return () => {
-      // Each time a new useEffect is executed, the previous useEffect will be cleaned up
-      // This function will be called to clear the previous setInterval timer
-      clearInterval(timer);
-  };
-}, [resources]);
+  // console.log(nature)
+  if (nature !== null) {
+
+    const timer = setInterval(() => {
+        addResources();
+        // addResourcesPlanets();
+        // addResourcesPlanetsMultiverse();
+    }, 10000);
+    // 60000 en temps normal
+    return () => {
+        // Each time a new useEffect is executed, the previous useEffect will be cleaned up
+        // This function will be called to clear the previous setInterval timer
+        clearInterval(timer);
+    };
+  }
+}, [resources, nature]);
 
   return (
     <div className="App">
