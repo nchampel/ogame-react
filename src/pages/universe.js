@@ -130,8 +130,10 @@ const Universe = (props) => {
               //   fontWeight="Bold"
               fontSize={14}
             >
-              {numeral(planet[type])
+              {type !== 'cost' ? numeral(planet[type])
                 .format("0,000,000,000,000")
+                .replaceAll(",", " ") : numeral(planet[type])
+                .format("0,000,000,000,000.00")
                 .replaceAll(",", " ")}
             </Typography>
           </Box>

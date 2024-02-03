@@ -34,11 +34,11 @@ const DialogRob = (props) => {
       <DialogContent>
         <Typography>
           {`Vous avez gagné ${numeral(resourcesRobbed.metal)
-            .format("0,000,000,000,000")
+            .format("0,000,000,000,000.00")
             .replaceAll(",", " ")} métal, ${numeral(resourcesRobbed.crystal)
-            .format("0,000,000,000,000")
+            .format("0,000,000,000,000.00")
             .replaceAll(",", " ")} cristal, ${numeral(resourcesRobbed.tritium)
-            .format("0,000,000,000,000")
+            .format("0,000,000,000,000.00")
             .replaceAll(",", " ")} tritium`}
         </Typography>
       </DialogContent>

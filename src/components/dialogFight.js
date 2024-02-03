@@ -92,11 +92,11 @@ const DialogFight = (props) => {
                 >
                   Combat gagné !
                   {`Vous avez gagné ${numeral(round.metal)
-                    .format("0,000,000,000,000")
+                    .format("0,000,000,000,000.00")
                     .replaceAll(",", " ")} métal, ${numeral(round.crystal)
-                    .format("0,000,000,000,000")
+                    .format("0,000,000,000,000.00")
                     .replaceAll(",", " ")} cristal, ${numeral(round.tritium)
-                    .format("0,000,000,000,000")
+                    .format("0,000,000,000,000.00")
                     .replaceAll(",", " ")} tritium`}
                 </Grid>
               )}

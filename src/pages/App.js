@@ -24,6 +24,10 @@ import Register from "./register";
 import { userApi } from "../api/user-api";
 // import Nature from './nature';
 
+function roundToTwo(num) {
+  return +(Math.round(num + 'e+2') + 'e-2');
+}
+
 function App() {
   const isMounted = useMounted();
   const navigate = useNavigate();
@@ -208,14 +212,13 @@ function App() {
                   Math.pow(1.1, dataBuildings.metal + 1)
               ),
               production:
-                8 *
+                roundToTwo(8 *
                   dataResources.booster *
-                  Math.round(
                     30 *
                       dataBuildings.metal *
                       Math.pow(1.1, dataBuildings.metal)
-                  ) +
-                720,
+                   +
+                72),
             },
             crystal: {
               metal: Math.round(48 * Math.pow(1.6, dataBuildings.crystal - 1)),
@@ -233,14 +236,14 @@ function App() {
                   Math.pow(1.1, dataBuildings.crystal + 1)
               ),
               production:
-                8 *
+                roundToTwo(8 *
                   dataResources.booster *
-                  Math.round(
+                  
                     20 *
                       dataBuildings.crystal *
                       Math.pow(1.1, dataBuildings.crystal)
-                  ) +
-                360,
+                   +
+                36),
             },
             tritium: {
               metal: Math.round(
@@ -260,9 +263,9 @@ function App() {
                   Math.pow(1.1, dataBuildings.tritium + 1)
               ),
               production:
-                8 *
+                roundToTwo(8 *
                 dataResources.booster *
-                Math.round(
+                
                   10 *
                     dataBuildings.tritium *
                     Math.pow(1.1, dataBuildings.tritium)
@@ -349,50 +352,81 @@ function App() {
 
   const addResources = () => {
     const resourcesTemp = { ...resources };
+    // console.log(resourcesTemp)
     // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
-    resourcesTemp.metal +=
-      Math.round(
-        (8 * 30 * buildings.metal * Math.pow(1.1, buildings.metal)) / 360 + 2
-      ) === 0 && buildings.metal > 0
-        ? 1
-        : Math.round(
-            (8 *
-              booster.coefficient *
-              30 *
-              buildings.metal *
-              Math.pow(1.1, buildings.metal)) /
-              360 +
-              2
-          );
-    resourcesTemp.crystal +=
-      Math.round(
-        (8 * 20 * buildings.crystal * Math.pow(1.1, buildings.crystal)) / 360 +
-          1
-      ) === 0 && buildings.crystal > 0
-        ? 1
-        : Math.round(
-            (8 *
-              booster.coefficient *
-              20 *
-              buildings.crystal *
-              Math.pow(1.1, buildings.crystal)) /
-              360 +
-              1
-          );
-    resourcesTemp.tritium +=
-      Math.round(
-        (8 * 10 * buildings.tritium * Math.pow(1.1, buildings.tritium)) /
-          360
-      ) === 0 && buildings.tritium > 0
-        ? 1
-        : Math.round(
-            (8 *
-              booster.coefficient *
-              30 *
-              buildings.tritium *
-              Math.pow(1.1, buildings.tritium)) /
-              360
-          );
+    // resourcesTemp.metal +=
+    //   Math.round(
+    //     (8 * 30 * buildings.metal * Math.pow(1.1, buildings.metal)) / 360 + 2
+    //   ) === 0 && buildings.metal > 0
+    //     ? 1
+    //     : Math.round(
+    //         (8 *
+    //           booster.coefficient *
+    //           30 *
+    //           buildings.metal *
+    //           Math.pow(1.1, buildings.metal)) /
+    //           360 +
+    //           2
+    //       );
+    resourcesTemp.metal += (
+              (8 *
+                booster.coefficient *
+                30 *
+                buildings.metal *
+                Math.pow(1.1, buildings.metal)) /
+                360 +
+                0.2
+    );
+    resourcesTemp.crystal += (
+              (8 *
+                booster.coefficient *
+                20 *
+                buildings.crystal *
+                Math.pow(1.1, buildings.crystal)) /
+                360 +
+                0.1
+    );
+    // resourcesTemp.crystal +=
+    //   Math.round(
+    //     (8 * 20 * buildings.crystal * Math.pow(1.1, buildings.crystal)) / 360 +
+    //       1
+    //   ) === 0 && buildings.crystal > 0
+    //     ? 1
+    //     : Math.round(
+    //         (8 *
+    //           booster.coefficient *
+    //           20 *
+    //           buildings.crystal *
+    //           Math.pow(1.1, buildings.crystal)) /
+    //           360 +
+    //           1
+    //       );
+    resourcesTemp.crystal += (
+      (8 *
+        booster.coefficient *
+        10 *
+        buildings.crystal *
+        Math.pow(1.1, buildings.crystal)) /
+        360
+);
+    // resourcesTemp.tritium +=
+    //   Math.round(
+    //     (8 * 10 * buildings.tritium * Math.pow(1.1, buildings.tritium)) /
+    //       360
+    //   ) === 0 && buildings.tritium > 0
+    //     ? 1
+    //     : Math.round(
+    //         (8 *
+    //           booster.coefficient *
+    //           30 *
+    //           buildings.tritium *
+    //           Math.pow(1.1, buildings.tritium)) /
+    //           360
+    //       );
+    // console.log(resourcesTemp.metal)
+    resourcesTemp.metal = roundToTwo(resourcesTemp.metal)
+    resourcesTemp.crystal = roundToTwo(resourcesTemp.crystal)
+    resourcesTemp.tritium = roundToTwo(resourcesTemp.tritium)
     setResources(resourcesTemp);
     saveResources(resourcesTemp);
   };
@@ -513,7 +547,7 @@ function App() {
         // addResourcesPlanets();
         // addResourcesPlanetsMultiverse();
       }, 10000);
-      // 60000 en temps normal
+      // 10000 en temps normal
       return () => {
         // Each time a new useEffect is executed, the previous useEffect will be cleaned up
         // This function will be called to clear the previous setInterval timer
@@ -586,13 +620,13 @@ function App() {
                 </DialogActions>
               </Dialog>
               <Typography>{`Métal : ${numeral(resources.metal)
-                .format("0,000,000,000,000")
+                .format("0,000,000,000,000.00")
                 .replaceAll(",", " ")} Cristal : ${numeral(resources.crystal)
-                .format("0,000,000,000,000")
+                .format("0,000,000,000,000.00")
                 .replaceAll(",", " ")} Tritium : ${numeral(
                 resources.tritium
               )
-                .format("0,000,000,000,000")
+                .format("0,000,000,000,000.00")
                 .replaceAll(",", " ")} Energie : ${numeral(remainingEnergy)
                 .format("0,000,000,000,000")
                 .replaceAll(",", " ")} / ${numeral(energy)
