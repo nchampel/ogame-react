@@ -1,16 +1,33 @@
 import { Box, Link, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import names from "../modules/names";
+import amethyst from "../assets/amethyst.webp";
+import ruby from "../assets/Ruby_gem.jpg";
+import gold from "../assets/gold-background-montage.webp";
+import sapphire from "../assets/blue-jewellery-jewel-gem-gemstone-sapphire-fashion-accessory-1088100.jpg";
+import emerald from "../assets/Emerald-Stone-PNG-Image.webp";
+
+const images = {
+  'sotoc': ruby,
+  'flumia': emerald,
+  'sora': gold,
+  'nano': amethyst,
+  'altheron': sapphire,
+}
 
 const Sidebar = (props) => {
-  // const isMounted = useMounted();
   const { nature } = props;
-  // const [resources, setResources] = useState({metal: 0, crystal: 0, tritium: 0, energy: 0})
-  // console.log(buildingsResources.metal)
 
   return (
     <Box style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
       <Typography>{`Alignement ${names[nature]}`}</Typography>
+      <Box>
+        <img
+          src={images[nature]}
+          alt="Logo alignement"
+          style={{ width: "200px", height: "auto" }}
+        />
+      </Box>
       <Box
         sx={{
           display: "flex",
