@@ -4,6 +4,10 @@ import { planetApi } from "../api/planet-api";
 import Buildings from "../components/buildings";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 
+function roundToTwo(num) {
+  return +(Math.round(num + "e+2") + "e-2");
+}
+
 const Dashboard = (props) => {
   const {
     resources,
@@ -109,11 +113,14 @@ const Dashboard = (props) => {
         next_energy: Math.round(
           10 * (buildings.metal + 1) * Math.pow(1.1, buildings.metal + 1)
         ),
-        production:
+        production: roundToTwo(
           8 *
             booster.coefficient *
-            Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal)) +
-          720,
+            30 *
+            buildings.metal *
+            Math.pow(1.1, buildings.metal) +
+            72
+        ),
       },
       crystal: {
         metal: Math.round(48 * Math.pow(1.6, buildings.crystal - 1)),
@@ -124,13 +131,14 @@ const Dashboard = (props) => {
         next_energy: Math.round(
           10 * (buildings.crystal + 1) * Math.pow(1.1, buildings.crystal + 1)
         ),
-        production:
+        production: roundToTwo(
           8 *
             booster.coefficient *
-            Math.round(
-              20 * buildings.crystal * Math.pow(1.1, buildings.crystal)
-            ) +
-          360,
+            20 *
+            buildings.crystal *
+            Math.pow(1.1, buildings.crystal) +
+            36
+        ),
       },
       tritium: {
         metal: Math.round(225 * Math.pow(1.5, buildings.tritium - 1)),
@@ -139,16 +147,15 @@ const Dashboard = (props) => {
           10 * buildings.tritium * Math.pow(1.1, buildings.tritium)
         ),
         next_energy: Math.round(
-          10 *
-            (buildings.tritium + 1) *
-            Math.pow(1.1, buildings.tritium + 1)
+          10 * (buildings.tritium + 1) * Math.pow(1.1, buildings.tritium + 1)
         ),
-        production:
+        production: roundToTwo(
           8 *
-          booster.coefficient *
-          Math.round(
-            10 * buildings.tritium * Math.pow(1.1, buildings.tritium)
-          ),
+            booster.coefficient *
+            10 *
+            buildings.tritium *
+            Math.pow(1.1, buildings.tritium)
+        ),
       },
       energy: {
         metal: Math.round(60 * Math.pow(1.5, buildings.energy - 1)),
@@ -171,8 +178,13 @@ const Dashboard = (props) => {
     const energyDeuterium = Math.round(
       10 * buildings.tritium * Math.pow(1.1, buildings.tritium)
     );
-    // console.log(energyMetal)
-    // console.log(energyCrystal)
+    // console.log(8 *
+    //   booster.booster *
+    //   30 *
+    //   buildings.metal *
+    //   Math.pow(1.1, buildings.metal)
+    //   )
+    // console.log(booster)
     // console.log(energyDeuterium)
     setUsedEnergy(energyMetal + energyCrystal + energyDeuterium);
     setRemainingEnergy(
@@ -285,10 +297,11 @@ const Dashboard = (props) => {
               mb: 2,
             }}
           >
-            Pour construire la fonderie, la raffinerie et l'extracteur, il faut de l'énergie
-            et des ressources. Pour avoir de l'énergie, il faut construire puis
-            améliorer la centrale solaire. Pour les ressources, plus le niveau
-            de votre bâtiment est élevé, plus il les produira vite.
+            Pour construire la fonderie, la raffinerie et l'extracteur, il faut
+            de l'énergie et des ressources. Pour avoir de l'énergie, il faut
+            construire puis améliorer la centrale solaire. Pour les ressources,
+            plus le niveau de votre bâtiment est élevé, plus il les produira
+            vite.
           </Typography>
           <Typography sx={{ textAlign: "left" }}>
             Pour l'instant le jeu se limite à cela, mais des fonctionnalités

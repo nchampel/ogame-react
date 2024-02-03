@@ -58,7 +58,7 @@ const Boosters = (props) => {
       {/* <Typography>{`Métal : ${numeral(resources.metal).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>    */}
       <Typography>{`Booster : x ${booster.coefficient}`}</Typography>
       <Typography>{`Coût : ${numeral(booster.cost)
-        .format("0,000,000,000,000")
+        .format("0,000,000,000,000.00")
         .replaceAll(",", " ")} Métal`}</Typography>
       <Button onClick={() => addBooster()}>Acheter booster</Button>
     </Box>

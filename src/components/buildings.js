@@ -29,7 +29,7 @@ const Buildings = (props) => {
         <Box sx={{ margin: "0px 20px" }}>
           <Typography>{`${title} : ${buildings[type]}`}</Typography>
           <Typography>{`${numeral(buildingsResources[type]["production"])
-            .format("0,000,000,000,000")
+            .format("0,000,000,000,000.00")
             .replaceAll(",", " ")} /h`}</Typography>
           <Typography>{`Métal : ${numeral(buildingsResources[type]["metal"])
             .format("0,000,000,000,000")
@@ -78,7 +78,7 @@ const Buildings = (props) => {
         })}
 
         <Card
-          item
+          item="true"
           sx={{
             marginTop: "15px",
             background: "#313742",
