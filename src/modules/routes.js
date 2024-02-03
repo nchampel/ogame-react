@@ -12,49 +12,49 @@ import Universe from "../pages/universe";
 
 const routes = [
   {
-    path: '/',
-    element: Register
+    path: "/",
+    element: Register,
   },
-    {
-      path: '/build',
-      element: Dashboard
-    },
-    {
-      path: '/help',
-      element: Home
-    },
-    // {
-    //   path: '/boosters',
-    //   element: Boosters
-    // },
-    {
-      path: '/universe',
-      element: Universe
-    },
-    // {
-    //   path: '/multiverse',
-    //   element: Multiverse
-    // },
-    {
-      path: '/search',
-      element: Search
-    },
-    // {
-    //   path: '/reinitialization',
-    //   element: Reinitialization
-    // },
-    {
-      path: '/determine-nature',
-      element: Nature
-    },
-    {
-      path: '/ranking',
-      element: Ranking
-    },
-    {
-      path: '/thanks',
-      element: Thanks
-    },
-]
+  {
+    path: "/build",
+    element: Dashboard,
+  },
+  {
+    path: "/help",
+    element: Home,
+  },
+  // {
+  //   path: '/boosters',
+  //   element: Boosters
+  // },
+  {
+    path: "/universe",
+    element: Universe,
+  },
+  // {
+  //   path: '/multiverse',
+  //   element: Multiverse
+  // },
+  {
+    path: "/search",
+    element: Search,
+  },
+  // {
+  //   path: '/reinitialization',
+  //   element: Reinitialization
+  // },
+  {
+    path: "/determine-nature",
+    element: Nature,
+  },
+  {
+    path: "/ranking",
+    element: Ranking,
+  },
+  {
+    path: "/thanks",
+    element: Thanks,
+  },
+];
 
 export default routes;
