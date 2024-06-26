@@ -1,6 +1,7 @@
 import { Box, Button, Grid, TextField, Typography, Link } from "@mui/material";
 // import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
+import CustomLink from "../UI/CustomLink";
 function Home() {
   // const navigate = useNavigate();
   return (
@@ -45,17 +46,17 @@ function Home() {
         Il fallait pour cela rétablir l'équilibre, et préserver l'unicité sacrée
         ...
       </Typography>
-      <Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
         Le but du jeu est de construire le bouclier avant l'arrivée du fléau.
       </Typography>
-      <Link
+      <CustomLink
         component={RouterLink}
         underline="none"
         sx={{ marginBottom: "20px" }}
         to="/build"
       >
         Retour au jeu
-      </Link>
+      </CustomLink>
     </Box>
   );
 }

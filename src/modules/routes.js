@@ -7,6 +7,7 @@ import Ranking from "../pages/ranking";
 import Register from "../pages/register";
 import Reinitialization from "../pages/reinitialization";
 import Search from "../pages/search";
+import Shop from "../pages/shop";
 import Thanks from "../pages/thanks";
 import Universe from "../pages/universe";
 
@@ -54,6 +55,10 @@ const routes = [
   {
     path: "/thanks",
     element: Thanks,
+  },
+  {
+    path: "/shop",
+    element: Shop,
   },
 ];
 

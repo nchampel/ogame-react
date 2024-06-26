@@ -22,10 +22,11 @@ import numeral from "numeral";
 import { searchApi } from "../api/search-api";
 import Register from "./register";
 import { userApi } from "../api/user-api";
+import CustomButton from "../UI/CustomButton";
 // import Nature from './nature';
 
 function roundToTwo(num) {
-  return +(Math.round(num + 'e+2') + 'e-2');
+  return +(Math.round(num + "e+2") + "e-2");
 }
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
     tritium: {},
     energy: {},
   });
-  const [booster, setBooster] = useState({ coefficient: 1, cost: 10000 });
+  const [booster, setBooster] = useState({ coefficient: 1, cost: 1000 });
   const [planets, setPlanets] = useState([]);
   const [planetsMultiverse, setPlanetsMultiverse] = useState([]);
   const [starship, setStarship] = useState({ is_built: false });
@@ -68,6 +69,7 @@ function App() {
   const [emptyJWT, setEmptyJWT] = useState(true);
   const [open, setOpen] = useState(false);
   const [nature, setNature] = useState(null);
+  const [unityLink, setUnityLink] = useState(0);
   // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
   // const tdeuterium = 40
@@ -115,10 +117,12 @@ function App() {
       let dataPlanetsMultiverse = null;
       let dataStarship = null;
       let dataSearch = null;
+      let dataUser = null;
       if (verify.msg !== "Pas de token") {
         dataResources = await planetApi.getResources(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
+        // console.log(dataResources)
         dataBuildings = await planetApi.getBuildings(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
@@ -136,6 +140,9 @@ function App() {
           localStorage.getItem("jwt").replaceAll('"', "")
         );
         dataSearch = await searchApi.getSearchData(
+          localStorage.getItem("jwt").replaceAll('"', "")
+        );
+        dataUser = await userApi.getUnityLink(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
       }
@@ -211,14 +218,14 @@ function App() {
                   (dataBuildings.metal + 1) *
                   Math.pow(1.1, dataBuildings.metal + 1)
               ),
-              production:
-                roundToTwo(8 *
+              production: roundToTwo(
+                8 *
                   dataResources.booster *
-                    30 *
-                      dataBuildings.metal *
-                      Math.pow(1.1, dataBuildings.metal)
-                   +
-                72),
+                  30 *
+                  dataBuildings.metal *
+                  Math.pow(1.1, dataBuildings.metal) +
+                  72
+              ),
             },
             crystal: {
               metal: Math.round(48 * Math.pow(1.6, dataBuildings.crystal - 1)),
@@ -235,20 +242,17 @@ function App() {
                   (dataBuildings.crystal + 1) *
                   Math.pow(1.1, dataBuildings.crystal + 1)
               ),
-              production:
-                roundToTwo(8 *
+              production: roundToTwo(
+                8 *
                   dataResources.booster *
-                  
-                    20 *
-                      dataBuildings.crystal *
-                      Math.pow(1.1, dataBuildings.crystal)
-                   +
-                36),
+                  20 *
+                  dataBuildings.crystal *
+                  Math.pow(1.1, dataBuildings.crystal) +
+                  36
+              ),
             },
             tritium: {
-              metal: Math.round(
-                225 * Math.pow(1.5, dataBuildings.tritium - 1)
-              ),
+              metal: Math.round(225 * Math.pow(1.5, dataBuildings.tritium - 1)),
               crystal: Math.round(
                 75 * Math.pow(1.5, dataBuildings.tritium - 1)
               ),
@@ -262,14 +266,13 @@ function App() {
                   (dataBuildings.tritium + 1) *
                   Math.pow(1.1, dataBuildings.tritium + 1)
               ),
-              production:
-                roundToTwo(8 *
-                dataResources.booster *
-                
+              production: roundToTwo(
+                8 *
+                  dataResources.booster *
                   10 *
-                    dataBuildings.tritium *
-                    Math.pow(1.1, dataBuildings.tritium)
-                ),
+                  dataBuildings.tritium *
+                  Math.pow(1.1, dataBuildings.tritium)
+              ),
             },
             energy: {
               metal: Math.round(60 * Math.pow(1.5, dataBuildings.energy - 1)),
@@ -292,19 +295,17 @@ function App() {
           const energyCrystal = Math.round(
             10 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal)
           );
-          const energyDeuterium = Math.round(
-            10 *
-              dataBuildings.tritium *
-              Math.pow(1.1, dataBuildings.tritium)
+          const energyTritium = Math.round(
+            10 * dataBuildings.tritium * Math.pow(1.1, dataBuildings.tritium)
           );
-          setUsedEnergy(energyMetal + energyCrystal + energyDeuterium);
+          setUsedEnergy(energyMetal + energyCrystal + energyTritium);
           setRemainingEnergy(
             Math.round(
               20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)
             ) -
               energyMetal -
               energyCrystal -
-              energyDeuterium +
+              energyTritium +
               35 * dataResources.satellites
           );
           setEnergy(
@@ -316,6 +317,7 @@ function App() {
             crystal: 1000000 * dataSearch.fire_level,
             tritium: 1000000 * dataSearch.shield_level,
           });
+          setUnityLink(dataUser.unity_link);
           // console.log('authentifié')
         } else {
           // console.log('login')
@@ -368,24 +370,22 @@ function App() {
     //           360 +
     //           2
     //       );
-    resourcesTemp.metal += (
-              (8 *
-                booster.coefficient *
-                30 *
-                buildings.metal *
-                Math.pow(1.1, buildings.metal)) /
-                360 +
-                0.2
-    );
-    resourcesTemp.crystal += (
-              (8 *
-                booster.coefficient *
-                20 *
-                buildings.crystal *
-                Math.pow(1.1, buildings.crystal)) /
-                360 +
-                0.1
-    );
+    resourcesTemp.metal +=
+      (8 *
+        booster.coefficient *
+        30 *
+        buildings.metal *
+        Math.pow(1.1, buildings.metal)) /
+        360 +
+      0.2;
+    resourcesTemp.crystal +=
+      (8 *
+        booster.coefficient *
+        20 *
+        buildings.crystal *
+        Math.pow(1.1, buildings.crystal)) /
+        360 +
+      0.1;
     // resourcesTemp.crystal +=
     //   Math.round(
     //     (8 * 20 * buildings.crystal * Math.pow(1.1, buildings.crystal)) / 360 +
@@ -401,14 +401,13 @@ function App() {
     //           360 +
     //           1
     //       );
-    resourcesTemp.crystal += (
+    resourcesTemp.tritium +=
       (8 *
         booster.coefficient *
         10 *
-        buildings.crystal *
-        Math.pow(1.1, buildings.crystal)) /
-        360
-);
+        buildings.tritium *
+        Math.pow(1.1, buildings.tritium)) /
+      360;
     // resourcesTemp.tritium +=
     //   Math.round(
     //     (8 * 10 * buildings.tritium * Math.pow(1.1, buildings.tritium)) /
@@ -424,9 +423,9 @@ function App() {
     //           360
     //       );
     // console.log(resourcesTemp.metal)
-    resourcesTemp.metal = roundToTwo(resourcesTemp.metal)
-    resourcesTemp.crystal = roundToTwo(resourcesTemp.crystal)
-    resourcesTemp.tritium = roundToTwo(resourcesTemp.tritium)
+    resourcesTemp.metal = roundToTwo(resourcesTemp.metal);
+    resourcesTemp.crystal = roundToTwo(resourcesTemp.crystal);
+    resourcesTemp.tritium = roundToTwo(resourcesTemp.tritium);
     setResources(resourcesTemp);
     saveResources(resourcesTemp);
   };
@@ -477,8 +476,8 @@ function App() {
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["deuterium_level"] *
-            Math.pow(1.1, resourcesTemp[index]["deuterium_level"])) /
+            resourcesTemp[index]["tritium_level"] *
+            Math.pow(1.1, resourcesTemp[index]["tritium_level"])) /
             360
         );
       resourcesTemp[index]["cost"] = Math.round(
@@ -516,8 +515,8 @@ function App() {
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["deuterium_level"] *
-            Math.pow(1.1, resourcesTemp[index]["deuterium_level"])) /
+            resourcesTemp[index]["tritium_level"] *
+            Math.pow(1.1, resourcesTemp[index]["tritium_level"])) /
             60
         );
     });
@@ -540,7 +539,6 @@ function App() {
   }, [emptyJWT]);
 
   useEffect(() => {
-    // console.log(nature)
     if (nature !== null) {
       const timer = setInterval(() => {
         addResources();
@@ -549,8 +547,6 @@ function App() {
       }, 10000);
       // 10000 en temps normal
       return () => {
-        // Each time a new useEffect is executed, the previous useEffect will be cleaned up
-        // This function will be called to clear the previous setInterval timer
         clearInterval(timer);
       };
     }
@@ -619,20 +615,46 @@ function App() {
                   </Grid>
                 </DialogActions>
               </Dialog>
-              <Typography>{`Métal : ${numeral(resources.metal)
-                .format("0,000,000,000,000.00")
-                .replaceAll(",", " ")} Cristal : ${numeral(resources.crystal)
-                .format("0,000,000,000,000.00")
-                .replaceAll(",", " ")} Tritium : ${numeral(
-                resources.tritium
-              )
-                .format("0,000,000,000,000.00")
-                .replaceAll(",", " ")} Energie : ${numeral(remainingEnergy)
-                .format("0,000,000,000,000")
-                .replaceAll(",", " ")} / ${numeral(energy)
-                .format("0,000,000,000,000")
-                .replaceAll(",", " ")}`}</Typography>
-              <Button onClick={handleOpen}>Déconnexion</Button>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: "auto",
+                }}
+              >
+                <Typography sx={{ mr: 4 }}>{`Métal : ${numeral(resources.metal)
+                  .format("0,000,000,000,000.00")
+                  .replaceAll(",", " ")}`}</Typography>
+                <Typography sx={{ mr: 4 }}>{`Cristal : ${numeral(
+                  resources.crystal
+                )
+                  .format("0,000,000,000,000.00")
+                  .replaceAll(",", " ")}`}</Typography>
+                <Typography sx={{ mr: 4 }}>{`Tritium : ${numeral(
+                  resources.tritium
+                )
+                  .format("0,000,000,000,000.00")
+                  .replaceAll(",", " ")}`}</Typography>
+                <Typography>{`Energie : ${numeral(remainingEnergy)
+                  .format("0,000,000,000,000")
+                  .replaceAll(",", " ")} / ${numeral(energy)
+                  .format("0,000,000,000,000")
+                  .replaceAll(",", " ")}`}</Typography>
+              </Box>
+              {/* <Button
+                onClick={handleOpen}
+                // sx={{
+                //   ".css-mark81-MuiButtonBase-root-MuiButton-root": {
+                //     backgroundColor: "#313742",
+                //   },
+                // }}
+                color="secondary"
+                variant="contained"
+              >
+                Déconnexion
+              </Button> */}
+              <CustomButton sx={{ mb: 2, mt: 2}}>Déconnexion</CustomButton>
             </>
           )}
           <Routes>
@@ -702,6 +724,8 @@ function App() {
                     setSearchLevels={setSearchLevels}
                     nature={nature}
                     setNature={setNature}
+                    unityLink={unityLink}
+                    setUnityLink={setUnityLink}
                   />
                 }
               />

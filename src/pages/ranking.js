@@ -17,6 +17,8 @@ import { rankingApi } from "../api/ranking-api";
 import { useMounted } from "../hooks/use-mounted";
 // import { useNavigate } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
+import CustomTableCell from "../UI/CustomTableCell";
+// import Label1 from "../components/t"
 
 const Ranking = () => {
   const isMounted = useMounted();
@@ -28,6 +30,7 @@ const Ranking = () => {
     ranking_altheron: [{ user: "", points: "" }],
     ranking_flumia: [{ user: "", points: "" }],
   });
+  // const t = Preview();
   // const [rankingByNature, setRankingByNature] = useState({'sotoc': []},{'altheron': []},{'nano': []},
   // {'sora': []},{'flumia': []},)
   // const { isAuthenticated } = props
@@ -44,13 +47,74 @@ const Ranking = () => {
 
   function CustomTable(props) {
     const { type } = props;
+
+    let hRemains = 0;
+  let qRemains = 0;
+  let nRemains = 0;
+  let dRemains = 0;
+  let result = {};
+  let amount = 43
+  let h = amount / 50;
+  if (Math.floor(h) > 0){
+//     result.push({'H': Math.floor(h)});
+    result.H = Math.floor(h);
+    hRemains = amount % 50;
+  } else {
+    hRemains = amount;
+  }
+  
+  let q = hRemains / 25;
+  if (Math.floor(q) > 0){
+//     result.push({'Q': Math.floor(q)});
+     result.Q = Math.floor(q);
+    qRemains = hRemains % 25;
+  } else {
+    qRemains = hRemains;
+  }
+
+  console.log(qRemains)
+  
+  let d = qRemains / 10;
+  if (Math.floor(d) > 0){
+//     result.push({'D': Math.floor(d)});
+     result.D = Math.floor(d);
+    dRemains = d % 10;
+  } else {
+    dRemains = d;
+  }
+  
+  let n = dRemains / 5;
+  if (Math.floor(n) > 0){
+//     result.push({'N': Math.floor(n)});
+     result.N = Math.floor(n);
+    nRemains = n % 5;
+  } else {
+    nRemains = n;
+  }
+  
+  if (nRemains > 0){
+//     result.push({'P': nRemains});
+     result.P = Math.floor(nRemains);
+  }
+//   let p = nRemains / 1;
+//   let pRemains = amount % 1;
+//   change = {"H": Math.floor(h) === 0 ? 0 : Math.floor(h), "Q": Math.floor(q), "D": Math.floor(d), "N": Math.floor(n), "p": nRemains};
+  let change = {};
+  const keys = Object.keys(result)
+  for(let i = 0; i < keys.length; i++){
+   if(result[keys[i]] > 0){
+     change[keys[i]] = result[keys[i]];
+   }
+}
+  console.log(change);
     return (
       <>
+      {/* <Label1 value={'Solution'} color={'blue'} /> */}
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "white" }}>Pseudo</TableCell>
-              <TableCell sx={{ color: "white" }}>Points</TableCell>
+              <CustomTableCell>Pseudo</CustomTableCell>
+              <CustomTableCell>Points</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -58,8 +122,8 @@ const Ranking = () => {
               return (
                 <>
                   <TableRow key={user.pseudo}>
-                    <TableCell sx={{ color: "white" }}>{user.pseudo}</TableCell>
-                    <TableCell sx={{ color: "white" }}>{user.points}</TableCell>
+                    <CustomTableCell>{user.pseudo}</CustomTableCell>
+                    <CustomTableCell>{user.points}</CustomTableCell>
                   </TableRow>
                 </>
               );
@@ -108,7 +172,7 @@ const Ranking = () => {
       );
 
       if (isMounted) {
-        console.log(rankingData);
+        // console.log(rankingData);
         setRanking(rankingData);
       }
     } catch (err) {
@@ -126,9 +190,9 @@ const Ranking = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ color: "white" }}>Pseudo</TableCell>
-            <TableCell sx={{ color: "white" }}>Alignement</TableCell>
-            <TableCell sx={{ color: "white" }}>Points</TableCell>
+            <CustomTableCell>Pseudo</CustomTableCell>
+            <CustomTableCell>Alignement</CustomTableCell>
+            <CustomTableCell>Points</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -136,9 +200,9 @@ const Ranking = () => {
             return (
               <>
                 <TableRow key={user.pseudo}>
-                  <TableCell sx={{ color: "white" }}>{user.pseudo}</TableCell>
-                  <TableCell sx={{ color: "white" }}>{user.nature}</TableCell>
-                  <TableCell sx={{ color: "white" }}>{user.points}</TableCell>
+                  <CustomTableCell>{user.pseudo}</CustomTableCell>
+                  <CustomTableCell>{user.nature}</CustomTableCell>
+                  <CustomTableCell>{user.points}</CustomTableCell>
                 </TableRow>
               </>
             );
@@ -155,11 +219,18 @@ const Ranking = () => {
           aria-label="lab API tabs example"
           sx={{
             ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected": {
-              color: "#1976d2",
+              color: "black",
+              fontWeight: "700"
+              // borderBottom: "2px solid black"
+              // fontWeight: "600px"
+            },
+            ".css-1aquho2-MuiTabs-indicator": {
+              backgroundColor: "black",
             },
             ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root": {
-              color: "white",
-              // opacity: 1
+              // color: "rgba(0, 0, 0, 0.4)",
+              fontWeight: "400",
+              color: "black"
             },
           }}
         >

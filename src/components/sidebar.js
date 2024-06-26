@@ -40,7 +40,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px" }}
+          sx={{ marginBottom: "20px", color: "#000" }}
           to="/help"
         >
           Explications
@@ -48,7 +48,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px" }}
+          sx={{ marginBottom: "20px", color: "#000"  }}
           to="/build"
         >
           Constructions
@@ -62,7 +62,15 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px" }}
+          sx={{ marginBottom: "20px", color: "#000"  }}
+          to="/shop"
+        >
+          Boutique
+        </Link>
+        <Link
+          component={RouterLink}
+          underline="none"
+          sx={{ marginBottom: "20px", color: "#000"  }}
           to="/ranking"
         >
           Classement
@@ -70,7 +78,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px" }}
+          sx={{ marginBottom: "20px", color: "#000"  }}
           to="/thanks"
         >
           Remerciements

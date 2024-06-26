@@ -20,10 +20,10 @@ const Buildings = (props) => {
           marginTop: "15px",
           background: "#313742",
           color: "white",
-          boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
+          // boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
           padding: "2px",
           minWidth: "300px",
-          border: "1px solid white",
+          // border: "1px solid white",
         }}
       >
         <Box sx={{ margin: "0px 20px" }}>
@@ -83,10 +83,10 @@ const Buildings = (props) => {
             marginTop: "15px",
             background: "#313742",
             color: "white",
-            boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
+            // boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
             padding: "2px",
             minWidth: "300px",
-            border: "1px solid white",
+            // border: "1px solid black",
           }}
         >
           <Box sx={{ margin: "0px 20px" }}>
