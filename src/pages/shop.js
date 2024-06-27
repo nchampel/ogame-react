@@ -1,12 +1,26 @@
-import { Box, Button, Card, Typography } from "@mui/material";
+import { Box, Button, Card, Dialog, DialogActions, DialogContent, Grid, Typography } from "@mui/material";
 import { planetApi } from "../api/planet-api";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { userApi } from "../api/user-api";
 import numeral from "numeral";
+import { useMounted } from "../hooks/use-mounted";
 
 const Shop = (props) => {
-  // const isMounted = useMounted();
+  const isMounted = useMounted();
   const { unityLink, setUnityLink, booster, setBooster, resources, setResources } = props;
+  const [open, setOpen] = useState(false);
+  // const [isHarvestDaily, setIsHarvestDaily] = useState(true)
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+  const handleDaily = () => {
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    if (false) setOpen(true)
+  }, [])
 
   const saveLevelBooster = useCallback(async (level) => {
     try {
@@ -46,7 +60,92 @@ const Shop = (props) => {
     }
   };
 
+  const saveDailyClaimed = useCallback(async () => {
+    try {
+      const isHarvestDaily = await planetApi.saveDailyClaimed(
+        localStorage.getItem("jwt").replaceAll('"', "")
+      );
+      if (isHarvestDaily.msg === 'récompense sauvegardée') {
+        setUnityLink(isHarvestDaily.unityLink)
+        // setOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  const determinateDaily = useCallback(async () => {
+    try {
+      
+      const isNotDailyHaversted = await planetApi.determinateDaily(
+        localStorage.getItem("jwt").replaceAll('"', "")
+      );
+      
+      if (isMounted()) {
+        if (isNotDailyHaversted.is_daily_harvestable){
+          setOpen(true);
+          saveDailyClaimed();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    determinateDaily();
+  }, []);
+
   return (
+    
+    
+         <>   
+              <Dialog
+                open={open}
+                // TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+                fullWidth
+                maxWidth="sm"
+                PaperProps={{
+                  style: {
+                    backgroundColor: "#434A54",
+                    color: "white",
+                  },
+                }}
+              >
+                {/* <DialogTitle>Résultats du combat</DialogTitle> */}
+                <DialogContent>
+                  <Grid
+                    container
+                    justifyContent="center"
+                    sx={{
+                      color: "white",
+                      mt: 5,
+                    }}
+                  >
+                    <Typography>Vous avez obtenu la récompense de connexion journalière</Typography>
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Grid
+                    container
+                    justifyContent="center"
+                    sx={{
+                      color: "white",
+                      mt: 5,
+                    }}
+                  >
+                    <Button
+                      onClick={handleClose}
+                      style={{ color: "white" }}
+                    >
+                      Ok
+                    </Button>
+                  </Grid>
+                </DialogActions>
+              </Dialog>
     <Box
       sx={{
         minHeight: "600px",
@@ -54,7 +153,7 @@ const Shop = (props) => {
         flexDirection: "column",
         margin: "auto",
       }}
-    >
+      >
       <Typography>{`Lien-Unités : ${numeral(unityLink)
           .format("0,000,000,000,000.00.00")
           .replaceAll(",", " ")}`}</Typography>
@@ -79,8 +178,8 @@ const Shop = (props) => {
           flexDirection: "row",
           alignContent: "center",
           justifyContent: "center"
-        }}
-      > */}
+          }}
+          > */}
         <Typography>{`Coût : ${numeral(booster.cost)
           .format("0,000,000,000,000.00.00")
           .replaceAll(",", " ")} Lien-Unités`}</Typography>
@@ -90,6 +189,8 @@ const Shop = (props) => {
       {/* </Box> */}
       </Card>
     </Box>
+    </>
+    
   );
 };
 

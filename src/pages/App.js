@@ -527,6 +527,7 @@ function App() {
   const handleDeconnection = () => {
     localStorage.removeItem("jwt");
     // setEmptyJWT(true)
+    setOpen(false)
     window.location.reload();
     // setIsAuthenticated(false)
     // setOpen(false)
@@ -654,7 +655,7 @@ function App() {
               >
                 Déconnexion
               </Button> */}
-              <CustomButton sx={{ mb: 2, mt: 2}}>Déconnexion</CustomButton>
+              <CustomButton sx={{ mb: 2, mt: 2}} onClick={handleOpen}>Déconnexion</CustomButton>
             </>
           )}
           <Routes>
