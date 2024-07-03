@@ -9,3 +9,6 @@ Classement, remerciements mis en ligne
 
 04 02 2024
 Design Flumia, début de la boutique
+
+26 06 2024
+Continuation de la boutique

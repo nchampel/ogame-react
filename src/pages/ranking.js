@@ -71,8 +71,6 @@ const Ranking = () => {
   } else {
     qRemains = hRemains;
   }
-
-  console.log(qRemains)
   
   let d = qRemains / 10;
   if (Math.floor(d) > 0){
@@ -106,7 +104,6 @@ const Ranking = () => {
      change[keys[i]] = result[keys[i]];
    }
 }
-  console.log(change);
     return (
       <>
       {/* <Label1 value={'Solution'} color={'blue'} /> */}
@@ -185,12 +182,43 @@ const Ranking = () => {
   }, [getRanking]);
 
   return (
-    <Box sx={{ minHeight: "600px" }}>
+    <Box sx={{ minHeight: "550px" }}>
       <Typography sx={{ mt: 5, fontSize: 22 }}>Classement total</Typography>
       <Table>
         <TableHead>
-          <TableRow>
-            <CustomTableCell>Pseudo</CustomTableCell>
+          <TableRow 
+          sx={{
+            ".css-1ds061a-MuiTableCell-root": {
+              color: "white",
+              // borderBottomColor: 'white'
+              // borderBottom: "10px solid white"
+              // fontWeight: "600px"
+            },
+            ".css-7jxdzz-MuiButtonBase-root-MuiTab-root": {
+              color: "white",
+            }
+            // ".css-1t7pkgn-MuiTableCell-root": {
+            //   color: "white",
+            //   borderBottom: "1px solid white"
+            //   // fontWeight: "600px"
+            // }
+          }}>
+            <CustomTableCell sx={{
+              ".css-1ds061a-MuiTableCell-root": {
+                color: "white",
+                // borderBottomColor: 'white'
+                // borderBottom: "10px solid white"
+                // fontWeight: "600px"
+              },
+              ".css-7jxdzz-MuiButtonBase-root-MuiTab-root": {
+                color: "white",
+              }
+              // ".css-1t7pkgn-MuiTableCell-root": {
+              //   color: "white",
+              //   borderBottom: "1px solid white"
+              //   // fontWeight: "600px"
+              // }
+            }}>Pseudo</CustomTableCell>
             <CustomTableCell>Alignement</CustomTableCell>
             <CustomTableCell>Points</CustomTableCell>
           </TableRow>
@@ -217,25 +245,29 @@ const Ranking = () => {
         <TabList
           onChange={handleTabsChange}
           aria-label="lab API tabs example"
-          sx={{
-            ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected": {
-              color: "black",
-              fontWeight: "700"
-              // borderBottom: "2px solid black"
-              // fontWeight: "600px"
-            },
-            ".css-1aquho2-MuiTabs-indicator": {
-              backgroundColor: "black",
-            },
-            ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root": {
-              // color: "rgba(0, 0, 0, 0.4)",
-              fontWeight: "400",
-              color: "black"
-            },
-          }}
+          // sx={{
+          //   ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected": {
+          //     color: "#1976d2",
+          //     fontWeight: "700"
+          //     // borderBottom: "2px solid black"
+          //     // fontWeight: "600px"
+          //   },
+          //   // pour modifier la couleur de la barre sous le tab sélectionné
+          //   // ".css-1aquho2-MuiTabs-indicator": {
+          //   //   backgroundColor: "black",
+          //   // },
+          //   ".css-1l92wdc-MuiButtonBase-root-MuiTab-root": {
+          //     // color: "rgba(0, 0, 0, 0.4)",
+          //     fontWeight: "400",
+          //     color: "white"
+          //   },
+          // }}
+          sx={{ '& .MuiTab-root': { color: 'white' }
+        }}
         >
           {tabs.map((tab) => (
-            <Tab key={tab.value} label={tab.label} value={tab.value} />
+            <Tab key={tab.value} label={tab.label} value={tab.value} 
+            />
           ))}
         </TabList>
         {/* <Divider color="white" /> */}

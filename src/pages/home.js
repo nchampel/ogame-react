@@ -5,7 +5,7 @@ import CustomLink from "../UI/CustomLink";
 function Home() {
   // const navigate = useNavigate();
   return (
-    <Box sx={{ minHeight: "600px", p: 2 }}>
+    <Box sx={{ minHeight: "590px", pl: 2, pr: 2 }}>
       <Typography>Bienvenue sur Lunicité Sacrée</Typography>
       <Typography style={{ textAlign: "left" }}>
         Il y a des centaines d'années, sur une planète harmonieuse, vivait

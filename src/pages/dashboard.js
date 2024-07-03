@@ -275,7 +275,7 @@ const Dashboard = (props) => {
   return (
     <>
       {isAuthenticated ? (
-        <Box sx={{ minHeight: "600px", mr: 2 }}>
+        <Box sx={{ minHeight: "590px", mr: 2 }}>
           <Buildings
             buildingsResources={buildingsResources}
             buildings={buildings}
@@ -286,6 +286,7 @@ const Dashboard = (props) => {
               mt: 2,
               textAlign: "left",
               mb: 2,
+              ml: 2
             }}
           >
             La Luni produit naturellement un peu de métal et de cristal.
@@ -295,6 +296,7 @@ const Dashboard = (props) => {
               mt: 2,
               textAlign: "left",
               mb: 2,
+              ml: 2
             }}
           >
             Pour construire la fonderie, la raffinerie et l'extracteur, il faut
@@ -303,7 +305,7 @@ const Dashboard = (props) => {
             plus le niveau de votre bâtiment est élevé, plus il les produira
             vite.
           </Typography>
-          <Typography sx={{ textAlign: "left" }}>
+          <Typography sx={{ textAlign: "left", ml: 2 }}>
             Pour l'instant le jeu se limite à cela, mais des fonctionnalités
             déjà en test seront rapidement ajoutées ! (par exemple des
             ressources additionnelles seront récoltables au bout d'un certain

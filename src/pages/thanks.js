@@ -6,7 +6,7 @@ const Thanks = () => {
   // const isMounted = useMounted();
 
   return (
-    <Box sx={{ minHeight: "600px" }}>
+    <Box sx={{ minHeight: "590px" }}>
       <Typography sx={{ marginBottom: "10px" }}>
         Merci à Cthyllax pour les dessins{" "}
         <CustomLink

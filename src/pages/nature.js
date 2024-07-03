@@ -216,7 +216,7 @@ const Nature = (props) => {
     //     </Card>
     // </Box>
     <>
-      <Box sx={{ minHeight: "600px" }}>
+      <Box sx={{ minHeight: "590px" }}>
         <Dialog
           open={openQuestions}
           // TransitionComponent={Transition}

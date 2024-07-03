@@ -3,8 +3,8 @@ import { TableCell } from '@mui/material';
 
 const CustomTableCell = styled(TableCell)({
     // backgroundColor: '#313742',
-    color: "black",
-    borderBottom: "1px solid black"
+    color: "white",
+    borderBottom: "1px solid white"
   });
 
 export default CustomTableCell;

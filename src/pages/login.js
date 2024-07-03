@@ -72,7 +72,7 @@ function Login(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box sx={{ minHeight: "600px" }}>
+      <Box sx={{ minHeight: "590px" }}>
         <Formik
           initialValues={{ pseudo: "", password: "" }}
           validationSchema={Yup.object().shape({

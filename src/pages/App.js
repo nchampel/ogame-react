@@ -1,5 +1,5 @@
 import "../css/App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import routes from "../modules/routes";
 import Sidebar from "../components/sidebar";
 import { useMounted } from "../hooks/use-mounted";
@@ -28,6 +28,21 @@ import CustomButton from "../UI/CustomButton";
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
+
+const ButtonMailto = ({ mailto, label }) => {
+  return (
+      <Link
+          to='#'
+          onClick={(e) => {
+              window.location.href = mailto;
+              e.preventDefault();
+          }}
+          style= {{ color: 'white'}}
+      >
+          {label}
+      </Link>
+  );
+};
 
 function App() {
   const isMounted = useMounted();
@@ -732,10 +747,13 @@ function App() {
               />
             ))}
           </Routes>
+      <ButtonMailto label="Contactez-moi" mailto="mailto:lucie.magnonneau@gmail.com" />
+      <Typography>2024 - Studio Zensaikeunde - Tous droits réservés</Typography>
         </Grid>
         {/* </Box> */}
       </Grid>
-      <Typography>2024 - Studio Zensaikeunde - Tous droits réservés</Typography>
+      <>
+      </>
       {/* </div> */}
 
       {/* </BrowserRouter> */}

@@ -143,7 +143,7 @@ const Universe = (props) => {
   };
 
   return (
-    <Box sx={{ minHeight: "600px" }}>
+    <Box sx={{ minHeight: "590px" }}>
       <Typography sx={{ mb: 1 }}>Planètes</Typography>
       {/* <Typography>{`Deutérium : ${numeral(resources.tritium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>    */}
       <Card>

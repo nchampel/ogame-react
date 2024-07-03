@@ -7,23 +7,27 @@ import gold from "../assets/gold-background-montage.webp";
 import sapphire from "../assets/blue-jewellery-jewel-gem-gemstone-sapphire-fashion-accessory-1088100.jpg";
 import emerald from "../assets/Emerald-Stone-PNG-Image.webp";
 
-const images = {
-  'sotoc': ruby,
-  'flumia': emerald,
-  'sora': gold,
-  'nano': amethyst,
-  'altheron': sapphire,
+const naturePlayerData = {
+  'sotoc': {image: ruby, color: "#FF6961"},
+  'flumia': {image: emerald, color: "#6FD984"},
+  'sora': {image: gold, color: "#FFE808"},
+  'nano': {image: amethyst, color: "#AA81D5"},
+  'altheron': {image: sapphire, color: "#0CA4FF"},
 }
 
 const Sidebar = (props) => {
   const { nature } = props;
 
   return (
-    <Box style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
-      <Typography>{`Alignement ${names[nature]}`}</Typography>
+    <Box style={{ display: "flex", flexDirection: "column", height: "100vh"  }}
+    sx={{
+      backgroundColor: naturePlayerData[nature].color
+    }}>
+      
+      <Typography style={{ color: "black" }}>{`Alignement ${names[nature]}`}</Typography>
       <Box>
         <img
-          src={images[nature]}
+          src={naturePlayerData[nature].image}
           alt="Logo alignement"
           style={{ width: "200px", height: "auto" }}
         />
@@ -40,7 +44,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "#000" }}
+          sx={{ marginBottom: "20px", color: "black" }}
           to="/help"
         >
           Explications
@@ -48,7 +52,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "#000"  }}
+          sx={{ marginBottom: "20px", color: "black"  }}
           to="/build"
         >
           Constructions
@@ -62,7 +66,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "#000"  }}
+          sx={{ marginBottom: "20px", color: "black"  }}
           to="/shop"
         >
           Boutique
@@ -70,7 +74,7 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "#000"  }}
+          sx={{ marginBottom: "20px", color: "black"  }}
           to="/ranking"
         >
           Classement
@@ -78,11 +82,19 @@ const Sidebar = (props) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "#000"  }}
+          sx={{ marginBottom: "20px", color: "black"  }}
           to="/thanks"
         >
           Remerciements
         </Link>
+        {/* <Link
+          component={RouterLink}
+          underline="none"
+          sx={{ marginBottom: "20px", color: "black"  }}
+          to="/thanks"
+        >
+          Contact
+        </Link> */}
       </Box>
     </Box>
   );
