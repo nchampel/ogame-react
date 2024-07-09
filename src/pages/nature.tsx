@@ -2,13 +2,10 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
   Dialog,
-  DialogActions,
   DialogContent,
   FormControl,
   FormControlLabel,
-  Grid,
   Radio,
   RadioGroup,
   Step,
@@ -18,13 +15,33 @@ import {
   Typography,
 } from "@mui/material";
 import { Formik } from "formik";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { userApi } from "../api/user-api";
 import names from "../modules/names";
+import { checkLocalStorage } from "../modules/functions";
+import { NatureKey } from "../types/general-types";
 
-const Nature = (props) => {
+export type AnswersForNature = {
+  question1: string | null
+  question2: string | null
+  question3: string | null
+  question4: string | null
+}
+
+interface NatureProps {
+  setNature: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+interface FormControlLabelData {
+  data: {
+    value: string;
+    label: string;
+  }
+}
+
+const Nature = (props: NatureProps) => {
   // const isMounted = useMounted();
   const { setNature } = props;
   const navigate = useNavigate();
@@ -51,7 +68,7 @@ const Nature = (props) => {
   const [openQuestions, setOpenQuestions] = useState(true);
   const [openChoiceBGZ, setOpenChoiceBGZ] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const [choices, setChoices] = useState([]);
+  const [choices, setChoices] = useState<NatureKey[]>([]);
   const steps = ["Question 1", "Question 2", "Question 3", "Question 4"];
 
   const handleCloseQuestions = () => {
@@ -183,7 +200,7 @@ const Nature = (props) => {
   question3Data.sort(compareRandom);
   question4Data.sort(compareRandom);
 
-  const FormControlLabelQuestion = ({ data }) => {
+  const FormControlLabelQuestion = ({ data }: FormControlLabelData) => {
     return (
       <FormControlLabel
         value={data.value}
@@ -195,7 +212,7 @@ const Nature = (props) => {
     );
   };
 
-  const descriptions = {
+  const descriptions: Record<NatureKey, string> = {
     sora: "Peuple altruiste avec tendance à l'abnégation",
     nano: "Tribu ingénieuse mais autiste",
     altheron: "Civilisation non violente à la limite du stoïcisme",
@@ -244,16 +261,16 @@ const Nature = (props) => {
               ) => {
                 try {
                   // console.log(values)
-                  const nature = await userApi.determineNature(
+                  const nature: {'bgz': string | []} = await userApi.determineNature(
                     values,
-                    localStorage.getItem("jwt").replaceAll('"', "")
+                    checkLocalStorage("jwt").replaceAll('"', "")
                   );
                   if (typeof nature.bgz === "object") {
                     setOpenQuestions(false);
                     setOpenChoiceBGZ(true);
                     const choices = nature.bgz.map(
                       (obj) => Object.keys(obj)[0]
-                    );
+                    ).filter((key): key is NatureKey => key in descriptions); // Filtrer et s'assurer que les clés sont de type NatureKey;
                     setChoices(choices);
                     // console.log('choix')
                   } else {
@@ -267,7 +284,7 @@ const Nature = (props) => {
                 } catch (err) {
                   console.error(err);
                   setStatus({ success: false });
-                  setErrors({ submit: err.message });
+                  // setErrors({ submit: err.message });
                   setSubmitting(false);
                 }
               }}
@@ -460,7 +477,8 @@ const Nature = (props) => {
                           Suivant
                         </Button>
                       ) : (
-                        <Button onClick={handleSubmit} disabled={isSubmitting}>
+                        // <Button onClick={handleSubmit} disabled={isSubmitting}>
+                        <Button onClick={(e: MouseEvent<HTMLButtonElement>) => { handleSubmit(); e.preventDefault(); }} disabled={isSubmitting}>
                           Enregistrer
                         </Button>
                       )}
@@ -505,7 +523,7 @@ const Nature = (props) => {
                   // console.log(values)
                   await userApi.saveNature(
                     values,
-                    localStorage.getItem("jwt").replaceAll('"', "")
+                    checkLocalStorage("jwt").replaceAll('"', "")
                   );
 
                   // console.log('build BGZ')
@@ -513,13 +531,13 @@ const Nature = (props) => {
                   setStatus({ success: true });
                   setSubmitting(false);
                   // setIsAuthenticated(true)
-                  console.log(values.choice);
+                  // console.log(values.choice);
                   setNature(values.choice);
                   navigate("/build/");
                 } catch (err) {
                   console.error(err);
                   setStatus({ success: false });
-                  setErrors({ submit: err.message });
+                  // setErrors({ submit: err.message });
                   setSubmitting(false);
                 }
               }}
@@ -537,7 +555,7 @@ const Nature = (props) => {
                     <Autocomplete
                       // pour réinitialiser le autocomplete on lui change la valeur de sa key, quand on change de formation, cela réinitialise le champ
                       // key={valueIdSession}
-                      getOptionLabel={(option) =>
+                      getOptionLabel={(option: NatureKey) =>
                         `${names[option]} : ${descriptions[option]}`
                       }
                       options={choices}
@@ -596,7 +614,7 @@ const Nature = (props) => {
                   {/* <Box sx={{ flex: '1 1 auto' }} /> */}
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button
-                      onClick={handleSubmit}
+                      onClick={(e: MouseEvent<HTMLButtonElement>) => { handleSubmit(); e.preventDefault(); }}
                       disabled={isSubmitting || values.choice === null}
                     >
                       Enregistrer

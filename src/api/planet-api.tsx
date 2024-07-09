@@ -1,6 +1,7 @@
 import { getParamsPOST } from '../modules/functions'
+import { Resources } from '../types/app-types';
 class PlanetApi {
-  async getResources(accessToken) {
+  async getResources(accessToken: string) {
     const data = {};
     // data.energy = energy;
     // let formData = new FormData();
@@ -12,7 +13,7 @@ class PlanetApi {
     return json;
   }
 
-  async getBuildings(accessToken) {
+  async getBuildings(accessToken: string) {
     const data = {};
     const url = `${process.env.REACT_APP_BACK}/buildings/get/`;
     const params = getParamsPOST(accessToken, data);
@@ -22,7 +23,7 @@ class PlanetApi {
   }
 
   // pas utilisé
-  async getBuildingsResources(accessToken) {
+  async getBuildingsResources(accessToken: string) {
     const data = {};
     const url = `${process.env.REACT_APP_BACK}/buildings-resources/get/`;
     const params = getParamsPOST(accessToken, data);
@@ -31,7 +32,7 @@ class PlanetApi {
     return json;
   }
 
-  async saveResources(resources, accessToken) {
+  async saveResources(resources: Resources[], accessToken: string) {
     const data = { resources };
     const url = `${process.env.REACT_APP_BACK}/resources/save/`;
     const params = getParamsPOST(accessToken, data);
@@ -40,7 +41,7 @@ class PlanetApi {
     return json;
   }
 
-  async saveLevel(type, level, accessToken) {
+  async saveLevel(type: string, level: number, accessToken: string) {
     const data = { type, level };
     const url = `${process.env.REACT_APP_BACK}/level/save/`;
     const params = getParamsPOST(accessToken, data);
@@ -49,7 +50,7 @@ class PlanetApi {
     return json;
   }
 
-  async getBoosterCost(coefficient, accessToken) {
+  async getBoosterCost(coefficient: number, accessToken: string) {
     const data = { coefficient };
     const url = `${process.env.REACT_APP_BACK}/booster/cost/get/`;
     const params = getParamsPOST(accessToken, data);
@@ -58,7 +59,7 @@ class PlanetApi {
     return json;
   }
 
-  async saveLevelBooster(coefficient, accessToken) {
+  async saveLevelBooster(coefficient: number, accessToken: string) {
     const data = { coefficient };
     const url = `${process.env.REACT_APP_BACK}/booster/coefficient/save/`;
     const params = getParamsPOST(accessToken, data);
@@ -67,7 +68,7 @@ class PlanetApi {
     return json;
   }
 
-  async saveLevelSearch(type, level, accessToken) {
+  async saveLevelSearch(type: string, level: number, accessToken: string) {
     const data = { type, level };
     const url = `${process.env.REACT_APP_BACK}/search/level/save/`;
     const params = getParamsPOST(accessToken, data);
@@ -75,7 +76,7 @@ class PlanetApi {
     const json = await response.json();
     return json;
   }
-  async reinitialization(user_id, accessToken) {
+  async reinitialization(user_id: number, accessToken: string) {
     const data = { user_id };
     const url = `${process.env.REACT_APP_BACK}/reinitialization/`;
     const params = getParamsPOST(accessToken, data);

@@ -12,3 +12,6 @@ Design Flumia, début de la boutique
 
 26 06 2024
 Continuation de la boutique
+
+03 07 2024
+Début passage de js à ts

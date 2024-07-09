@@ -5,16 +5,28 @@ import {
   Link,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Dialog,
   Typography,
 } from "@mui/material";
-import { ErrorMessage, Formik } from "formik";
+import { Formik } from "formik";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { userApi } from "../api/user-api";
 import { useCallback, useEffect, useState } from "react";
-function Register(props) {
+import { checkLocalStorage } from "../modules/functions";
+
+export type RegisterData = {
+  pseudo: string
+  email: string
+  password: string
+}
+
+interface RegisterProps {
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  isAuthenticated: boolean
+}
+
+function Register(props: RegisterProps) {
   const { setIsAuthenticated, isAuthenticated } = props;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -27,7 +39,7 @@ function Register(props) {
       // let verify = null
       let jwt = null;
       if (localStorage.getItem("jwt") !== null) {
-        jwt = localStorage.getItem("jwt").replaceAll('"', "");
+        jwt = checkLocalStorage("jwt").replaceAll('"', "");
       }
       const verify = await userApi.verifyJWT(jwt);
       if (verify.msg === "Authentifié") {
@@ -122,7 +134,7 @@ function Register(props) {
             console.error(err);
             // toast.error("Il y a eu un souci lors de l'enregistrement !");
             setStatus({ success: false });
-            setErrors({ submit: err.message });
+            // setErrors({ submit: err.message });
             setSubmitting(false);
           }
         }}

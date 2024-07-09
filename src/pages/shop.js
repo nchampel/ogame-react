@@ -1,8 +1,7 @@
-import { Box, Button, Card, Dialog, DialogActions, DialogContent, Grid, Tab, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, Grid, Tab, Typography } from "@mui/material";
 import { planetApi } from "../api/planet-api";
 import { shopApi } from "../api/shop-api";
 import { useCallback, useEffect, useState } from "react";
-import { userApi } from "../api/user-api";
 import numeral from "numeral";
 import { useMounted } from "../hooks/use-mounted";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -11,19 +10,19 @@ import twoHours from "../assets/2hours.jpg";
 import oneDay from "../assets/1day.jpg";
 import twoDays from "../assets/2days.jpg";
 import oneWeek from "../assets/1week.jpg";
-import ShopBuildings from "../components/shopBuildings";
+import ShopBuildings from "../components/shopBuildings.js";
 import ShopBuy from "../components/shopBuy";
 
 const initShopItemsData = () => {
-  const array = [];
+  // const array = [];
   const items = [
     {type: '1 hour', img: oneHour, alt: "d'une heure", hours: 1}, 
     {type: '2 hours', img: twoHours, alt: "de deux heures", hours: 2}, 
     {type: '1 day', img: oneDay, alt: "d'un jour", hours: 24}, 
     {type: '2 days', img: twoDays, alt: "de deux jours", hours: 48}, 
     {type: '1 week', img: oneWeek, alt: "d'une semaine", hours: 168}, ]
-  items.map((item) => {
-    array.push({
+  const array = items.map((item) => {
+    return {
       item_quantity: 0,
       item_type: item.type,
       item_used: 0,
@@ -32,14 +31,14 @@ const initShopItemsData = () => {
       img: item.img,
       alt: item.alt,
       hours: item.hours
-    })
+    }
   })
   return array
 }
 
 const Shop = (props) => {
   const isMounted = useMounted();
-  const { unityLink, setUnityLink, booster, setBooster, resources, setResources, buildingsResources } = props;
+  const { unityLink, setUnityLink, booster, setBooster, resources, setResources, buildingsResources, buildings, setBuildings } = props;
   const [open, setOpen] = useState(false);
   const [dailyReward, setDailyReward] = useState(0);
   const [shopItemsData, setShopItemsData] = useState(initShopItemsData)
@@ -51,6 +50,7 @@ const Shop = (props) => {
   const saveDailyClaimed = useCallback(async () => {
     try {
       const isHarvestDaily = await shopApi.saveDailyClaimed(
+        buildings['unity-link_generator'],
         localStorage.getItem("jwt").replaceAll('"', "")
       );
       if (isHarvestDaily.msg === 'récompense sauvegardée') {
@@ -108,7 +108,7 @@ const Shop = (props) => {
     getShopData();
   }, []);
 
-  const [currentTab, setCurrentTab] = useState("buy");
+  const [currentTab, setCurrentTab] = useState("buildings");
   const tabs = [
     { label: "Bâtiments", value: "buildings" },
     { label: "Acheter", value: "buy" },
@@ -154,7 +154,7 @@ const Shop = (props) => {
   
 
   useEffect(() => {
-    console.log(shopItemsData)
+    // console.log(shopItemsData)
   }, [shopItemsData])
 
   const addResourcesHours = (item) => {
@@ -251,7 +251,7 @@ const Shop = (props) => {
                       mt: 5,
                     }}
                   >
-                    <Typography>{`Vous avez obtenu la récompense de connexion journalière : ${numeral(dailyReward)
+                    <Typography>{`Vous avez obtenu la récompense de connexion journalière : ${numeral(dailyReward + buildings['unity-link_generator'] * 100)
           .format("0,000,000,000,000").replaceAll(",", " ")} Unité-Liens`}</Typography>
                   </Grid>
                 </DialogContent>
@@ -285,11 +285,15 @@ const Shop = (props) => {
           .format("0,000,000,000,000")
           .replaceAll(",", " ")}`}
       </Typography>
+      <Typography>{`Gain par jour de Lien-Unités : ${numeral(500 + buildings['unity-link_generator'] * 100)
+          .format("0,000,000,000,000")
+          .replaceAll(",", " ")}`}
+      </Typography>
       <Box sx= {{display: "flex", 
           alignItems: 'center',
           justifyContent: 'center',}}>
       {shopItemsData.map((item) => {
-        return <Box key={item.type} 
+        return <Box key={item.item_type} 
         sx= {{display: "flex", alignItems: "center", mr: 2}}
         >
           <Button onClick={() => addResourcesHours(item)}><img
@@ -338,8 +342,8 @@ const Shop = (props) => {
           ))}
         </TabList>
         {/* <Divider color="white" /> */}
-        {pages.map((page) => (
-          <TabPanel value={page.value}>
+        {/* {pages.map((page) => ( */}
+          <TabPanel value="buy">
             <ShopBuy 
             shopItemsData={shopItemsData}
             setShopItemsData={setShopItemsData}
@@ -351,12 +355,26 @@ const Shop = (props) => {
             setResources={setResources}
             />
           </TabPanel>
-          // <CustomTabPanel
+          <TabPanel value="buildings">
+            <ShopBuildings 
+            shopItemsData={shopItemsData}
+            setShopItemsData={setShopItemsData}
+            unityLink={unityLink}
+            setUnityLink={setUnityLink}
+            booster={booster}
+            setBooster={setBooster}
+            resources={resources}
+            setResources={setResources}
+            buildings={buildings}
+            setBuildings={setBuildings}
+            />
+          </TabPanel>
+          {/* // <CustomTabPanel
           //   type={table.type}
           //   value={table.value}
           //   key={table.type}
           // />
-        ))}
+        // ))} */}
       </TabContext>
     </Box>
     </>

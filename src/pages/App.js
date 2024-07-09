@@ -1,7 +1,7 @@
 import "../css/App.css";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link } from "react-router-dom";
 import routes from "../modules/routes";
-import Sidebar from "../components/sidebar";
+import Sidebar from "../components/sidebar.tsx";
 import { useMounted } from "../hooks/use-mounted";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
@@ -52,6 +52,7 @@ function App() {
     crystal: 0,
     tritium: 0,
     energy: 0,
+    booster: 1
   });
   const [buildings, setBuildings] = useState({});
   const [usedEnergy, setUsedEnergy] = useState(0);
@@ -100,6 +101,9 @@ function App() {
   //   // console.log(isAuthenticated)
   //   // setIsAuthenticated(true)
   // }, [isAuthenticated])
+  useEffect(() => {
+    // console.log(resources)
+  }, [resources])
 
   const handleClose = () => {
     setOpen(false);
