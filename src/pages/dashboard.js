@@ -1,8 +1,8 @@
-import { Box, Button, Card, Typography, Link } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 import { useCallback, useEffect } from "react";
 import { planetApi } from "../api/planet-api";
 import Buildings from "../components/buildings";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
@@ -23,8 +23,8 @@ const Dashboard = (props) => {
     buildingsResources,
     setBuildingsResources,
     booster,
-    planets,
-    setPlanets,
+    // planets,
+    // setPlanets,
     starship,
     isAuthenticated,
   } = props;
@@ -196,54 +196,6 @@ const Dashboard = (props) => {
     );
     // console.log(Math.round(20 * buildings.energy * Math.pow(1.1, buildings.energy)))
   }, [buildings]);
-
-  const addResourcesHours = (hours) => {
-    // on calcule les ressources cumulées pendant l'absence sur la planète
-    const resourcesToAdd = {
-      metal: buildingsResources.metal.production * hours,
-      crystal: buildingsResources.crystal.production * hours,
-      tritium: buildingsResources.tritium.production * hours,
-    };
-    const resourcesTemp = { ...resources };
-    resourcesTemp.metal += resourcesToAdd.metal;
-    resourcesTemp.crystal += resourcesToAdd.crystal;
-    resourcesTemp.tritium += resourcesToAdd.tritium;
-
-    saveResources(resourcesTemp);
-    setResources(resourcesTemp);
-
-    // on calcule les ressources cumulées pendant l'absence sur les planètes
-    const resourcesPlanetsTemp = [...planets];
-    resourcesPlanetsTemp.forEach((planet, index) => {
-      resourcesPlanetsTemp[index]["metal"] =
-        Math.round(
-          30 *
-            resourcesPlanetsTemp[index]["metal_level"] *
-            Math.pow(1.1, resourcesPlanetsTemp[index]["metal_level"])
-        ) * hours;
-      resourcesPlanetsTemp[index]["crystal"] =
-        Math.round(
-          30 *
-            resourcesPlanetsTemp[index]["crystal_level"] *
-            Math.pow(1.1, resourcesPlanetsTemp[index]["crystal_level"])
-        ) * hours;
-      resourcesPlanetsTemp[index]["tritium"] =
-        Math.round(
-          30 *
-            resourcesPlanetsTemp[index]["deuterium_level"] *
-            Math.pow(1.1, resourcesPlanetsTemp[index]["deuterium_level"])
-        ) * hours;
-      resourcesPlanetsTemp[index]["cost"] = Math.round(
-        (resourcesPlanetsTemp[index]["metal"] +
-          resourcesPlanetsTemp[index]["crystal"] +
-          resourcesPlanetsTemp[index]["tritium"]) /
-          10
-      );
-    });
-
-    // saveResources(resourcesPlanetsTemp) à implémenter
-    setPlanets(resourcesPlanetsTemp);
-  };
 
   const buildSatellites = (number) => {
     // on vérifie que les ressources nécessaires sont là

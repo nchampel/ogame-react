@@ -14,7 +14,20 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { userApi } from "../api/user-api";
 import { useEffect, useState } from "react";
-function Login(props) {
+
+export type LoginData = {
+  pseudo: string
+  password: string
+}
+
+interface LoginProps {
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  isAuthenticated: boolean
+  nature: string
+  setNature: React.Dispatch<React.SetStateAction<string>>
+}
+
+function Login(props: LoginProps) {
   const { setIsAuthenticated, isAuthenticated, nature, setNature } = props;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -110,7 +123,7 @@ function Login(props) {
               console.error(err);
               // toast.error("Il y a eu un souci lors de l'enregistrement !");
               setStatus({ success: false });
-              setErrors({ submit: err.message });
+              // setErrors({ submit: err.message });
               setSubmitting(false);
             }
           }}

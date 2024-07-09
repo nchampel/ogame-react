@@ -6,8 +6,13 @@ import ruby from "../assets/Ruby_gem.jpg";
 import gold from "../assets/gold-background-montage.webp";
 import sapphire from "../assets/blue-jewellery-jewel-gem-gemstone-sapphire-fashion-accessory-1088100.jpg";
 import emerald from "../assets/Emerald-Stone-PNG-Image.webp";
+import { NatureKey } from "../types/general-types";
 
-const naturePlayerData = {
+interface SidebarProps {
+  nature: NatureKey;
+}
+
+const naturePlayerData: Record<NatureKey, { image: string, color: string }> = {
   'sotoc': {image: ruby, color: "#FF6961"},
   'flumia': {image: emerald, color: "#6FD984"},
   'sora': {image: gold, color: "#FFE808"},
@@ -15,7 +20,7 @@ const naturePlayerData = {
   'altheron': {image: sapphire, color: "#0CA4FF"},
 }
 
-const Sidebar = (props) => {
+const Sidebar = (props: SidebarProps) => {
   const { nature } = props;
 
   return (

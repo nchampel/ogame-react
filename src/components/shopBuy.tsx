@@ -4,8 +4,27 @@ import { shopApi } from "../api/shop-api";
 import { useCallback, useEffect } from "react";
 import { userApi } from "../api/user-api";
 import { planetApi } from "../api/planet-api";
+import { ShopItemsData } from "../types/shopBuy-types";
+import { ShopItemData } from "../types/shop-types";
+import { Booster, Resources } from "../types/app-types";
+import { checkLocalStorage } from "../modules/functions";
 
-const ShopBuy = (props) => {
+interface ShopBuyProps {
+  shopItemsData: [ShopItemData];
+  setShopItemsData: React.Dispatch<React.SetStateAction<ShopItemData[]>>
+  unityLink: number
+  setUnityLink: React.Dispatch<React.SetStateAction<number>>
+  booster: Booster
+  setBooster: React.Dispatch<React.SetStateAction<Booster>>
+  resources: Resources
+  setResources: React.Dispatch<React.SetStateAction<Resources>>
+}
+
+interface ItemCardProps {
+  itemData: ShopItemData;
+}
+
+const ShopBuy = (props: ShopBuyProps) => {
   const { shopItemsData, setShopItemsData, unityLink, setUnityLink, booster, setBooster,
     resources, setResources
    } = props;
@@ -16,11 +35,12 @@ const ShopBuy = (props) => {
 //     { title: "Extracteur de tritium", type: "tritium" },
 //   ];
 
-const saveLevelBooster = useCallback(async (level) => {
+const saveLevelBooster = useCallback(async (level: number) => {
   try {
-    const boosterData = await planetApi.saveLevelBooster(
+    const boosterData: Booster = await planetApi.saveLevelBooster(
       level,
-      localStorage.getItem("jwt").replaceAll('"', "")
+      // localStorage.getItem("jwt").replaceAll('"', "")
+      checkLocalStorage("jwt").replaceAll('"', "")
     );
     setBooster(boosterData);
   } catch (err) {
@@ -28,11 +48,11 @@ const saveLevelBooster = useCallback(async (level) => {
   }
 }, []);
 
-const saveUnityLink = useCallback(async (unityLink) => {
+const saveUnityLink = useCallback(async (unityLink: number) => {
   try {
-    await userApi.saveUnityLink(
+    await shopApi.saveUnityLink(
       unityLink,
-      localStorage.getItem("jwt").replaceAll('"', "")
+      checkLocalStorage("jwt").replaceAll('"', "")
     );
   } catch (err) {
     console.error(err);
@@ -52,13 +72,13 @@ const addBooster = () => {
   }
 };
 
-const saveItemBought = useCallback(async (type) => {
+const saveItemBought = useCallback(async (type: string) => {
   try {
     let updatedShopItemsDataTemp = []
     let updatedShopItemsData = []
     const itemBought = await shopApi.saveItemBought(
       type,
-      localStorage.getItem("jwt").replaceAll('"', "")
+      checkLocalStorage("jwt").replaceAll('"', "")
     );
     updatedShopItemsDataTemp = shopItemsData.map(itemShop => {
       
@@ -101,7 +121,7 @@ const saveItemBought = useCallback(async (type) => {
   }
 }, [shopItemsData]);
 
-const handleItemBuy = (type) => {
+const handleItemBuy = (type: string) => {
   if (unityLink >= 500) {
     saveItemBought(type)
   }
@@ -109,10 +129,10 @@ const handleItemBuy = (type) => {
 }
 
 useEffect(() => {
-  console.log(shopItemsData)
+  // console.log(shopItemsData)
 }, [shopItemsData])
 
-  const ItemCard = ({ itemData }) => {
+    const ItemCard = ({ itemData }: ItemCardProps) => {
     return (
       <>
       {itemData.purchasable &&
@@ -160,18 +180,18 @@ useEffect(() => {
           // width: '100vh'
         }}
       >
-        {shopItemsData.map((item) => {
+        {shopItemsData.map((itemShop: ShopItemData) => {
           return (
             <ItemCard
-              item
-              key={item.type}
-              itemData={item}
+              // item={true}
+              key={itemShop.item_type}
+              itemData={itemShop}
             />
           );
         })}
 
         <Card
-          item="true"
+          // item n'existe pas dans react
           sx={{
             marginTop: "15px",
             background: "#313742",

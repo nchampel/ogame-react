@@ -1,4 +1,4 @@
-export function getParamsPOST(accessToken, data){
+export function getParamsPOST(accessToken: string, data: {}): {}{
     const params = {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -16,3 +16,11 @@ export function getParamsPOST(accessToken, data){
     }
     return params;
   }
+
+export function checkLocalStorage(str: string): string {
+  const item = localStorage.getItem(str)
+  if (item !== null) {
+    return item;
+  }
+  return '';
+}
