@@ -1,7 +1,7 @@
-import { Box, Button, Card, Typography } from "@mui/material";
+import { Box, Button, Card, Typography, Link } from "@mui/material";
 import { useCallback } from "react";
 import { planetApi } from "../api/planet-api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 
 const Reinitialization = (props) => {
   // const isMounted = useMounted();
@@ -11,6 +11,8 @@ const Reinitialization = (props) => {
   // if (!isAuthenticated) {
   //     navigate(`/login`)
   // }
+  
+
 
   const reinitialization = useCallback(async () => {
     try {
@@ -27,6 +29,8 @@ const Reinitialization = (props) => {
   }, []);
 
   return (
+    <>
+    {isAuthenticated ? (
     <Box sx={{ minHeight: "600px" }}>
       <Typography>
         Attention ! La réinitialisation du compte est irréversible !
@@ -39,6 +43,20 @@ const Reinitialization = (props) => {
         <Button onClick={() => reinitialization()}>Réinitialiser</Button>
       </Card>
     </Box>
+    ) : (
+      <>
+        <Typography>Il faut être connecté</Typography>
+        <Link
+          component={RouterLink}
+          underline="none"
+          sx={{ marginBottom: "20px" }}
+          to="/login"
+        >
+          Se connecter
+        </Link>
+      </>
+    )}
+    </>
   );
 };
 

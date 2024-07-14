@@ -2,11 +2,7 @@ import {
   Box,
   Button,
   Card,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
+  Link,
   Table,
   TableBody,
   TableCell,
@@ -18,10 +14,10 @@ import {
 } from "@mui/material";
 import numeral from "numeral";
 import { useCallback, useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom"
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { planetsApi } from "../api/planets-api";
 import { planetApi } from "../api/planet-api";
-import { useNavigate } from "react-router-dom";
 import DialogFight from "../components/dialogFight";
 import DialogRob from "../components/dialogRob";
 
@@ -44,9 +40,9 @@ const Multiverse = (props) => {
   const [planetsToDisplay, setPlanetsToDisplay] = useState(planetsDiscovered);
   const [planetsNumber, setPlanetsNumber] = useState(planetsDiscovered.length);
   const [resourcesRobbed, setResourcesRobbed] = useState({
-    metal: 0,
-    crystal: 0,
-    tritium: 0,
+    carbon: 0,
+    diamond: 0,
+    magic: 0,
   });
 
   // const navigate = useNavigate();
@@ -68,34 +64,34 @@ const Multiverse = (props) => {
 
   const handleResourcesRobbed = (planet, planetsDiscoveredTemp) => {
     const resourcesTemp = { ...resources };
-    resourcesTemp.tritium -= 1000000;
-    resourcesTemp.tritium += planet.tritium;
-    resourcesTemp.metal += planet.metal;
-    resourcesTemp.crystal += planet.crystal;
+    resourcesTemp.magic -= 1000000;
+    resourcesTemp.magic += planet.magic;
+    resourcesTemp.carbon += planet.carbon;
+    resourcesTemp.diamond += planet.diamond;
     setResources(resourcesTemp);
     saveResources(resourcesTemp);
     const planetsTemp = [...planetsMultiverse];
     // const planetAttacked = planetsMultiverse[idx + pagin * rowsPerPage]
     planetsTemp[
       planetsMultiverse.findIndex((element) => element.id === planet.id)
-    ].metal = 0;
+    ].carbon = 0;
     planetsTemp[
       planetsMultiverse.findIndex((element) => element.id === planet.id)
-    ].crystal = 0;
+    ].diamond = 0;
     planetsTemp[
       planetsMultiverse.findIndex((element) => element.id === planet.id)
-    ].tritium = 0;
+    ].magic = 0;
     // planetsTemp[idx + pagin * rowsPerPage] = planetAttacked
     setPlanetsMultiverse(planetsTemp);
     // const planetsDiscoveredTemp = [...planetsDiscovered]
-    planetsDiscoveredTemp[0].metal = 0;
-    planetsDiscoveredTemp[0].crystal = 0;
-    planetsDiscoveredTemp[0].tritium = 0;
+    planetsDiscoveredTemp[0].carbon = 0;
+    planetsDiscoveredTemp[0].diamond = 0;
+    planetsDiscoveredTemp[0].magic = 0;
     setPlanetsDiscovered(planetsDiscoveredTemp);
     const resourcesRobbedTemp = { ...resourcesRobbed };
-    resourcesRobbedTemp.metal = planet.metal;
-    resourcesRobbedTemp.crystal = planet.crystal;
-    resourcesRobbedTemp.tritium = planet.tritium;
+    resourcesRobbedTemp.carbon = planet.carbon;
+    resourcesRobbedTemp.diamond = planet.diamond;
+    resourcesRobbedTemp.magic = planet.magic;
     setResourcesRobbed(resourcesRobbedTemp);
     setOpenRob(true);
 
@@ -188,7 +184,7 @@ const Multiverse = (props) => {
     // console.log(planetsMultiverse[idx + pagin * rowsPerPage])
     // console.log(planet)
     const planetsDiscoveredTemp = [...planetsDiscovered];
-    if (1000000 <= resources.tritium && starship.is_built) {
+    if (1000000 <= resources.magic && starship.is_built) {
       if (!planet.is_discovered) {
         const planetsMultiverseTemp = [...planetsMultiverse];
         // planetsMultiverseTemp[idx + pagin * rowsPerPage].is_discovered = true
@@ -288,9 +284,9 @@ const Multiverse = (props) => {
     "Vie",
     "Armes",
     "Bouclier",
-    "Métal",
-    "Cristal",
-    "Tritium",
+    "Carbone",
+    "Diamants",
+    "Magie",
     "Attaquer",
   ];
 
@@ -331,7 +327,7 @@ const Multiverse = (props) => {
     );
   };
 
-  const tableCellRowResources = ["metal", "crystal", "tritium"];
+  const tableCellRowResources = ["carbon", "diamond", "magic"];
 
   const TableCellRowResources = ({ planet, type }) => {
     return (
@@ -358,6 +354,9 @@ const Multiverse = (props) => {
   };
 
   return (
+    <>
+    {isAuthenticated ? (
+    
     <>
       <DialogFight
         openFight={openFight}
@@ -491,7 +490,22 @@ const Multiverse = (props) => {
           />
         </Card>
       </Box>
-    </>
+      </>
+    ) : (
+        <>
+          <Typography>Il faut être connecté</Typography>
+          <Link
+            component={RouterLink}
+            underline="none"
+            sx={{ marginBottom: "20px" }}
+            to="/login"
+          >
+            Se connecter
+          </Link>
+        </>
+      )}
+      </>
+    
   );
 };
 

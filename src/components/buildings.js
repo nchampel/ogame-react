@@ -1,16 +1,18 @@
-import { Box, Button, Card, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Tooltip, Typography } from "@mui/material";
 import numeral from "numeral";
+import { shortNumber } from "../modules/functions";
 
 const Buildings = (props) => {
   // const isMounted = useMounted();
-  const { buildingsResources, buildings, addLevel } = props;
+  const { buildingsResources, buildings, addLevel, resourcesSearch } = props;
 
   // console.log(buildings)
+  // console.log(shortNumber(1255252772500))
 
   const buildingCardData = [
-    { title: "Fonderie de métal", type: "metal" },
-    { title: "Raffinerie de cristal", type: "crystal" },
-    { title: "Extracteur de tritium", type: "tritium" },
+    { title: "Synthétiseur de carbone", type: "carbon" },
+    { title: "Raffinerie de diamants", type: "diamond" },
+    { title: "Extracteur de magie", type: "magic" },
   ];
 
   const BuildingCard = ({ title, type }) => {
@@ -20,10 +22,10 @@ const Buildings = (props) => {
           marginTop: "15px",
           background: "#313742",
           color: "white",
-          boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
+          // boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
           padding: "2px",
           minWidth: "300px",
-          border: "1px solid white",
+          // border: "1px solid white",
         }}
       >
         <Box sx={{ margin: "0px 20px" }}>
@@ -31,19 +33,29 @@ const Buildings = (props) => {
           <Typography>{`${numeral(buildingsResources[type]["production"])
             .format("0,000,000,000,000.00")
             .replaceAll(",", " ")} /h`}</Typography>
-          <Typography>{`Métal : ${numeral(buildingsResources[type]["metal"])
-            .format("0,000,000,000,000")
-            .replaceAll(",", " ")} Cristal : ${numeral(
-            buildingsResources[type]["crystal"]
+            <Tooltip title={numeral(buildingsResources[type]["carbon"])
+              .format("0,000,000,000,000")
+              .replaceAll(",", " ")} placement="top">
+
+          <Typography>{`Carbone : ${shortNumber(buildingsResources[type]["carbon"])
+            }`}</Typography>
+            </Tooltip>
+            <Tooltip title={numeral(buildingsResources[type]["diamond"])
+              .format("0,000,000,000,000")
+              .replaceAll(",", " ")} placement="top">
+
+             <Typography>{`Diamants : ${shortNumber(
+            buildingsResources[type]["diamond"]
           )
-            .format("0,000,000,000,000")
-            .replaceAll(",", " ")} Energie : ${numeral(
+            }`}</Typography>
+            </Tooltip>
+            <Typography>{`Energie : ${numeral(
             buildingsResources[type]["next_energy"] -
               buildingsResources[type]["energy"]
           )
             .format("0,000,000,000,000")
             .replaceAll(",", " ")}`}</Typography>
-          <Button onClick={() => addLevel(type, buildings[type])}>
+          <Button onClick={() => addLevel(type, buildings[type], buildingsResources[type])}>
             Construire
           </Button>
         </Box>
@@ -83,32 +95,92 @@ const Buildings = (props) => {
             marginTop: "15px",
             background: "#313742",
             color: "white",
-            boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
+            // boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
             padding: "2px",
             minWidth: "300px",
-            border: "1px solid white",
+            // border: "1px solid black",
           }}
         >
           <Box sx={{ margin: "0px 20px" }}>
-            <Typography>{`Centrale solaire : ${buildings.energy}`}</Typography>
+            <Typography>{`Génératrice d'énergie : ${buildings.energy}`}</Typography>
             <Typography>{` + ${numeral(
               buildingsResources.energy.next_production -
                 buildingsResources.energy.production
             )
               .format("0,000,000,000,000")
               .replaceAll(",", " ")} énergie`}</Typography>
-            <Typography>{`Métal : ${numeral(buildingsResources.energy.metal)
+
+              <Tooltip title={numeral(buildingsResources.energy.carbon)
               .format("0,000,000,000,000")
-              .replaceAll(",", " ")} Cristal : ${numeral(
-              buildingsResources.energy.crystal
-            )
+              .replaceAll(",", " ")} placement="top">
+              
+            <Typography>{`Carbone : ${shortNumber(buildingsResources.energy.carbon)}`}</Typography>
+              </Tooltip>
+              <Tooltip title={numeral(buildingsResources.energy.diamond)
               .format("0,000,000,000,000")
-              .replaceAll(",", " ")}`}</Typography>
-            <Button onClick={() => addLevel("energy", buildings.energy)}>
+              .replaceAll(",", " ")} placement="top">
+
+              <Typography>{`Diamants : ${shortNumber(
+              buildingsResources.energy.diamond
+            )}`}</Typography>
+              </Tooltip>
+            <Button onClick={() => addLevel("energy", buildings.energy, buildingsResources.energy)}>
               Construire
             </Button>
           </Box>
         </Card>
+        {resourcesSearch.shield.level >= 20 && (
+        <Card
+          item="true"
+          sx={{
+            marginTop: "15px",
+            background: "#313742",
+            color: "white",
+            // boxShadow: "0px 2px 4px rgba(150, 150, 150, 0.2)",
+            padding: "2px",
+            minWidth: "300px",
+            // border: "1px solid black",
+          }}
+        >
+          
+          <Box sx={{ margin: "0px 20px" }}>
+            <Typography>{`Dôme protecteur : ${buildings.protective_dome}`}</Typography>
+            
+
+              <Tooltip title={numeral(buildingsResources.protective_dome.carbon)
+              .format("0,000,000,000,000")
+              .replaceAll(",", " ")} placement="top">
+              
+            <Typography>{`Carbone : ${shortNumber(buildingsResources.protective_dome.carbon)}`}</Typography>
+              </Tooltip>
+              <Tooltip title={numeral(buildingsResources.protective_dome.diamond)
+              .format("0,000,000,000,000")
+              .replaceAll(",", " ")} placement="top">
+
+              <Typography>{`Diamants : ${shortNumber(
+              buildingsResources.protective_dome.diamond
+            )}`}</Typography>
+              </Tooltip>
+              <Tooltip title={numeral(buildingsResources.protective_dome.magic)
+              .format("0,000,000,000,000")
+              .replaceAll(",", " ")} placement="top">
+
+              <Typography>{`Magie : ${shortNumber(
+              buildingsResources.protective_dome.magic
+            )}`}</Typography>
+              </Tooltip>
+              <Typography>{`Energie :  ${numeral(
+              buildingsResources.protective_dome.next_energy -
+              buildingsResources.protective_dome.energy
+            )
+              .format("0,000,000,000,000")
+              .replaceAll(",", " ")}`}</Typography>
+            <Button onClick={() => addLevel("protective_dome", buildings.protective_dome, buildingsResources.protective_dome)}>
+              Construire
+            </Button>
+          </Box>
+        </Card>
+        )}
       </Grid>
     </>
   );

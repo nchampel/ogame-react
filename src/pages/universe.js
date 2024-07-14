@@ -10,13 +10,14 @@ import {
   TableRow,
   TextField,
   Typography,
+  Link
 } from "@mui/material";
 import numeral from "numeral";
 import { useCallback, useEffect, useState } from "react";
 import { planetApi } from "../api/planet-api";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { planetsApi } from "../api/planets-api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 // import { DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport, frFR } from "@mui/x-data-grid";
 
 const Universe = (props) => {
@@ -71,19 +72,19 @@ const Universe = (props) => {
     // console.log(idx)
     // console.log(planets.slice(pagin * rowsPerPage, (pagin + 1) * rowsPerPage)[idx])
     // console.log(planets[idx + pagin * rowsPerPage])
-    if (planet.cost <= resources.tritium) {
+    if (planet.cost <= resources.magic) {
       const resourcesTemp = { ...resources };
-      resourcesTemp.tritium -= planet.cost;
-      resourcesTemp.tritium += planet.tritium;
-      resourcesTemp.metal += planet.metal;
-      resourcesTemp.crystal += planet.crystal;
+      resourcesTemp.magic -= planet.cost;
+      resourcesTemp.magic += planet.magic;
+      resourcesTemp.carbon += planet.carbon;
+      resourcesTemp.diamond += planet.diamond;
       setResources(resourcesTemp);
       saveResources(resourcesTemp);
       const planetsTemp = [...planets];
       const planetAttacked = planets[idx + pagin * rowsPerPage];
-      planetAttacked.metal = 0;
-      planetAttacked.crystal = 0;
-      planetAttacked.tritium = 0;
+      planetAttacked.carbon = 0;
+      planetAttacked.diamond = 0;
+      planetAttacked.magic = 0;
       planetAttacked.cost = 0;
       planetsTemp[idx + pagin * rowsPerPage] = planetAttacked;
       setPlanets(planetsTemp);
@@ -93,9 +94,9 @@ const Universe = (props) => {
 
   const tableCellHeadTitles = [
     "Nom",
-    "Métal",
-    "Cristal",
-    "Tritium",
+    "Carbone",
+    "Diamants",
+    "Magie",
     "Coût",
     "Attaquer",
   ];
@@ -114,7 +115,7 @@ const Universe = (props) => {
     );
   };
 
-  const tableCellRow = ["metal", "crystal", "tritium", "cost"];
+  const tableCellRow = ["carbon", "diamond", "magic", "cost"];
 
   const TableCellRow = ({ planet, type }) => {
     return (
@@ -143,7 +144,10 @@ const Universe = (props) => {
   };
 
   return (
-    <Box sx={{ minHeight: "600px" }}>
+    <>
+    {isAuthenticated ? (
+    
+    <Box sx={{ minHeight: "590px" }}>
       <Typography sx={{ mb: 1 }}>Planètes</Typography>
       {/* <Typography>{`Deutérium : ${numeral(resources.tritium).format('0,000,000,000,000').replaceAll(',', ' ')}`}</Typography>    */}
       <Card>
@@ -223,6 +227,20 @@ const Universe = (props) => {
         />
       </Card>
     </Box>
+    ) : (
+      <>
+        <Typography>Il faut être connecté</Typography>
+        <Link
+          component={RouterLink}
+          underline="none"
+          sx={{ marginBottom: "20px" }}
+          to="/login"
+        >
+          Se connecter
+        </Link>
+      </>
+    )}
+    </>
   );
 };
 
