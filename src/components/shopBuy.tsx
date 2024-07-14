@@ -2,12 +2,12 @@ import { Box, Button, Card, Grid, Typography } from "@mui/material";
 import numeral from "numeral";
 import { shopApi } from "../api/shop-api";
 import { useCallback, useEffect } from "react";
-import { userApi } from "../api/user-api";
 import { planetApi } from "../api/planet-api";
-import { ShopItemsData } from "../types/shopBuy-types";
 import { ShopItemData } from "../types/shop-types";
 import { Booster, Resources } from "../types/app-types";
 import { checkLocalStorage } from "../modules/functions";
+import { ResourcesSearch } from "../types/search-types";
+import toast from "react-hot-toast";
 
 interface ShopBuyProps {
   shopItemsData: [ShopItemData];
@@ -18,15 +18,21 @@ interface ShopBuyProps {
   setBooster: React.Dispatch<React.SetStateAction<Booster>>
   resources: Resources
   setResources: React.Dispatch<React.SetStateAction<Resources>>
+  resourcesSearch: ResourcesSearch
 }
 
 interface ItemCardProps {
   itemData: ShopItemData;
 }
 
+type ItemBought = {
+  'msg': string,
+  'purchasable': string, 'quantity': number, 'type': string,
+  'unityLink': number}
+
 const ShopBuy = (props: ShopBuyProps) => {
   const { shopItemsData, setShopItemsData, unityLink, setUnityLink, booster, setBooster,
-    resources, setResources
+    resources, setResources, resourcesSearch
    } = props;
 
 //   const itemCardData = [
@@ -69,14 +75,20 @@ const addBooster = () => {
     setUnityLink(unityLink - booster.cost);
     saveUnityLink(unityLink - booster.cost);
     saveLevelBooster(booster.coefficient + 1);
+    toast.success("Booster niveau " + (booster.coefficient + 1).toString() + " acheté", { duration: 8000})
+  } else {
+    toast.error("Pas assez de Lien-Unités", { duration: 8000})
   }
 };
 
 const saveItemBought = useCallback(async (type: string) => {
   try {
+    await shopApi.saveUnityLinkInvested(
+      500, checkLocalStorage("jwt").replaceAll('"', "")
+    )
     let updatedShopItemsDataTemp = []
     let updatedShopItemsData = []
-    const itemBought = await shopApi.saveItemBought(
+    const itemBought: ItemBought = await shopApi.saveItemBought(
       type,
       checkLocalStorage("jwt").replaceAll('"', "")
     );
@@ -123,7 +135,11 @@ const saveItemBought = useCallback(async (type: string) => {
 
 const handleItemBuy = (type: string) => {
   if (unityLink >= 500) {
+    const name = shopItemsData.filter((el) => el.item_type === type)[0].name
     saveItemBought(type)
+    toast.success(name + " de recettes acheté", { duration: 8000})
+  } else {
+    toast.error("Pas assez de Lien-Unités", { duration: 8000})
   }
 
 }
@@ -189,7 +205,7 @@ useEffect(() => {
             />
           );
         })}
-
+        {resourcesSearch.time.level >= 3 &&
         <Card
           // item n'existe pas dans react
           sx={{
@@ -203,15 +219,6 @@ useEffect(() => {
           }}
         >
           <Typography>{`Booster : x ${booster.coefficient + 1}`}</Typography>
-      {/* <Box
-        sx={{
-          display: "flex",
-          alignItems: "flex-end",
-          flexDirection: "row",
-          alignContent: "center",
-          justifyContent: "center"
-          }}
-          > */}
         <Typography>{`Coût : ${numeral(booster.cost)
           .format("0,000,000,000,000")
           .replaceAll(",", " ")} Lien-Unités`}</Typography>
@@ -219,6 +226,7 @@ useEffect(() => {
           Acheter
         </Button>
         </Card>
+        }
       </Grid>
     </>
   );

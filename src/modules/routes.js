@@ -10,6 +10,7 @@ import Search from "../pages/search";
 import Shop from "../pages/shop";
 import Thanks from "../pages/thanks";
 import Universe from "../pages/universe";
+import WorkShop from "../pages/workshop";
 
 const routes = [
   {
@@ -59,6 +60,10 @@ const routes = [
   {
     path: "/shop",
     element: Shop,
+  },
+  {
+    path: "/workshop",
+    element: WorkShop,
   },
 ];
 

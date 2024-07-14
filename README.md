@@ -15,3 +15,10 @@ Continuation de la boutique
 
 03 07 2024
 Début passage de js à ts
+
+09 07 2024
+Passage js à ts toujours en cours
+Bâtiments de la boutique fini
+
+10 07 2024
+Implémentation dans la version qui va être mise en ligne de la recherche énergie pour construire les groupes électrogènes

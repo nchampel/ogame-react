@@ -24,7 +24,7 @@ interface BuildingCardProps {
   building: ShopBuildingKey;
 }
 
-const buildings = ['unity-link_generator', 'ticket_generator']
+// const buildings = ['unity-link_generator', 'ticket_generator']
 
 
 
@@ -44,7 +44,7 @@ const initShopBuildingsData = () => {
         ],
         'is_next_level_buildable': false, 
         'next_level_data' : 
-            {'type': 'metal', 'level': 2000, 'level_building': 1}
+            {'type': 'carbon', 'level': 2000, 'level_building': 1}
         }
       })
   })
@@ -66,7 +66,7 @@ const ShopBuildings1 = (props: ShopBuyProps) => {
           ],
           'is_next_level_buildable': false,
           'next_level_data': {
-              'type': 'metal',
+              'type': 'carbon',
               'level': 2000,
               'level_building': 1
           }
@@ -78,7 +78,7 @@ const ShopBuildings1 = (props: ShopBuyProps) => {
           ],
           'is_next_level_buildable': false,
           'next_level_data': {
-              'type': 'metal',
+              'type': 'carbon',
               'level': 2000,
               'level_building': 1
           }
@@ -94,12 +94,12 @@ const ShopBuildings1 = (props: ShopBuyProps) => {
   //   })
   //  })
 
-  Object.keys(shopBuildingsData).map((buildingKey) => {
-    const building = buildingKey as ShopBuildingKey;
+  // Object.keys(shopBuildingsData).map((buildingKey) => {
+  //   const building = buildingKey as ShopBuildingKey;
     // Object.keys(item).map((building) =>{
     //   const building1 = building as ShopBuildingKey;
-      console.log(building)
-    })
+      // console.log(building)
+    // })
 
 //   const itemCardData = [
 //     { img: "Fonderie de métal", type: "metal" },
@@ -210,7 +210,7 @@ const t = [
 console.log(Object.keys(t['0']))
 
 useEffect(() => {
-  console.log(shopBuildingsData)
+  // console.log(shopBuildingsData)
 }, [shopBuildingsData])
 
 

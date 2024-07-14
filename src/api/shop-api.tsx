@@ -14,8 +14,8 @@ class ShopApi {
     const json = await response.json();
     return json;
   }
-  async saveDailyClaimed(level: number, accessToken: string) {
-    const data = { level };
+  async saveDailyClaimed(levels: {ticket: number, unityLink: number}, accessToken: string) {
+    const data = { levels };
 
     const url = `${process.env.REACT_APP_BACK}/unity-link/daily/save/`;
     const params = getParamsPOST(accessToken, data);
@@ -58,6 +58,28 @@ class ShopApi {
     const json = await response.json();
     return json;
   }
+  async saveItemWon(type: string, accessToken: string) {
+    const data = { type };
+
+    const url = `${process.env.REACT_APP_BACK}/shop/item/won/save/`;
+    const params = getParamsPOST(accessToken, data);
+    const response = await fetch(url, params);
+    //   return response.json(); // parses JSON response into native JavaScript objects
+    // console.log(response);
+    const json = await response.json();
+    return json;
+  }
+  async getPriceWon(ticket: number, accessToken: string) {
+    const data = { ticket};
+
+    const url = `${process.env.REACT_APP_BACK}/shop/price/won/get/`;
+    const params = getParamsPOST(accessToken, data);
+    const response = await fetch(url, params);
+    //   return response.json(); // parses JSON response into native JavaScript objects
+    // console.log(response);
+    const json = await response.json();
+    return json;
+  }
   async getDisplayBuildingsShopLevels(buildings: Buildings, accessToken: string) {
     const data = { buildings };
 
@@ -73,6 +95,15 @@ class ShopApi {
     const data = { unity_link };
 
     const url = `${process.env.REACT_APP_BACK}/unity-link/save/`;
+    const params = getParamsPOST(accessToken, data);
+    const response = await fetch(url, params);
+    const json = await response.json();
+    return json;
+  }
+  async saveUnityLinkInvested(unity_link: number, accessToken: string) {
+    const data = { unity_link };
+
+    const url = `${process.env.REACT_APP_BACK}/unity-link/invested/save/`;
     const params = getParamsPOST(accessToken, data);
     const response = await fetch(url, params);
     const json = await response.json();

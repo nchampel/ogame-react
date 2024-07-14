@@ -6,7 +6,8 @@ export type ShopItemData = {
     purchasable: boolean,
     img: string,
     alt: string,
-    hours: number
+    hours: number,
+    name: string
 }
 export type ShopBuildingKey = 'unity-link_generator' | 'ticket_generator';
 // export type Rule = { type: string, level: number, order: number };

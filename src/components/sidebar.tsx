@@ -7,9 +7,13 @@ import gold from "../assets/gold-background-montage.webp";
 import sapphire from "../assets/blue-jewellery-jewel-gem-gemstone-sapphire-fashion-accessory-1088100.jpg";
 import emerald from "../assets/Emerald-Stone-PNG-Image.webp";
 import { NatureKey } from "../types/general-types";
+import CustomButton from "../UI/CustomButton";
 
 interface SidebarProps {
   nature: NatureKey;
+  pseudo: string
+  handleOpen: () => Promise<void>
+  lastPartUrl: string
 }
 
 const naturePlayerData: Record<NatureKey, { image: string, color: string }> = {
@@ -21,15 +25,27 @@ const naturePlayerData: Record<NatureKey, { image: string, color: string }> = {
 }
 
 const Sidebar = (props: SidebarProps) => {
-  const { nature } = props;
+  const { nature, pseudo, handleOpen, lastPartUrl } = props;
+
+  // pour sélectionner visuellement la page où on est
+
+  const linkStyles = (path: string) => ({
+    marginBottom: "20px",
+    color: "black",
+    border: lastPartUrl === path ? "1px solid black" : "none",
+    padding: "10px"
+  });
+
+  // console.log(lastPartUrl)
 
   return (
     <Box style={{ display: "flex", flexDirection: "column", height: "100vh"  }}
     sx={{
       backgroundColor: naturePlayerData[nature].color
     }}>
-      
+      <Typography style={{ color: "black" }}>{`Joueur : ${pseudo}`}</Typography>
       <Typography style={{ color: "black" }}>{`Alignement ${names[nature]}`}</Typography>
+      <CustomButton sx={{ width: "200px"}} onClick={handleOpen}>Déconnexion</CustomButton>
       <Box>
         <img
           src={naturePlayerData[nature].image}
@@ -49,7 +65,8 @@ const Sidebar = (props: SidebarProps) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "black" }}
+          // sx={{ marginBottom: "20px", color: "black" }}
+          sx={linkStyles('help')}
           to="/help"
         >
           Explications
@@ -57,12 +74,13 @@ const Sidebar = (props: SidebarProps) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "black"  }}
+          // sx={{ marginBottom: "20px", color: "black"  }}
+          sx={linkStyles('build')}
           to="/build"
         >
           Constructions
         </Link>
-        {/* <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/search">Recherche</Link> */}
+        <Link component={RouterLink} underline="none" sx={linkStyles('search')} to="/search">Académie</Link>
         {/* <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/boosters">Boosters</Link> */}
         {/* <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/universe">Univers</Link> */}
         {/* <Link component={RouterLink} underline="none" sx={{ marginBottom: '20px' }} to="/multiverse">Multivers</Link> */}
@@ -71,7 +89,17 @@ const Sidebar = (props: SidebarProps) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "black"  }}
+          // sx={{ marginBottom: "20px", color: "black", border: "1px solid black", p: 2 }}
+          sx={linkStyles('workshop')}
+          to="/workshop"
+        >
+          Atelier
+        </Link>
+        <Link
+          component={RouterLink}
+          underline="none"
+          // sx={{ marginBottom: "20px", color: "black"  }}
+          sx={linkStyles('shop')}
           to="/shop"
         >
           Boutique
@@ -79,7 +107,8 @@ const Sidebar = (props: SidebarProps) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "black"  }}
+          // sx={{ marginBottom: "20px", color: "black"  }}
+          sx={linkStyles('ranking')}
           to="/ranking"
         >
           Classement
@@ -87,11 +116,13 @@ const Sidebar = (props: SidebarProps) => {
         <Link
           component={RouterLink}
           underline="none"
-          sx={{ marginBottom: "20px", color: "black"  }}
+          // sx={{ marginBottom: "20px", color: "black"  }}
+          sx={linkStyles('thanks')}
           to="/thanks"
         >
           Remerciements
         </Link>
+        
         {/* <Link
           component={RouterLink}
           underline="none"

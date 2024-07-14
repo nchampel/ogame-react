@@ -4,10 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { planetApi } from "../api/planet-api";
 import { checkLocalStorage } from "../modules/functions";
 import { useMounted } from "../hooks/use-mounted";
-
-const buildings = ['unity-link_generator', 'ticket_generator']
-
-
+import { buildingsNames } from "../modules/names";
+import toast from "react-hot-toast";
 
 const initShopBuildingsData = () => {
   const array = [];
@@ -25,7 +23,7 @@ const initShopBuildingsData = () => {
         ],
         'is_next_level_buildable': false, 
         'next_level_data' : 
-            {'type': 'metal', 'level': 2000, 'level_building': 1}
+            {'type': 'carbon', 'level': 2000, 'level_building': 1}
         }
       })
   })
@@ -33,8 +31,7 @@ const initShopBuildingsData = () => {
 }
 
 const ShopBuildings = (props) => {
-  const { shopItemsData, setShopItemsData, unityLink, setUnityLink, booster, setBooster,
-    resources, setResources, buildings, setBuildings
+  const { unityLink, setUnityLink, buildings, setBuildings
    } = props;
 
    const isMounted = useMounted();
@@ -47,7 +44,7 @@ const ShopBuildings = (props) => {
           ],
           'is_next_level_buildable': false,
           'next_level_data': {
-              'type': 'metal',
+              'type': 'carbon',
               'level': 2000,
               'level_building': 1
           }
@@ -59,7 +56,7 @@ const ShopBuildings = (props) => {
           ],
           'is_next_level_buildable': false,
           'next_level_data': {
-              'type': 'metal',
+              'type': 'carbon',
               'level': 2000,
               'level_building': 1
           }
@@ -68,25 +65,18 @@ const ShopBuildings = (props) => {
     ]
    )
 
-
-//   const itemCardData = [
-//     { img: "Fonderie de métal", type: "metal" },
-//     { title: "Raffinerie de cristal", type: "crystal" },
-//     { title: "Extracteur de tritium", type: "tritium" },
-//   ];
-
-const saveLevelBooster = useCallback(async (level) => {
-  try {
-    const boosterData = await planetApi.saveLevelBooster(
-      level,
-      // localStorage.getItem("jwt").replaceAll('"', "")
-      checkLocalStorage("jwt").replaceAll('"', "")
-    );
-    setBooster(boosterData);
-  } catch (err) {
-    console.error(err);
-  }
-}, []);
+// const saveLevelBooster = useCallback(async (level) => {
+//   try {
+//     const boosterData = await planetApi.saveLevelBooster(
+//       level,
+//       // localStorage.getItem("jwt").replaceAll('"', "")
+//       checkLocalStorage("jwt").replaceAll('"', "")
+//     );
+//     setBooster(boosterData);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }, []);
 
 
 
@@ -134,41 +124,9 @@ useEffect(() => {
   getDisplayBuildingsShopLevels()
 }, [])
 
-// const addLevel = (type, level) => {
-//   // console.log(buildingsResources)
-//   // on vérifie que les ressources nécessaires sont là
-//   // console.log(buildingsResources[type]['energy'])
-//   // console.log(remainingEnergy)
-//   if (
-//     resources["metal"] >= buildingsResources[type]["metal"] &&
-//     resources["crystal"] >= buildingsResources[type]["crystal"] &&
-//     ((type !== "energy" &&
-//       remainingEnergy >=
-//         buildingsResources[type]["next_energy"] -
-//           buildingsResources[type]["energy"]) ||
-//       type === "energy")
-//   ) {
-    
-   
-//     saveLevel(type, level + 1);
-//     const buildingsTemp = { ...buildings };
-//     buildingsTemp[type] = level + 1;
-//     // console.log(buildingsTemp)
-//     setBuildings(buildingsTemp);
-//   }
-// };
 
-// const saveLevel = useCallback(async (type, level) => {
-//   try {
-//     await planetApi.saveLevel(
-//       type,
-//       level,
-//       localStorage.getItem("jwt").replaceAll('"', "")
-//     );
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }, []);
+
+
 
 const updateShopBuildingsData = useCallback(async (buildings, type, level) => {
   try {
@@ -177,6 +135,9 @@ const updateShopBuildingsData = useCallback(async (buildings, type, level) => {
       level,
       localStorage.getItem("jwt").replaceAll('"', "")
     );
+    await shopApi.saveUnityLinkInvested(
+      500, checkLocalStorage("jwt").replaceAll('"', "")
+    )
     const buildingsPlayer = await shopApi.getDisplayBuildingsShopLevels(
       buildings,
       checkLocalStorage("jwt").replaceAll('"', "")
@@ -197,6 +158,9 @@ const handleBuildingBuy = (type) => {
     setUnityLink(unityLink - 500)
     // mettre à jour la règle du niveau suivant
     updateShopBuildingsData(buildingsTemp, type, buildings[type] + 1)
+    toast.success(buildingsNames[type] + " construit", { duration: 8000})
+  } else {
+    toast.error("Pas assez de Lien-Unités", { duration: 8000})
   }
 
 }
@@ -210,11 +174,7 @@ const buildingsShopNames = {
   'unity-link_generator': "Générateur de Lien-Unités",
   'ticket_generator': "Générateur de tickets"
 }
-const buildingsNames = {
-  'metal': "Fonderie de métal",
-  'crystal': "Raffinerie de cristal",
-  'tritium': "Extracteur de tritium"
-}
+
 
 
 const BuildingCard = ({ buildingData, building }) => {
@@ -243,6 +203,9 @@ const BuildingCard = ({ buildingData, building }) => {
         )}
         {building === 'unity-link_generator' && (
         <Typography>Chaque niveau donne 100 Lien-Unités supplémentaires par récompense</Typography>
+      )}
+        {building === 'ticket_generator' && (
+        <Typography>Chaque niveau donne 2 tickets supplémentaires par récompense</Typography>
       )}
         {/* {buildingData[building].next_level_data.type} */}
 {/*         

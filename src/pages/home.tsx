@@ -1,10 +1,18 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 // import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import CustomLink from "../UI/CustomLink";
-function Home() {
+
+interface HomeProps {
+  isAuthenticated: boolean
+}
+
+function Home(props: HomeProps) {
+  const { isAuthenticated } = props
   // const navigate = useNavigate();
   return (
+    <>
+    {isAuthenticated ? (
     <Box sx={{ minHeight: "590px", pl: 2, pr: 2 }}>
       <Typography>Bienvenue sur Lunicité Sacrée</Typography>
       <Typography style={{ textAlign: "left" }}>
@@ -58,6 +66,20 @@ function Home() {
         Retour au jeu
       </CustomLink>
     </Box>
+  ) : (
+    <>
+      <Typography>Il faut être connecté</Typography>
+      <Link
+        component={RouterLink}
+        underline="none"
+        sx={{ marginBottom: "20px" }}
+        to="/login"
+      >
+        Se connecter
+      </Link>
+    </>
+  )}
+  </>
   );
 }
 

@@ -32,6 +32,7 @@ export type AnswersForNature = {
 
 interface NatureProps {
   setNature: React.Dispatch<React.SetStateAction<string | null>>;
+  // isAuthenticated: boolean
 }
 
 interface FormControlLabelData {

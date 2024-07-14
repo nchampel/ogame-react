@@ -32,7 +32,7 @@ class PlanetApi {
     return json;
   }
 
-  async saveResources(resources: Resources[], accessToken: string) {
+  async saveResources(resources: Resources, accessToken: string) {
     const data = { resources };
     const url = `${process.env.REACT_APP_BACK}/resources/save/`;
     const params = getParamsPOST(accessToken, data);

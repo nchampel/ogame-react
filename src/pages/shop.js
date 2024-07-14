@@ -1,8 +1,9 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, Grid, Tab, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, Grid, Tab, Typography, Link } from "@mui/material";
 import { planetApi } from "../api/planet-api";
 import { shopApi } from "../api/shop-api";
 import { useCallback, useEffect, useState } from "react";
 import numeral from "numeral";
+import { Link as RouterLink } from "react-router-dom"
 import { useMounted } from "../hooks/use-mounted";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import oneHour from "../assets/1hour.jpg";
@@ -12,15 +13,17 @@ import twoDays from "../assets/2days.jpg";
 import oneWeek from "../assets/1week.jpg";
 import ShopBuildings from "../components/shopBuildings.js";
 import ShopBuy from "../components/shopBuy";
+import ShopTickets from "../components/shopTickets.tsx";
+import toast from "react-hot-toast";
 
 const initShopItemsData = () => {
   // const array = [];
   const items = [
-    {type: '1 hour', img: oneHour, alt: "d'une heure", hours: 1}, 
-    {type: '2 hours', img: twoHours, alt: "de deux heures", hours: 2}, 
-    {type: '1 day', img: oneDay, alt: "d'un jour", hours: 24}, 
-    {type: '2 days', img: twoDays, alt: "de deux jours", hours: 48}, 
-    {type: '1 week', img: oneWeek, alt: "d'une semaine", hours: 168}, ]
+    {type: '1 hour', img: oneHour, alt: "d'une heure", hours: 1, name: '1 heure'}, 
+    {type: '2 hours', img: twoHours, alt: "de deux heures", hours: 2, name: '2 heures'}, 
+    {type: '1 day', img: oneDay, alt: "d'un jour", hours: 24, name: '1 jour'}, 
+    {type: '2 days', img: twoDays, alt: "de deux jours", hours: 48, name: '2 jours'}, 
+    {type: '1 week', img: oneWeek, alt: "d'une semaine", hours: 168, name: '1 semaine'}, ]
   const array = items.map((item) => {
     return {
       item_quantity: 0,
@@ -30,7 +33,8 @@ const initShopItemsData = () => {
       purchasable: false,
       img: item.img,
       alt: item.alt,
-      hours: item.hours
+      hours: item.hours,
+      name: item.name
     }
   })
   return array
@@ -38,7 +42,9 @@ const initShopItemsData = () => {
 
 const Shop = (props) => {
   const isMounted = useMounted();
-  const { unityLink, setUnityLink, booster, setBooster, resources, setResources, buildingsResources, buildings, setBuildings } = props;
+  const { unityLink, setUnityLink, booster, setBooster, resources, setResources, buildingsResources, buildings, setBuildings,
+    resourcesSearch, ticket, setTicket, isAuthenticated
+   } = props;
   const [open, setOpen] = useState(false);
   const [dailyReward, setDailyReward] = useState(0);
   const [shopItemsData, setShopItemsData] = useState(initShopItemsData)
@@ -50,12 +56,13 @@ const Shop = (props) => {
   const saveDailyClaimed = useCallback(async () => {
     try {
       const isHarvestDaily = await shopApi.saveDailyClaimed(
-        buildings['unity-link_generator'],
+        
+        {unityLink: buildings['unity-link_generator'], ticket: buildings['ticket_generator']},
         localStorage.getItem("jwt").replaceAll('"', "")
       );
       if (isHarvestDaily.msg === 'récompense sauvegardée') {
         setUnityLink(isHarvestDaily.unityLink)
-        // setOpen(false);
+        setTicket(isHarvestDaily.ticket)
       }
     } catch (err) {
       console.error(err);
@@ -71,9 +78,6 @@ const Shop = (props) => {
       const shopItemsDataInit = await shopApi.getShopItemsData(
         localStorage.getItem("jwt").replaceAll('"', "")
       );
-
-      // console.log(shopItemsDataInit)
-      // console.log(shopItemsData)
       
       if (isMounted()) {
         if (isNotDailyHarversted.isDailyHarvestable){
@@ -84,7 +88,6 @@ const Shop = (props) => {
         const updatedShopItemsData = shopItemsDataInit.map(item => {
           const foundItem = shopItemsData.find(itemTemp => itemTemp.item_type === item.item_type);
           if (foundItem) {
-            // console.log(foundItem)
             return {
               ...foundItem,
               item_quantity: item.item_quantity,
@@ -96,7 +99,6 @@ const Shop = (props) => {
           }
           return item;
         });
-        // console.log(updatedShopItemsData)
         setShopItemsData(updatedShopItemsData)
       }
     } catch (err) {
@@ -112,17 +114,12 @@ const Shop = (props) => {
   const tabs = [
     { label: "Bâtiments", value: "buildings" },
     { label: "Acheter", value: "buy" },
-    // { label: "Nano", value: "nano" },
-    // { label: "Flumia", value: "flumia" },
-    // { label: "Sora", value: "sora" },
+    { label: "Tickets", value: "ticket" },
   ];
-  const pages = [
-    { label: "Bâtiments", value: "buildings", component: <ShopBuildings /> },
-    { label: "Acheter", value: "buy", component: <ShopBuy /> },
-    // { label: "Nano", value: "nano" },
-    // { label: "Flumia", value: "flumia" },
-    // { label: "Sora", value: "sora" },
-  ];
+  // const pages = [
+  //   { label: "Bâtiments", value: "buildings", component: <ShopBuildings /> },
+  //   { label: "Acheter", value: "buy", component: <ShopBuy /> },
+  // ];
 
   const handleTabsChange = (_, value) => {
     // console.log(value)
@@ -154,22 +151,23 @@ const Shop = (props) => {
   
 
   useEffect(() => {
-    // console.log(shopItemsData)
-  }, [shopItemsData])
+    // console.log(ticket)
+  }, [ticket])
 
   const addResourcesHours = (item) => {
+    const name = shopItemsData.filter((el) => el.item_type === item.item_type)[0].name
     if (item.item_quantity > 0){
 
       // on calcule les ressources cumulées à ajouter
       const resourcesToAdd = {
-        metal: buildingsResources.metal.production * item.hours,
-        crystal: buildingsResources.crystal.production * item.hours,
-        tritium: buildingsResources.tritium.production * item.hours,
+        carbon: buildingsResources.carbon.production * item.hours,
+        diamond: buildingsResources.diamond.production * item.hours,
+        magic: buildingsResources.magic.production * item.hours,
       };
       const resourcesTemp = { ...resources };
-      resourcesTemp.metal += resourcesToAdd.metal;
-      resourcesTemp.crystal += resourcesToAdd.crystal;
-      resourcesTemp.tritium += resourcesToAdd.tritium;
+      resourcesTemp.carbon += resourcesToAdd.carbon;
+      resourcesTemp.diamond += resourcesToAdd.diamond;
+      resourcesTemp.magic += resourcesToAdd.magic;
   
       saveResources(resourcesTemp);
       setResources(resourcesTemp);
@@ -187,6 +185,8 @@ const Shop = (props) => {
       });
       setShopItemsData(updatedShopItemsData)
       saveItemUsing(item.item_type)
+      
+      toast.success(name + " de recettes utilisé", { duration: 8000})
   
       // on calcule les ressources cumulées pendant l'absence sur les planètes
       // const resourcesPlanetsTemp = [...planets];
@@ -219,11 +219,14 @@ const Shop = (props) => {
   
       // saveResources(resourcesPlanetsTemp) à implémenter
       // setPlanets(resourcesPlanetsTemp);
+    } else {
+      toast.error("Aucun " + name + " de recettes restant", { duration: 8000})
     }
   };
 
-  return (
-    
+  return (    
+    <>
+    {isAuthenticated ? (
     
          <>   
               <Dialog
@@ -251,8 +254,10 @@ const Shop = (props) => {
                       mt: 5,
                     }}
                   >
-                    <Typography>{`Vous avez obtenu la récompense de connexion journalière : ${numeral(dailyReward + buildings['unity-link_generator'] * 100)
+                    <Typography>{`Vous avez obtenu la récompense de connexion journalière : ${numeral(dailyReward.unityLink + buildings['unity-link_generator'] * 100)
           .format("0,000,000,000,000").replaceAll(",", " ")} Unité-Liens`}</Typography>
+                    <Typography>{`Vous avez obtenu la récompense de connexion journalière : ${numeral(dailyReward.ticket + buildings['ticket_generator'] * 2)
+          .format("0,000,000,000,000").replaceAll(",", " ")} tickets`}</Typography>
                   </Grid>
                 </DialogContent>
                 <DialogActions>
@@ -285,7 +290,15 @@ const Shop = (props) => {
           .format("0,000,000,000,000")
           .replaceAll(",", " ")}`}
       </Typography>
+      <Typography>{`Tickets : ${numeral(ticket)
+          .format("0,000,000,000,000")
+          .replaceAll(",", " ")}`}
+      </Typography>
       <Typography>{`Gain par jour de Lien-Unités : ${numeral(500 + buildings['unity-link_generator'] * 100)
+          .format("0,000,000,000,000")
+          .replaceAll(",", " ")}`}
+      </Typography>
+      <Typography>{`Gain par jour de tickets : ${numeral(5 + buildings['ticket_generator'] * 2)
           .format("0,000,000,000,000")
           .replaceAll(",", " ")}`}
       </Typography>
@@ -353,6 +366,7 @@ const Shop = (props) => {
             setBooster={setBooster}
             resources={resources}
             setResources={setResources}
+            resourcesSearch={resourcesSearch}
             />
           </TabPanel>
           <TabPanel value="buildings">
@@ -361,6 +375,22 @@ const Shop = (props) => {
             setShopItemsData={setShopItemsData}
             unityLink={unityLink}
             setUnityLink={setUnityLink}
+            booster={booster}
+            setBooster={setBooster}
+            resources={resources}
+            setResources={setResources}
+            buildings={buildings}
+            setBuildings={setBuildings}
+            />
+          </TabPanel>
+          <TabPanel value="ticket">
+            <ShopTickets 
+            shopItemsData={shopItemsData}
+            setShopItemsData={setShopItemsData}
+            unityLink={unityLink}
+            setUnityLink={setUnityLink}
+            ticket={ticket}
+            setTicket={setTicket}
             booster={booster}
             setBooster={setBooster}
             resources={resources}
@@ -378,7 +408,20 @@ const Shop = (props) => {
       </TabContext>
     </Box>
     </>
-    
+    ) : (
+      <>
+        <Typography>Il faut être connecté</Typography>
+        <Link
+          component={RouterLink}
+          underline="none"
+          sx={{ marginBottom: "20px" }}
+          to="/login"
+        >
+          Se connecter
+        </Link>
+      </>
+    )}
+    </>
   );
 };
 

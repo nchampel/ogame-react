@@ -1,3 +1,5 @@
+import numeral from "numeral";
+
 export function getParamsPOST(accessToken: string, data: {}): {}{
     const params = {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -23,4 +25,17 @@ export function checkLocalStorage(str: string): string {
     return item;
   }
   return '';
+}
+
+export function shortNumber(number: number): string | number {
+  if (number >= 1000 && number < 1000000) {
+    return (Math.floor(number / 1000)).toString() + ' k'
+  } else if (number >= 1000000 && number < 1000000000){
+    return (Math.floor(number / 1000000)).toString() + ' M'
+  } else if (number >= 1000000000){
+    return numeral(Math.floor(number / 1000000000)).format("0,000")
+    .replaceAll(",", " ").toString() + ' Md'
+  } else {
+    return number
+  }
 }

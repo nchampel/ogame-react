@@ -15,14 +15,18 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  Divider,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import numeral from "numeral";
+import { Toaster } from 'react-hot-toast';
 import { searchApi } from "../api/search-api";
 import Register from "./register";
 import { userApi } from "../api/user-api";
-import CustomButton from "../UI/CustomButton";
+import { playerApi } from "../api/player-api.tsx";
+import { shortNumber } from "../modules/functions.tsx";
 // import Nature from './nature';
 
 function roundToTwo(num) {
@@ -48,44 +52,61 @@ function App() {
   const isMounted = useMounted();
   const navigate = useNavigate();
   const [resources, setResources] = useState({
-    metal: 0,
-    crystal: 0,
-    tritium: 0,
-    energy: 0,
-    booster: 1
+    carbon: 0,
+    diamond: 0,
+    magic: 0,
+    power_generator: 0,
+    booster: 1,
+
   });
-  const [buildings, setBuildings] = useState({});
+  const [buildings, setBuildings] = useState({ energy: 0});
   const [usedEnergy, setUsedEnergy] = useState(0);
   const [remainingEnergy, setRemainingEnergy] = useState(0);
   const [energy, setEnergy] = useState(0);
   const [buildingsResources, setBuildingsResources] = useState({
-    metal: {},
-    crystal: {},
-    tritium: {},
+    carbon: {},
+    diamond: {},
+    magic: {},
     energy: {},
+    protective_dome: {},
   });
   const [booster, setBooster] = useState({ coefficient: 1, cost: 1000 });
   const [planets, setPlanets] = useState([]);
   const [planetsMultiverse, setPlanetsMultiverse] = useState([]);
   const [starship, setStarship] = useState({ is_built: false });
   const [resourcesSearch, setResourcesSearch] = useState({
-    life: 100,
-    fire: 50,
-    shield: 20,
+    life: {},
+    fire: {},
+    shield: {},
+    energy: {level: 0},
+    electricity: {level: 0},
+    time: {level: 0},
   });
-  const [resourcesNeeded, setResourcesNeeded] = useState({
-    metal: 0,
-    crystal: 0,
-    tritium: 0,
-  });
+  // const [resourcesNeeded, setResourcesNeeded] = useState({
+  //   metal: 0,
+  //   crystal: 0,
+  //   tritium: 0,
+  // });
   const [planetsDiscovered, setPlanetsDiscovered] = useState([]);
   const [planetsNotDiscovered, setPlanetsNotDiscovered] = useState([]);
-  const [searchLevels, setSearchLevels] = useState([]);
+  // const [searchLevels, setSearchLevels] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [emptyJWT, setEmptyJWT] = useState(true);
   const [open, setOpen] = useState(false);
   const [nature, setNature] = useState(null);
   const [unityLink, setUnityLink] = useState(0);
+  const [ticket, setTicket] = useState(0);
+  const [pseudo, setPseudo] = useState('')
+  const [searchBase, setSearchBase] = useState({})
+  const [isWebsiteUnderMaintenance, setIsWebsiteUnderMaintenance] = useState(true)
+  
+  // Extraire la dernière partie de l'URL
+  const pathname = window.location.pathname;
+  const partsUrl = pathname.split('/');
+  const lastPartUrl = partsUrl[partsUrl.length - 1];
+
+
   // const [planetsDiscoveredNumber, setPlanetsDiscoveredNumber] = useState(0)
 
   // const tdeuterium = 40
@@ -137,6 +158,7 @@ function App() {
       let dataStarship = null;
       let dataSearch = null;
       let dataUser = null;
+      let maintenance = null;
       if (verify.msg !== "Pas de token") {
         dataResources = await planetApi.getResources(
           localStorage.getItem("jwt").replaceAll('"', "")
@@ -145,6 +167,8 @@ function App() {
         dataBuildings = await planetApi.getBuildings(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
+        // retour {'carbon': 0, 'diamond': 0, 'magic': 0, 'energy': 0,
+        //   'unity-link_generator': 0, 'ticket_generator': 0,'protective_dome': 0}
         boosterCost = await planetApi.getBoosterCost(
           dataResources.booster,
           localStorage.getItem("jwt").replaceAll('"', "")
@@ -161,62 +185,58 @@ function App() {
         dataSearch = await searchApi.getSearchData(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
+        // console.log(dataSearch)
         dataUser = await userApi.getUnityLink(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
+        maintenance = await playerApi.getIsWebsiteUnderMaintenanceAPIView(
+          localStorage.getItem("jwt").replaceAll('"', "")
+        )
       }
       // const dataBuildingsResources = await planetApi.getBuildingsResources()
       if (isMounted()) {
         if (verify.msg === "Authentifié") {
           // setIsAuthenticated(true)
+          setPseudo(verify.pseudo)
+          setIsAdmin(verify.isAdmin)
+          setIsWebsiteUnderMaintenance(maintenance.isWebsiteUnderMaintenance)
           setResources(dataResources);
           setBuildings(dataBuildings);
-          setResourcesSearch({
-            life: {
-              metal:
-                dataSearch.life.metal * Math.pow(2, dataSearch.life.level - 1),
-              crystal:
-                dataSearch.life.crystal *
-                Math.pow(2, dataSearch.life.level - 1),
-              tritium:
-                dataSearch.life.tritium *
-                Math.pow(2, dataSearch.life.level - 1),
-            },
-            fire: {
-              metal:
-                dataSearch.life.metal * Math.pow(2, dataSearch.fire.level - 1),
-              crystal:
-                dataSearch.fire.crystal *
-                Math.pow(2, dataSearch.fire.level - 1),
-              tritium:
-                dataSearch.fire.tritium *
-                Math.pow(2, dataSearch.fire.level - 1),
-            },
-            shield: {
-              metal:
-                dataSearch.shield.metal *
-                Math.pow(2, dataSearch.shield.level - 1),
-              crystal:
-                dataSearch.shield.crystal *
-                Math.pow(2, dataSearch.shield.level - 1),
-              tritium:
-                dataSearch.shield.tritium *
-                Math.pow(2, dataSearch.shield.level - 1),
-            },
-          });
+          // console.log(dataSearch.energy)
+          const resourcesSearchTemp = {}
+          const searchesName = ['life', 'shield', 'fire', 'energy', 'electricity', 'time']
+          const resourcesName = ['carbon', 'diamond', 'magic']
+          searchesName.forEach((searchName) => {
+            resourcesName.forEach((resourceName) => {
+              // console.log(dataSearch[searchName])
+              resourcesSearchTemp[searchName] = { ...resourcesSearchTemp[searchName],
+              [resourceName] : dataSearch[searchName][resourceName] * Math.pow(2, dataSearch[searchName]['level']),
+              
+            }
+          })
+          // console.log(resourcesSearchTemp)
+          resourcesSearchTemp[searchName] = {...resourcesSearchTemp[searchName], level: dataSearch[searchName]['level'] }
+            
+          })
+          
+          setResourcesSearch(resourcesSearchTemp)
+          setSearchBase(dataSearch)
+          // console.log(resourcesSearchTemp)
+          
           setStarship({ is_built: dataStarship.is_built });
-          setSearchLevels({
-            life_level: dataSearch.life.level,
-            fire_level: dataSearch.fire.level,
-            shield_level: dataSearch.shield.level,
-          });
+          // setSearchLevels({
+          //   life_level: dataSearch.life.level,
+          //   fire_level: dataSearch.fire.level,
+          //   shield_level: dataSearch.shield.level,
+          //   energy_level: dataSearch.energy.level,
+          // });
           setBooster({ coefficient: dataResources.booster, cost: boosterCost });
           dataPlanets.forEach((_, idx) => {
-            const metal = dataPlanets[idx]["metal"];
-            const crystal = dataPlanets[idx]["crystal"];
-            const tritium = dataPlanets[idx]["tritium"];
+            const carbon = dataPlanets[idx]["carbon"];
+            const diamond = dataPlanets[idx]["diamond"];
+            const magic = dataPlanets[idx]["magic"];
             dataPlanets[idx]["cost"] = Math.round(
-              (metal + crystal + tritium) / 10
+              (carbon + diamond + magic) / 10
             );
           });
           setPlanets(dataPlanets);
@@ -226,76 +246,80 @@ function App() {
           // setPlanetsDiscoveredNumber(501 - dataPlanetsMultiverse.not_discovered.length)
           // console.log(dataPlanetsMultiverse.discovered)
           const buildingsResourcesTemp = {
-            metal: {
-              metal: Math.round(60 * Math.pow(1.5, dataBuildings.metal - 1)),
-              crystal: Math.round(15 * Math.pow(1.5, dataBuildings.metal - 1)),
+            carbon: {
+              carbon: Math.round(60 * Math.pow(1.5, dataBuildings.carbon - 1)),
+              diamond: Math.round(15 * Math.pow(1.5, dataBuildings.carbon - 1)),
+              magic: 0,
               energy: Math.round(
-                10 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal)
+                10 * dataBuildings.carbon * Math.pow(1.1, dataBuildings.carbon)
               ),
               next_energy: Math.round(
                 10 *
-                  (dataBuildings.metal + 1) *
-                  Math.pow(1.1, dataBuildings.metal + 1)
+                  (dataBuildings.carbon + 1) *
+                  Math.pow(1.1, dataBuildings.carbon + 1)
               ),
               production: roundToTwo(
                 8 *
                   dataResources.booster *
                   30 *
-                  dataBuildings.metal *
-                  Math.pow(1.1, dataBuildings.metal) +
+                  dataBuildings.carbon *
+                  Math.pow(1.1, dataBuildings.carbon) +
                   72
               ),
             },
-            crystal: {
-              metal: Math.round(48 * Math.pow(1.6, dataBuildings.crystal - 1)),
-              crystal: Math.round(
-                24 * Math.pow(1.6, dataBuildings.crystal - 1)
+            diamond: {
+              carbon: Math.round(48 * Math.pow(1.6, dataBuildings.diamond - 1)),
+              diamond: Math.round(
+                24 * Math.pow(1.6, dataBuildings.diamond - 1)
               ),
+              magic: 0,
               energy: Math.round(
                 10 *
-                  dataBuildings.crystal *
-                  Math.pow(1.1, dataBuildings.crystal)
+                  dataBuildings.diamond *
+                  Math.pow(1.1, dataBuildings.diamond)
               ),
               next_energy: Math.round(
                 10 *
-                  (dataBuildings.crystal + 1) *
-                  Math.pow(1.1, dataBuildings.crystal + 1)
+                  (dataBuildings.diamond + 1) *
+                  Math.pow(1.1, dataBuildings.diamond + 1)
               ),
               production: roundToTwo(
                 8 *
                   dataResources.booster *
                   20 *
-                  dataBuildings.crystal *
-                  Math.pow(1.1, dataBuildings.crystal) +
+                  dataBuildings.diamond *
+                  Math.pow(1.1, dataBuildings.diamond) +
                   36
               ),
             },
-            tritium: {
-              metal: Math.round(225 * Math.pow(1.5, dataBuildings.tritium - 1)),
-              crystal: Math.round(
-                75 * Math.pow(1.5, dataBuildings.tritium - 1)
+            magic: {
+              carbon: Math.round(225 * Math.pow(1.5, dataBuildings.magic - 1)),
+              diamond: Math.round(
+                75 * Math.pow(1.5, dataBuildings.magic - 1)
               ),
+              magic: 0,
               energy: Math.round(
                 10 *
-                  dataBuildings.tritium *
-                  Math.pow(1.1, dataBuildings.tritium)
+                  dataBuildings.magic *
+                  Math.pow(1.1, dataBuildings.magic)
               ),
               next_energy: Math.round(
                 10 *
-                  (dataBuildings.tritium + 1) *
-                  Math.pow(1.1, dataBuildings.tritium + 1)
+                  (dataBuildings.magic + 1) *
+                  Math.pow(1.1, dataBuildings.magic + 1)
               ),
               production: roundToTwo(
                 8 *
                   dataResources.booster *
                   10 *
-                  dataBuildings.tritium *
-                  Math.pow(1.1, dataBuildings.tritium)
+                  dataBuildings.magic *
+                  Math.pow(1.1, dataBuildings.magic)
               ),
             },
             energy: {
-              metal: Math.round(60 * Math.pow(1.5, dataBuildings.energy - 1)),
-              crystal: Math.round(15 * Math.pow(1.5, dataBuildings.energy - 1)),
+              carbon: Math.round(60 * Math.pow(1.5, dataBuildings.energy - 1)),
+              diamond: Math.round(15 * Math.pow(1.5, dataBuildings.energy - 1)),
+              magic: 0,
               production: Math.round(
                 20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)
               ),
@@ -305,38 +329,49 @@ function App() {
                   Math.pow(1.1, dataBuildings.energy + 1)
               ),
             },
+            protective_dome: {
+              carbon: 1000000000 * Math.pow(2, dataBuildings.protective_dome),
+              diamond: 500000000 * Math.pow(2, dataBuildings.protective_dome),
+              magic: 100000000 * Math.pow(2, dataBuildings.protective_dome),
+              energy: 1000000 * Math.pow(2, dataBuildings.protective_dome),
+              next_energy: 1000000 * Math.pow(2, dataBuildings.protective_dome + 1),
+              production: 0,
+            },
           };
 
           setBuildingsResources(buildingsResourcesTemp);
-          const energyMetal = Math.round(
-            10 * dataBuildings.metal * Math.pow(1.1, dataBuildings.metal)
+          const energyCarbon = Math.round(
+            10 * dataBuildings.carbon * Math.pow(1.1, dataBuildings.carbon)
           );
-          const energyCrystal = Math.round(
-            10 * dataBuildings.crystal * Math.pow(1.1, dataBuildings.crystal)
+          const energyDiamond = Math.round(
+            10 * dataBuildings.diamond * Math.pow(1.1, dataBuildings.diamond)
           );
-          const energyTritium = Math.round(
-            10 * dataBuildings.tritium * Math.pow(1.1, dataBuildings.tritium)
+          const energyMagic = Math.round(
+            10 * dataBuildings.magic * Math.pow(1.1, dataBuildings.magic)
           );
-          setUsedEnergy(energyMetal + energyCrystal + energyTritium);
+          const energyProtectiveDome = 1000000 * dataBuildings.protective_dome * Math.pow(2, dataBuildings.protective_dome);
+          setUsedEnergy(energyCarbon + energyDiamond + energyMagic + energyProtectiveDome);
           setRemainingEnergy(
             Math.round(
               20 * dataBuildings.energy * Math.pow(1.1, dataBuildings.energy)
-            ) -
-              energyMetal -
-              energyCrystal -
-              energyTritium +
-              35 * dataResources.satellites
+            ) - energyCarbon - energyDiamond - energyMagic - energyProtectiveDome +
+              17 * dataResources.power_generator * (resourcesSearchTemp.electricity.level + 1)
           );
+          // console.log(35 * resourcesSearchTemp.electricity.level > 0 ? resourcesSearchTemp.electricity.level : 1 * dataResources.power_generator)
+          // console.log(resourcesSearchTemp.electricity.level > 0 ? resourcesSearchTemp.electricity.level : 1 * dataResources.power_generator)
+          // console.log(dataResources.power_generator)
+          // console.log(resourcesSearchTemp.electricity.level > 0 ? resourcesSearchTemp.electricity.level : 1)
           setEnergy(
             buildingsResourcesTemp.energy.production +
-              35 * dataResources.satellites
+              17 * dataResources.power_generator * (resourcesSearchTemp.electricity.level + 1)
           );
-          setResourcesNeeded({
-            metal: 1000000 * dataSearch.life_level,
-            crystal: 1000000 * dataSearch.fire_level,
-            tritium: 1000000 * dataSearch.shield_level,
-          });
+          // setResourcesNeeded({
+          //   metal: 1000000 * dataSearch.life_level,
+          //   crystal: 1000000 * dataSearch.fire_level,
+          //   tritium: 1000000 * dataSearch.shield_level,
+          // });
           setUnityLink(dataUser.unity_link);
+          setTicket(dataUser.ticket);
           // console.log('authentifié')
         } else {
           // console.log('login')
@@ -389,20 +424,20 @@ function App() {
     //           360 +
     //           2
     //       );
-    resourcesTemp.metal +=
+    resourcesTemp.carbon +=
       (8 *
         booster.coefficient *
         30 *
-        buildings.metal *
-        Math.pow(1.1, buildings.metal)) /
+        buildings.carbon *
+        Math.pow(1.1, buildings.carbon)) /
         360 +
       0.2;
-    resourcesTemp.crystal +=
+    resourcesTemp.diamond +=
       (8 *
         booster.coefficient *
         20 *
-        buildings.crystal *
-        Math.pow(1.1, buildings.crystal)) /
+        buildings.diamond *
+        Math.pow(1.1, buildings.diamond)) /
         360 +
       0.1;
     // resourcesTemp.crystal +=
@@ -420,12 +455,12 @@ function App() {
     //           360 +
     //           1
     //       );
-    resourcesTemp.tritium +=
+    resourcesTemp.magic +=
       (8 *
         booster.coefficient *
         10 *
-        buildings.tritium *
-        Math.pow(1.1, buildings.tritium)) /
+        buildings.magic *
+        Math.pow(1.1, buildings.magic)) /
       360;
     // resourcesTemp.tritium +=
     //   Math.round(
@@ -442,9 +477,9 @@ function App() {
     //           360
     //       );
     // console.log(resourcesTemp.metal)
-    resourcesTemp.metal = roundToTwo(resourcesTemp.metal);
-    resourcesTemp.crystal = roundToTwo(resourcesTemp.crystal);
-    resourcesTemp.tritium = roundToTwo(resourcesTemp.tritium);
+    resourcesTemp.carbon = roundToTwo(resourcesTemp.carbon);
+    resourcesTemp.diamond = roundToTwo(resourcesTemp.diamond);
+    resourcesTemp.magic = roundToTwo(resourcesTemp.magic);
     setResources(resourcesTemp);
     saveResources(resourcesTemp);
   };
@@ -475,34 +510,34 @@ function App() {
     const resourcesTemp = [...planets];
     // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
     planets.forEach((_, index) => {
-      resourcesTemp[index]["metal"] +=
+      resourcesTemp[index]["carbon"] +=
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["metal_level"] *
-            Math.pow(1.1, resourcesTemp[index]["metal_level"])) /
+            resourcesTemp[index]["carbon_level"] *
+            Math.pow(1.1, resourcesTemp[index]["carbon_level"])) /
             360
         );
-      resourcesTemp[index]["crystal"] +=
+      resourcesTemp[index]["diamond"] +=
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["crystal_level"] *
-            Math.pow(1.1, resourcesTemp[index]["crystal_level"])) /
+            resourcesTemp[index]["diamond_level"] *
+            Math.pow(1.1, resourcesTemp[index]["diamond_level"])) /
             360
         );
-      resourcesTemp[index]["tritium"] +=
+      resourcesTemp[index]["magic"] +=
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["tritium_level"] *
-            Math.pow(1.1, resourcesTemp[index]["tritium_level"])) /
+            resourcesTemp[index]["magic_level"] *
+            Math.pow(1.1, resourcesTemp[index]["magic_level"])) /
             360
         );
       resourcesTemp[index]["cost"] = Math.round(
-        (resourcesTemp[index]["metal"] +
-          resourcesTemp[index]["crystal"] +
-          resourcesTemp[index]["tritium"]) /
+        (resourcesTemp[index]["carbon"] +
+          resourcesTemp[index]["diamond"] +
+          resourcesTemp[index]["magic"]) /
           10
       );
     });
@@ -514,28 +549,28 @@ function App() {
     const resourcesTemp = [...planetsMultiverse];
     // console.log(Math.round(30 * buildings.metal * Math.pow(1.1, buildings.metal) / 60))
     planetsMultiverse.forEach((_, index) => {
-      resourcesTemp[index]["metal"] +=
+      resourcesTemp[index]["carbon"] +=
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["metal_level"] *
-            Math.pow(1.1, resourcesTemp[index]["metal_level"])) /
+            resourcesTemp[index]["carbon_level"] *
+            Math.pow(1.1, resourcesTemp[index]["carbon_level"])) /
             60
         );
-      resourcesTemp[index]["crystal"] +=
+      resourcesTemp[index]["diamond"] +=
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["crystal_level"] *
-            Math.pow(1.1, resourcesTemp[index]["crystal_level"])) /
+            resourcesTemp[index]["diamond_level"] *
+            Math.pow(1.1, resourcesTemp[index]["diamond_level"])) /
             60
         );
-      resourcesTemp[index]["tritium"] +=
+      resourcesTemp[index]["magic"] +=
         8 *
         Math.round(
           (30 *
-            resourcesTemp[index]["tritium_level"] *
-            Math.pow(1.1, resourcesTemp[index]["tritium_level"])) /
+            resourcesTemp[index]["magic_level"] *
+            Math.pow(1.1, resourcesTemp[index]["magic_level"])) /
             60
         );
     });
@@ -559,7 +594,7 @@ function App() {
   }, [emptyJWT]);
 
   useEffect(() => {
-    if (nature !== null) {
+    if (nature !== null && !isWebsiteUnderMaintenance) {
       const timer = setInterval(() => {
         addResources();
         // addResourcesPlanets();
@@ -572,14 +607,28 @@ function App() {
     }
   }, [resources, nature]);
 
+  const saveResourcesInvested = useCallback(async (resources) => {
+    try {
+      await playerApi.saveResourcesInvested(
+        resources,
+        localStorage.getItem("jwt").replaceAll('"', "")
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   return (
     <div className="App">
+      {isAdmin || !isWebsiteUnderMaintenance ? (
+        <>
       {/* <BrowserRouter> */}
       {/* <div style={{ display: "flex" }}> */}
+      <Toaster position="top-center" />
       <Grid container sx={{ alignItems: "center", justifyContent: "center" }}>
         {isAuthenticated && nature !== null && (
           <Grid item md={2}>
-            <Sidebar nature={nature} />
+            <Sidebar nature={nature} pseudo={pseudo} handleOpen={handleOpen} lastPartUrl={lastPartUrl} />
           </Grid>
         )}
         <Grid item md={10}>
@@ -642,39 +691,38 @@ function App() {
                   alignItems: "center",
                   margin: "auto",
                 }}
-              >
-                <Typography sx={{ mr: 4 }}>{`Métal : ${numeral(resources.metal)
-                  .format("0,000,000,000,000.00")
-                  .replaceAll(",", " ")}`}</Typography>
-                <Typography sx={{ mr: 4 }}>{`Cristal : ${numeral(
-                  resources.crystal
-                )
-                  .format("0,000,000,000,000.00")
-                  .replaceAll(",", " ")}`}</Typography>
-                <Typography sx={{ mr: 4 }}>{`Tritium : ${numeral(
-                  resources.tritium
-                )
-                  .format("0,000,000,000,000.00")
-                  .replaceAll(",", " ")}`}</Typography>
+              ><Tooltip title={numeral(resources.carbon)
+                .format("0,000,000,000,000")
+                .replaceAll(",", " ")} placement="bottom">
+  
+            <Typography sx={{ mr: 4 }}>{`Carbone : ${shortNumber(resources.carbon)
+              }`}</Typography>
+              </Tooltip>
+              <Tooltip title={numeral(resources.diamond)
+                .format("0,000,000,000,000")
+                .replaceAll(",", " ")} placement="bottom">
+  
+            <Typography sx={{ mr: 4 }}>{`Diamants : ${shortNumber(resources.diamond)
+              }`}</Typography>
+              </Tooltip>
+              <Tooltip title={numeral(resources.magic)
+                .format("0,000,000,000,000")
+                .replaceAll(",", " ")} placement="bottom">
+  
+            <Typography sx={{ mr: 4 }}>{`Magie : ${shortNumber(resources.magic)
+              }`}</Typography>
+              </Tooltip>
+                
+                
                 <Typography>{`Energie : ${numeral(remainingEnergy)
                   .format("0,000,000,000,000")
                   .replaceAll(",", " ")} / ${numeral(energy)
                   .format("0,000,000,000,000")
                   .replaceAll(",", " ")}`}</Typography>
+                  
               </Box>
-              {/* <Button
-                onClick={handleOpen}
-                // sx={{
-                //   ".css-mark81-MuiButtonBase-root-MuiButton-root": {
-                //     backgroundColor: "#313742",
-                //   },
-                // }}
-                color="secondary"
-                variant="contained"
-              >
-                Déconnexion
-              </Button> */}
-              <CustomButton sx={{ mb: 2, mt: 2}} onClick={handleOpen}>Déconnexion</CustomButton>
+              <Divider sx={{ borderColor: "white"}}/>
+              
             </>
           )}
           <Routes>
@@ -734,18 +782,22 @@ function App() {
                     setStarship={setStarship}
                     resourcesSearch={resourcesSearch}
                     setResourcesSearch={setResourcesSearch}
-                    resourcesNeeded={resourcesNeeded}
-                    setResourcesNeeded={setResourcesNeeded}
+                    // resourcesNeeded={resourcesNeeded}
+                    // setResourcesNeeded={setResourcesNeeded}
                     planetsDiscovered={planetsDiscovered}
                     setPlanetsDiscovered={setPlanetsDiscovered}
                     planetsNotDiscovered={planetsNotDiscovered}
                     setPlanetsNotDiscovered={setPlanetsNotDiscovered}
-                    searchLevels={searchLevels}
-                    setSearchLevels={setSearchLevels}
+                    // searchLevels={searchLevels}
+                    // setSearchLevels={setSearchLevels}
                     nature={nature}
                     setNature={setNature}
                     unityLink={unityLink}
                     setUnityLink={setUnityLink}
+                    ticket={ticket}
+                    setTicket={setTicket}
+                    saveResourcesInvested={saveResourcesInvested}
+                    searchBase={searchBase}
                   />
                 }
               />
@@ -761,6 +813,10 @@ function App() {
       {/* </div> */}
 
       {/* </BrowserRouter> */}
+      </>
+    ) : (
+      <Typography>Site en maintenance</Typography>
+    )}
     </div>
   );
 }

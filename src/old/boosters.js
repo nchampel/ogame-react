@@ -43,9 +43,9 @@ const Boosters = (props) => {
   const addBooster = () => {
     // on vérifie qu'il y a assez de métal pour le boost suivant
 
-    if (resources["metal"] >= booster.cost) {
+    if (resources["carbon"] >= booster.cost) {
       const resourcesTemp = { ...resources };
-      resourcesTemp.metal -= booster.cost;
+      resourcesTemp.carbon -= booster.cost;
 
       setResources(resourcesTemp);
       saveResources(resourcesTemp);

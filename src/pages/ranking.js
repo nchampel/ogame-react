@@ -1,8 +1,6 @@
 import {
   Box,
-  Button,
-  Card,
-  Divider,
+  Link,
   Tab,
   Table,
   TableBody,
@@ -15,12 +13,13 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { rankingApi } from "../api/ranking-api";
 import { useMounted } from "../hooks/use-mounted";
-// import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CustomTableCell from "../UI/CustomTableCell";
 // import Label1 from "../components/t"
 
-const Ranking = () => {
+const Ranking = (props) => {
+  const { isAuthenticated } = props
   const isMounted = useMounted();
   const [ranking, setRanking] = useState({
     ranking_total: [{ user: "", points: "" }],
@@ -115,14 +114,13 @@ const Ranking = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {ranking[type].map((user) => {
+            {ranking[type].map((user, index) => {
               return (
-                <>
                   <TableRow key={user.pseudo}>
+                  {/* <TableRow key={index}> */}
                     <CustomTableCell>{user.pseudo}</CustomTableCell>
                     <CustomTableCell>{user.points}</CustomTableCell>
                   </TableRow>
-                </>
               );
             })}
           </TableBody>
@@ -182,11 +180,14 @@ const Ranking = () => {
   }, [getRanking]);
 
   return (
+    <>
+    {isAuthenticated ? (
     <Box sx={{ minHeight: "550px" }}>
       <Typography sx={{ mt: 5, fontSize: 22 }}>Classement total</Typography>
       <Table>
         <TableHead>
-          <TableRow 
+          <TableRow
+          key="titleTotal"
           sx={{
             ".css-1ds061a-MuiTableCell-root": {
               color: "white",
@@ -280,6 +281,21 @@ const Ranking = () => {
         ))}
       </TabContext>
     </Box>
+    
+  ) : (
+    <>
+      <Typography>Il faut être connecté</Typography>
+      <Link
+        component={RouterLink}
+        underline="none"
+        sx={{ marginBottom: "20px" }}
+        to="/login"
+      >
+        Se connecter
+      </Link>
+    </>
+  )}
+  </>
   );
 };
 
