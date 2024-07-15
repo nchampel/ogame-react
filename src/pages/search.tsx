@@ -122,8 +122,8 @@ const Search = (props: SearchProps) => {
 
       // si on fait la recherche électricité, on met à jour l'énergie utilisée et l'énergie totale pour el suivi
       if (type === 'electricity') {
-        setRemainingEnergy(remainingEnergy + 17 * resources.power_generator * (nextResourcesSearch.electricity.level));
-        setEnergy(energy + 17 * resources.power_generator * (nextResourcesSearch.electricity.level));
+        setRemainingEnergy(remainingEnergy - 17 * resources.power_generator * resourcesSearch.electricity.level + 17 * resources.power_generator * (nextResourcesSearch.electricity.level));
+        setEnergy(energy - 17 * resources.power_generator * resourcesSearch.electricity.level + 17 * resources.power_generator * (nextResourcesSearch.electricity.level));
       }
 
       const resourcesInvestedToSave = resourcesSearch[type].carbon + resourcesSearch[type].diamond + resourcesSearch[type].magic
