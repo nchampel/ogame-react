@@ -8,6 +8,7 @@ import { Resources, ResourcesInvested } from "../types/app-types";
 import { ResourcesSearch, SearchData } from "../types/search-types";
 import toast from "react-hot-toast";
 import { Link as RouterLink } from "react-router-dom"
+import { resourcesNameFrench } from "../modules/names";
 
 interface SearchProps {
   resourcesSearch: ResourcesSearch;
@@ -170,7 +171,7 @@ const Search = (props: SearchProps) => {
   // const searchCards = [{ name: "Vie", typeLevel: "life_level" }];
 
   
-  const resourcesNameFrench = {carbon: 'Carbone', diamond: 'Diamants', magic: 'Magie'}
+  
 
   const SearchCard = ({ searchData, type }: SearchCardProps) => {
     return (

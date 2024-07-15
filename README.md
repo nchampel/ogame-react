@@ -22,3 +22,7 @@ Bâtiments de la boutique fini
 
 10 07 2024
 Implémentation dans la version qui va être mise en ligne de la recherche énergie pour construire les groupes électrogènes
+
+14 07 2024
+Atelier, recherche, boutique finie.
+Implémentation des succès
