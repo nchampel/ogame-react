@@ -18,6 +18,10 @@ interface SearchProps {
   saveResourcesInvested: (resources: number) => Promise<void>
   searchBase: ResourcesSearch
   isAuthenticated: boolean
+  remainingEnergy: number
+  setRemainingEnergy: React.Dispatch<React.SetStateAction<number>>
+  energy: number
+  setEnergy: React.Dispatch<React.SetStateAction<number>>
 }
 
 type SearchType = 'energy' | 'life' | 'shield' | 'fire' | 'electricity' | 'time';
@@ -41,7 +45,11 @@ const Search = (props: SearchProps) => {
     // setResourcesNeeded,
     isAuthenticated,
     saveResourcesInvested,
-    searchBase
+    searchBase,
+    remainingEnergy,
+    setRemainingEnergy,
+    energy,
+    setEnergy
   } = props;
 
   // const navigate = useNavigate();
@@ -111,6 +119,12 @@ const Search = (props: SearchProps) => {
       // console.log(nextResourcesSearch)
       setResourcesSearch(nextResourcesSearch);
       saveLevelSearch(type, searchesTemp[type]['level']);
+
+      // si on fait la recherche électricité, on met à jour l'énergie utilisée et l'énergie totale pour el suivi
+      if (type === 'electricity') {
+        setRemainingEnergy(remainingEnergy + 17 * resources.power_generator * (nextResourcesSearch.electricity.level));
+        setEnergy(energy + 17 * resources.power_generator * (nextResourcesSearch.electricity.level));
+      }
 
       const resourcesInvestedToSave = resourcesSearch[type].carbon + resourcesSearch[type].diamond + resourcesSearch[type].magic
       saveResourcesInvested(resourcesInvestedToSave)
