@@ -14,8 +14,8 @@ function Home(props: HomeProps) {
     <>
     {isAuthenticated ? (
     <Box sx={{ minHeight: "590px", pl: 2, pr: 2 }}>
-      <Typography>Bienvenue sur Lunicité Sacrée</Typography>
-      <Typography style={{ textAlign: "left" }}>
+      <Typography sx={{ marginBottom: "20px" }}>Bienvenue sur Lunicité Sacrée</Typography>
+      {/* <Typography style={{ textAlign: "left" }}>
         Il y a des centaines d'années, sur une planète harmonieuse, vivait
         Nissyan, un grand érudit. Son savoir et sa sagacité étaient connus de
         tous. Les personnes vivant avec lui profitaient des bienfaits de ses
@@ -56,6 +56,31 @@ function Home(props: HomeProps) {
       </Typography>
       <Typography sx={{ marginBottom: "20px" }}>
         Le but du jeu est de construire le bouclier avant l'arrivée du fléau.
+      </Typography> */}
+      
+      <Typography sx={{ marginBottom: "20px" }}>
+        Vos ressources augmentent avec le temps, que vous soyiez connecté ou non. Lors de paliers (1 000, 10 000, 100 000 etc.) vous obtenez un succès qui vous donne 10% de la quantité atteinte (100, 1 000, 10 000 etc.).
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        1 k ={'>'} 1 000, 1 M ={'>'} 1 000 000, 1 Md ={'>'} 1 000 000 000 .
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        Pour augmenter votre productivité, vous pouvez augmenter le niveau du synthétiseur, de la raffinerie et de l'extracteur dans l'onglet Constructions.
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        Le but du jeu provisoire est de construire le dôme protecteur. Pour cela la recherche Bouclier niveau 20 est requise.
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        Chaque jour de connexion vous obtenez des Lien-Unités pour faire des achats à la boutique. Il faut visiter la boutique pour réclamer cette récompense, onglet Boutique.
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        Pour un certain nombre d'achats de recette de production vous débloquez le niveau suivant. 1H donne une heure de production, 2H 2 heures, 1J 1 jour, 2J 2 jours et enfin 1S 1 semaine.
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        L'onglet académie est utilisé pour effectuer les recherches.
+      </Typography>
+      <Typography sx={{ marginBottom: "20px" }}>
+        Un récapitulatif des succès remportés est à venir. Le calcul des points sera revu également.
       </Typography>
       <CustomLink
         component={RouterLink}

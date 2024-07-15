@@ -207,7 +207,7 @@ const t = [
   {'b': 1}
 ]
 
-console.log(Object.keys(t['0']))
+// console.log(Object.keys(t['0']))
 
 useEffect(() => {
   // console.log(shopBuildingsData)

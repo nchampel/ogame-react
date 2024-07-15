@@ -19,3 +19,8 @@ export const buildingsNames = {
   'ticket_generator': "Générateur de tickets",
   'unity-link_generator': "Générateur de Lien-Unités",
 }
+
+// pas utilisé
+export const resourcesNamesCode = ['carbon', 'diamond', 'magic']
+
+export const resourcesNameFrench = {carbon: 'Carbone', diamond: 'Diamants', magic: 'Magie'}

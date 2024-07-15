@@ -278,18 +278,18 @@ const Dashboard = (props) => {
               ml: 2
             }}
           >
-            Pour construire la fonderie, la raffinerie et l'extracteur, il faut
+            Pour construire le synthétiseur, la raffinerie et l'extracteur, il faut
             de l'énergie et des ressources. Pour avoir de l'énergie, il faut
             construire puis améliorer la génératrice. Pour les ressources,
             plus le niveau de votre bâtiment est élevé, plus il les produira
             vite.
           </Typography>
-          <Typography sx={{ textAlign: "left", ml: 2 }}>
+          {/* <Typography sx={{ textAlign: "left", ml: 2 }}>
             Pour l'instant le jeu se limite à cela, mais des fonctionnalités
             déjà en test seront rapidement ajoutées ! (par exemple des
             ressources additionnelles seront récoltables au bout d'un certain
             temps)
-          </Typography>
+          </Typography> */}
           {/* <Card sx={{
         marginBottom: '15px'
         }}>

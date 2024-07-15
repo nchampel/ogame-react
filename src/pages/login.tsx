@@ -47,8 +47,7 @@ function Login(props: LoginProps) {
     }
   }, [isAuthenticated]);
   return (
-    <>
-    {isAuthenticated ? (
+    <Box  sx={{ minHeight: "550px" }}>
       <><Dialog
           open={open}
           // TransitionComponent={Transition}
@@ -85,7 +84,7 @@ function Login(props: LoginProps) {
               OK
             </Button>
           </DialogActions>
-        </Dialog><Box sx={{ minHeight: "590px" }}>
+        </Dialog><Box>
             <Formik
               initialValues={{ pseudo: "", password: "" }}
               validationSchema={Yup.object().shape({
@@ -205,20 +204,8 @@ function Login(props: LoginProps) {
               )}
             </Formik>
           </Box></>
-      ) : (
-        <>
-          <Typography>Il faut être connecté</Typography>
-          <Link
-            component={RouterLink}
-            underline="none"
-            sx={{ marginBottom: "20px" }}
-            to="/login"
-          >
-            Se connecter
-          </Link>
-        </>
-      )}
-    </>
+      
+    </Box>
   );
 }
 

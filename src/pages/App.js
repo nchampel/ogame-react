@@ -21,12 +21,13 @@ import {
   Typography,
 } from "@mui/material";
 import numeral from "numeral";
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { searchApi } from "../api/search-api";
 import Register from "./register";
 import { userApi } from "../api/user-api";
 import { playerApi } from "../api/player-api.tsx";
 import { shortNumber } from "../modules/functions.tsx";
+import { resourcesNameFrench } from "../modules/names.tsx";
 // import Nature from './nature';
 
 function roundToTwo(num) {
@@ -100,6 +101,8 @@ function App() {
   const [pseudo, setPseudo] = useState('')
   const [searchBase, setSearchBase] = useState({})
   const [isWebsiteUnderMaintenance, setIsWebsiteUnderMaintenance] = useState(true)
+  const [successPlayer, setSuccessPlayer] = useState([]);
+  const resourcesName = ['carbon', 'diamond', 'magic']
   
   // Extraire la dernière partie de l'URL
   const pathname = window.location.pathname;
@@ -147,7 +150,6 @@ function App() {
         setIsAuthenticated(true);
         setNature(verify.nature);
       }
-      //  console.log(verify)
       //  console.log(isAuthenticated)
       // }
       let dataResources = null;
@@ -159,6 +161,13 @@ function App() {
       let dataSearch = null;
       let dataUser = null;
       let maintenance = null;
+      let dataSuccessPlayer = null
+      let isAdminPlayer = null
+
+      if (verify.msg === "Pas de token") {
+        isAdminPlayer = playerApi.getIsAdminPlayer()
+      }
+
       if (verify.msg !== "Pas de token") {
         dataResources = await planetApi.getResources(
           localStorage.getItem("jwt").replaceAll('"', "")
@@ -189,12 +198,20 @@ function App() {
         dataUser = await userApi.getUnityLink(
           localStorage.getItem("jwt").replaceAll('"', "")
         );
-        maintenance = await playerApi.getIsWebsiteUnderMaintenanceAPIView(
+        maintenance = await playerApi.getIsWebsiteUnderMaintenance(
+          localStorage.getItem("jwt").replaceAll('"', "")
+        )
+        dataSuccessPlayer =  await playerApi.getSuccessPlayer(
           localStorage.getItem("jwt").replaceAll('"', "")
         )
       }
       // const dataBuildingsResources = await planetApi.getBuildingsResources()
       if (isMounted()) {
+        // pour site en maintenance, je pense pas que cela sera nécessaire car 
+        // setIsAdmin(true) sera fait au retour du formik
+        // if (verify.msg === "Pas de token" && isAdminPlayer) {
+        //   setIsAdmin(true)
+        // }
         if (verify.msg === "Authentifié") {
           // setIsAuthenticated(true)
           setPseudo(verify.pseudo)
@@ -205,7 +222,7 @@ function App() {
           // console.log(dataSearch.energy)
           const resourcesSearchTemp = {}
           const searchesName = ['life', 'shield', 'fire', 'energy', 'electricity', 'time']
-          const resourcesName = ['carbon', 'diamond', 'magic']
+          
           searchesName.forEach((searchName) => {
             resourcesName.forEach((resourceName) => {
               // console.log(dataSearch[searchName])
@@ -220,6 +237,9 @@ function App() {
           })
           
           setResourcesSearch(resourcesSearchTemp)
+
+          setSuccessPlayer(dataSuccessPlayer.successPlayer)
+
           setSearchBase(dataSearch)
           // console.log(resourcesSearchTemp)
           
@@ -406,6 +426,17 @@ function App() {
     }
   }, []);
 
+  const saveSuccessPlayer = useCallback(async (success) => {
+    try {
+      await playerApi.saveSuccessPlayer(
+        success,
+        localStorage.getItem("jwt").replaceAll('"', "")
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   const addResources = () => {
     const resourcesTemp = { ...resources };
     // console.log(resourcesTemp)
@@ -480,8 +511,29 @@ function App() {
     resourcesTemp.carbon = roundToTwo(resourcesTemp.carbon);
     resourcesTemp.diamond = roundToTwo(resourcesTemp.diamond);
     resourcesTemp.magic = roundToTwo(resourcesTemp.magic);
+
+    // on vérifie s'il y a eu un succès de ressources atteint
+    // console.log(successPlayer)
+    const successPlayerTemp = [...successPlayer]
+    // successPlayer a la structure [{resource: carbon, value: 1000, is_won: false}]
+    successPlayer.map((el, idx) => {
+      if (!el.is_won && resourcesTemp[el.resource] >= el.value) {
+
+        // console.log(el.resource + el.value + (el.value/10).toString())
+        // on ajoute les ressources gagnées par le succès
+        resourcesTemp[el.resource] += el.value / 10
+        successPlayerTemp[idx].is_won = true
+        // on toaste le succès
+        toast.success(shortNumber(el.value/10) + ' de ' + resourcesNameFrench[el.resource] + ' gagnés', {duration: 8000})
+        // console.log(shortNumber(el.value/10) + ' de ' + resourcesNameFrench[el.resource] + ' gagnés')
+      }
+    })
+    setSuccessPlayer(successPlayerTemp)
+
+
     setResources(resourcesTemp);
     saveResources(resourcesTemp);
+    saveSuccessPlayer(successPlayerTemp)
   };
 
   const saveResourcesPlanets = useCallback(async (planets) => {
@@ -597,6 +649,7 @@ function App() {
     if (nature !== null && !isWebsiteUnderMaintenance) {
       const timer = setInterval(() => {
         addResources();
+        // console.log('ok')
         // addResourcesPlanets();
         // addResourcesPlanetsMultiverse();
       }, 10000);
@@ -618,9 +671,13 @@ function App() {
     }
   }, []);
 
+  // console.log(isAdmin || (isAdmin && isWebsiteUnderMaintenance) || (!isAdmin && !isWebsiteUnderMaintenance))
+  // console.log(isAdmin)
+
   return (
     <div className="App">
-      {isAdmin || !isWebsiteUnderMaintenance ? (
+      {/* pour site en maintenance */}
+      {/* {isAdmin || (!isAdmin && !isWebsiteUnderMaintenance) ? ( */}
         <>
       {/* <BrowserRouter> */}
       {/* <div style={{ display: "flex" }}> */}
@@ -814,9 +871,10 @@ function App() {
 
       {/* </BrowserRouter> */}
       </>
-    ) : (
+      {/* pour site en maintenance */}
+    {/* ) : (
       <Typography>Site en maintenance</Typography>
-    )}
+    )} */}
     </div>
   );
 }

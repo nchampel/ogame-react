@@ -1,4 +1,4 @@
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import names from "../modules/names";
 import amethyst from "../assets/amethyst.webp";
@@ -7,7 +7,6 @@ import gold from "../assets/gold-background-montage.webp";
 import sapphire from "../assets/blue-jewellery-jewel-gem-gemstone-sapphire-fashion-accessory-1088100.jpg";
 import emerald from "../assets/Emerald-Stone-PNG-Image.webp";
 import { NatureKey } from "../types/general-types";
-import CustomButton from "../UI/CustomButton";
 
 interface SidebarProps {
   nature: NatureKey;
@@ -45,7 +44,11 @@ const Sidebar = (props: SidebarProps) => {
     }}>
       <Typography style={{ color: "black" }}>{`Joueur : ${pseudo}`}</Typography>
       <Typography style={{ color: "black" }}>{`Alignement ${names[nature]}`}</Typography>
-      <CustomButton sx={{ width: "200px"}} onClick={handleOpen}>Déconnexion</CustomButton>
+      <Box>
+        <Button sx={{ width: "200px", border: "1px black solid",
+    color: "black",
+    borderRadius: "10px"}} onClick={handleOpen}>Déconnexion</Button>
+        </Box>
       <Box>
         <img
           src={naturePlayerData[nature].image}
