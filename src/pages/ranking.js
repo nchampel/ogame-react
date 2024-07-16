@@ -183,8 +183,45 @@ const Ranking = (props) => {
     <>
     {isAuthenticated ? (
     <Box sx={{ minHeight: "550px" }}>
-      <Typography sx={{ mt: 5, fontSize: 22 }}>Classement total</Typography>
-      <Table>
+      {/* <Typography sx={{ mt: 5, fontSize: 22 }}>Classement total</Typography> */}
+      
+      {/* <Typography sx={{ mt: 5, fontSize: 22 }}>
+        Classement par alignement
+      </Typography> */}
+
+      <TabContext value={currentTab}>
+        <TabList
+          onChange={handleTabsChange}
+          aria-label="lab API tabs example"
+          // sx={{
+          //   ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected": {
+          //     color: "#1976d2",
+          //     fontWeight: "700"
+          //     // borderBottom: "2px solid black"
+          //     // fontWeight: "600px"
+          //   },
+          //   // pour modifier la couleur de la barre sous le tab sélectionné
+          //   // ".css-1aquho2-MuiTabs-indicator": {
+          //   //   backgroundColor: "black",
+          //   // },
+          //   ".css-1l92wdc-MuiButtonBase-root-MuiTab-root": {
+          //     // color: "rgba(0, 0, 0, 0.4)",
+          //     fontWeight: "400",
+          //     color: "white"
+          //   },
+          // }}
+          sx={{ '& .MuiTab-root': { color: 'white' }
+        }}
+        >
+          <Tab key='total' label='total' value='total' />
+          {tabs.map((tab) => (
+            <Tab key={tab.value} label={tab.label} value={tab.value} 
+            />
+          ))}
+        </TabList>
+        {/* <Divider color="white" /> */}
+        <TabPanel value='total'>
+        <Table>
         <TableHead>
           <TableRow
           key="titleTotal"
@@ -238,40 +275,7 @@ const Ranking = (props) => {
           })}
         </TableBody>
       </Table>
-      <Typography sx={{ mt: 5, fontSize: 22 }}>
-        Classement par alignement
-      </Typography>
-
-      <TabContext value={currentTab}>
-        <TabList
-          onChange={handleTabsChange}
-          aria-label="lab API tabs example"
-          // sx={{
-          //   ".css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected": {
-          //     color: "#1976d2",
-          //     fontWeight: "700"
-          //     // borderBottom: "2px solid black"
-          //     // fontWeight: "600px"
-          //   },
-          //   // pour modifier la couleur de la barre sous le tab sélectionné
-          //   // ".css-1aquho2-MuiTabs-indicator": {
-          //   //   backgroundColor: "black",
-          //   // },
-          //   ".css-1l92wdc-MuiButtonBase-root-MuiTab-root": {
-          //     // color: "rgba(0, 0, 0, 0.4)",
-          //     fontWeight: "400",
-          //     color: "white"
-          //   },
-          // }}
-          sx={{ '& .MuiTab-root': { color: 'white' }
-        }}
-        >
-          {tabs.map((tab) => (
-            <Tab key={tab.value} label={tab.label} value={tab.value} 
-            />
-          ))}
-        </TabList>
-        {/* <Divider color="white" /> */}
+        </TabPanel>
         {tables.map((table) => (
           <CustomTabPanel
             type={table.type}
