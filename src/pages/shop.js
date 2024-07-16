@@ -186,7 +186,7 @@ const Shop = (props) => {
       setShopItemsData(updatedShopItemsData)
       saveItemUsing(item.item_type)
       
-      toast.success(name + " de recettes utilisé", { duration: 8000})
+      toast.success(name + " de recettes utilisé", { duration: 5000})
   
       // on calcule les ressources cumulées pendant l'absence sur les planètes
       // const resourcesPlanetsTemp = [...planets];
@@ -220,7 +220,7 @@ const Shop = (props) => {
       // saveResources(resourcesPlanetsTemp) à implémenter
       // setPlanets(resourcesPlanetsTemp);
     } else {
-      toast.error("Aucun " + name + " de recettes restant", { duration: 8000})
+      toast.error("Aucun " + name + " de recettes restant", { duration: 5000})
     }
   };
 

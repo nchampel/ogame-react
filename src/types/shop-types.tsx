@@ -1,6 +1,8 @@
+export type itemsType = '1 hour' | '2 hours' | '1 day' | '2 days' | '1 week'
+
 export type ShopItemData = {
     item_quantity: number,
-    item_type: string,
+    item_type: itemsType,
     item_used: number,
     item_bought: number,
     purchasable: boolean,

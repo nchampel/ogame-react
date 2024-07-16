@@ -93,9 +93,9 @@ const WorkShop = (props: WorkShopProps) => {
       saveLogPowerGeneratorBuilt(number)
       const resourcesInvestedToSave = number * 2500
       saveResourcesInvested(resourcesInvestedToSave)
-      toast.success(number.toString() + " groupe(s) électrogène a(ont) été construit(s)", { duration: 8000})
+      toast.success(number.toString() + " groupe(s) électrogène a(ont) été construit(s)", { duration: 5000})
     } else {
-      toast.error("Pas assez de ressources pour construire " + number.toString() + " groupe(s) électrogène", { duration: 8000})
+      toast.error("Pas assez de ressources pour construire " + number.toString() + " groupe(s) électrogène", { duration: 5000})
     }
   };
 

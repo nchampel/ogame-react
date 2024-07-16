@@ -128,9 +128,9 @@ const Search = (props: SearchProps) => {
 
       const resourcesInvestedToSave = resourcesSearch[type].carbon + resourcesSearch[type].diamond + resourcesSearch[type].magic
       saveResourcesInvested(resourcesInvestedToSave)
-      toast.success("Recherche " + searchesName[type] + " efffecuée", { duration: 8000})
+      toast.success("Recherche " + searchesName[type] + " efffecuée", { duration: 5000})
     } else {
-      toast.error(searchesName[type] + " ne peut pas être construit par manque de ressources", { duration: 8000})
+      toast.error(searchesName[type] + " ne peut pas être construit par manque de ressources", { duration: 5000})
     }
     // if (type === "life_level" && resources["metal"] >= resourcesSearch.life) {
     //   const resourcesTemp = { ...resources };
