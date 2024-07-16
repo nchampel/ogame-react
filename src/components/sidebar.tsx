@@ -47,7 +47,7 @@ const Sidebar = (props: SidebarProps) => {
       <Box>
         <Button sx={{ width: "200px", border: "1px black solid",
     color: "black",
-    borderRadius: "10px"}} onClick={handleOpen}>Déconnexion</Button>
+    borderRadius: "10px", mb: 2, mt: 1}} onClick={handleOpen}>Déconnexion</Button>
         </Box>
       <Box>
         <img

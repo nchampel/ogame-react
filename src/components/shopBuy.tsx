@@ -3,7 +3,7 @@ import numeral from "numeral";
 import { shopApi } from "../api/shop-api";
 import { useCallback, useEffect } from "react";
 import { planetApi } from "../api/planet-api";
-import { ShopItemData } from "../types/shop-types";
+import { itemsType, ShopItemData } from "../types/shop-types";
 import { Booster, Resources } from "../types/app-types";
 import { checkLocalStorage } from "../modules/functions";
 import { ResourcesSearch } from "../types/search-types";
@@ -75,21 +75,21 @@ const addBooster = () => {
     setUnityLink(unityLink - booster.cost);
     saveUnityLink(unityLink - booster.cost);
     saveLevelBooster(booster.coefficient + 1);
-    toast.success("Booster niveau " + (booster.coefficient + 1).toString() + " acheté", { duration: 8000})
+    toast.success("Booster niveau " + (booster.coefficient + 1).toString() + " acheté", { duration: 5000})
   } else {
-    toast.error("Pas assez de Lien-Unités", { duration: 8000})
+    toast.error("Pas assez de Lien-Unités", { duration: 5000})
   }
 };
 
-const saveItemBought = useCallback(async (type: string) => {
+const saveItemBought = useCallback(async (type: string, linkUnityUsed: number) => {
   try {
     await shopApi.saveUnityLinkInvested(
-      500, checkLocalStorage("jwt").replaceAll('"', "")
+      linkUnityUsed, checkLocalStorage("jwt").replaceAll('"', "")
     )
     let updatedShopItemsDataTemp = []
     let updatedShopItemsData = []
     const itemBought: ItemBought = await shopApi.saveItemBought(
-      type,
+      type, linkUnityUsed,
       checkLocalStorage("jwt").replaceAll('"', "")
     );
     updatedShopItemsDataTemp = shopItemsData.map(itemShop => {
@@ -133,13 +133,22 @@ const saveItemBought = useCallback(async (type: string) => {
   }
 }, [shopItemsData]);
 
-const handleItemBuy = (type: string) => {
-  if (unityLink >= 500) {
+const linkUnityPrices = {
+  '1 hour': 500,
+  '2 hours': 600,
+  '1 day': 700,
+  '2 days': 800,
+  '1 week': 1000,
+}
+
+const handleItemBuy = (type: itemsType) => {
+  
+  if (unityLink >= linkUnityPrices[type]) {
     const name = shopItemsData.filter((el) => el.item_type === type)[0].name
-    saveItemBought(type)
-    toast.success(name + " de recettes acheté", { duration: 8000})
+    saveItemBought(type, linkUnityPrices[type])
+    toast.success(name + " de recettes acheté", { duration: 5000})
   } else {
-    toast.error("Pas assez de Lien-Unités", { duration: 8000})
+    toast.error("Pas assez de Lien-Unités", { duration: 5000})
   }
 
 }
@@ -170,7 +179,7 @@ useEffect(() => {
           alt={`Saut ${itemData.alt}`}
           style={{ width: "50px", height: "auto" }}
         />
-          <Typography>{`Coût : ${500} Lien-Unités`}</Typography>
+          <Typography>{`Coût : ${linkUnityPrices[itemData.item_type]} Lien-Unités`}</Typography>
           <Button onClick={() => handleItemBuy(itemData.item_type)}>
             Acheter
           </Button>

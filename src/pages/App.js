@@ -524,7 +524,7 @@ function App() {
         resourcesTemp[el.resource] += el.value / 10
         successPlayerTemp[idx].is_won = true
         // on toaste le succès
-        toast.success(shortNumber(el.value/10) + ' de ' + resourcesNameFrench[el.resource] + ' gagnés', {duration: 8000})
+        toast.success(shortNumber(el.value/10) + ' de ' + resourcesNameFrench[el.resource] + ' gagnés', {duration: 5000})
         // console.log(shortNumber(el.value/10) + ' de ' + resourcesNameFrench[el.resource] + ' gagnés')
       }
     })

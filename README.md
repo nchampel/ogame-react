@@ -26,3 +26,9 @@ Implémentation dans la version qui va être mise en ligne de la recherche éner
 14 07 2024
 Atelier, recherche, boutique finie.
 Implémentation des succès
+
+15 07 2024
+mise en ligne de la version 2
+
+16 07 2024
+prix des recettes à la boutique progressifs

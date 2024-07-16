@@ -158,9 +158,9 @@ const handleBuildingBuy = (type) => {
     setUnityLink(unityLink - 500)
     // mettre à jour la règle du niveau suivant
     updateShopBuildingsData(buildingsTemp, type, buildings[type] + 1)
-    toast.success(buildingsNames[type] + " construit", { duration: 8000})
+    toast.success(buildingsNames[type] + " construit", { duration: 5000})
   } else {
-    toast.error("Pas assez de Lien-Unités", { duration: 8000})
+    toast.error("Pas assez de Lien-Unités", { duration: 5000})
   }
 
 }

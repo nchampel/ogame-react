@@ -47,8 +47,8 @@ class ShopApi {
     const json = await response.json();
     return json;
   }
-  async saveItemBought(type: string, accessToken: string) {
-    const data = { type };
+  async saveItemBought(type: string, link_unity_used: number, accessToken: string) {
+    const data = { type, link_unity_used };
 
     const url = `${process.env.REACT_APP_BACK}/shop-items/bought/save/`;
     const params = getParamsPOST(accessToken, data);

@@ -108,9 +108,9 @@ const Dashboard = (props) => {
       setBuildings(buildingsTemp);
       const resourcesInvestedToSave = resourcesNeeded.carbon + resourcesNeeded.diamond + resourcesNeeded.magic
       saveResourcesInvested(resourcesInvestedToSave)
-      toast.success(buildingsNames[type] + " construit", { duration: 8000})
+      toast.success(buildingsNames[type] + " construit", { duration: 5000})
     } else {
-      toast.error(buildingsNames[type] + " ne peut pas être construit par manque de ressources ou d'énergie", { duration: 8000})
+      toast.error(buildingsNames[type] + " ne peut pas être construit par manque de ressources ou d'énergie", { duration: 5000})
     }
   };
 
