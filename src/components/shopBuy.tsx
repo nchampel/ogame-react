@@ -65,6 +65,17 @@ const saveUnityLink = useCallback(async (unityLink: number) => {
   }
 }, []);
 
+const saveUnityLinkInvested = useCallback(async (linkUnityUsed: number) => {
+  try {
+    await shopApi.saveUnityLinkInvested(
+      linkUnityUsed, checkLocalStorage("jwt").replaceAll('"', "")
+    )
+    
+  } catch (err) {
+    console.error(err);
+  }
+}, []);
+
 const addBooster = () => {
 
   if (unityLink >= booster.cost) {
@@ -74,6 +85,7 @@ const addBooster = () => {
 
     setUnityLink(unityLink - booster.cost);
     saveUnityLink(unityLink - booster.cost);
+    saveUnityLinkInvested(booster.cost)
     saveLevelBooster(booster.coefficient + 1);
     toast.success("Booster niveau " + (booster.coefficient + 1).toString() + " acheté", { duration: 5000})
   } else {
